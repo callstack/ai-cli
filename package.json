@@ -21,6 +21,9 @@
     "prepare": "bob build",
     "release": "release-it"
   },
+  "bin": {
+    "ai": "lib/commonjs/bin.js"
+  },
   "keywords": [
     "ai",
     "cli"
@@ -38,11 +41,20 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "dependencies": {
+    "@sinclair/typebox": "^0.32.5",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.3.1",
+    "inquirer": "^8.2.4",
+    "openai": "^4.24.1",
+    "yargs": "^17.7.2"
+  },
   "devDependencies": {
     "@callstack/eslint-config": "^14.1.0",
     "@commitlint/config-conventional": "^17.0.2",
     "@evilmartians/lefthook": "^1.5.0",
     "@release-it/conventional-changelog": "^5.0.0",
+    "@types/inquirer": "^9.0.7",
     "@types/jest": "^28.1.2",
     "commitlint": "^17.0.2",
     "del-cli": "^5.0.0",
