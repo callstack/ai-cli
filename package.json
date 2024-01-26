@@ -1,7 +1,7 @@
 {
-  "name": "ai-cli",
+  "name": "@callstack/ai-cli",
   "version": "0.1.0",
-  "description": "AI agent in your terminal.",
+  "description": "AI assistent in your terminal.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -30,14 +30,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mdjastrzebski/ai-cli.git"
+    "url": "git+https://github.com/callstack/ai-cli.git"
   },
   "author": "Maciej Jastrzebski <mdjastrzebski@gmail.com> (https://github.com/mdjastrzebski)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mdjastrzebski/ai-cli/issues"
+    "url": "https://github.com/callstack/ai-cli/issues"
   },
-  "homepage": "https://github.com/mdjastrzebski/ai-cli#readme",
+  "homepage": "https://github.com/callstack/ai-cli#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
