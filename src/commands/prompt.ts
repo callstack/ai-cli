@@ -57,7 +57,7 @@ export async function run(initialPrompt: string, options: PromptOptions) {
   }
 
   if (!options.interactive) {
-    return;
+    process.exit(0);
   }
 
   // eslint-disable-next-line no-constant-condition

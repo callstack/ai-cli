@@ -1,0 +1,8 @@
+{
+  "providers": {
+    "openAi": {
+      "apiKey": "You API KEY HERE",
+      "model": "gpt-4"
+    }
+  }
+}

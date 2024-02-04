@@ -1523,6 +1523,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@callstack/ai-cli@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@callstack/ai-cli@workspace:."
+  dependencies:
+    "@callstack/eslint-config": ^14.1.0
+    "@commitlint/config-conventional": ^17.0.2
+    "@evilmartians/lefthook": ^1.5.0
+    "@release-it/conventional-changelog": ^5.0.0
+    "@sinclair/typebox": ^0.32.5
+    "@types/inquirer": ^9.0.7
+    "@types/jest": ^28.1.2
+    chalk: ^4.1.2
+    commitlint: ^17.0.2
+    del-cli: ^5.0.0
+    dotenv: ^16.3.1
+    eslint: ^8.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-prettier: ^4.0.0
+    inquirer: ^8.2.4
+    jest: ^28.1.1
+    openai: ^4.24.1
+    prettier: ^2.0.5
+    react-native-builder-bob: ^0.20.0
+    release-it: ^15.0.0
+    typescript: ^5.0.2
+    yargs: ^17.7.2
+  bin:
+    ai: lib/commonjs/bin.js
+  languageName: unknown
+  linkType: soft
+
 "@callstack/eslint-config@npm:^14.1.0":
   version: 14.1.0
   resolution: "@callstack/eslint-config@npm:14.1.0"
@@ -3007,37 +3038,6 @@ __metadata:
   checksum: bb3ffdfd13447800fff237c2cba752c59868ee669104bb995dfbbe0b8320e967d679e683dabb640feb32e4882d60258165cde0baafc4cd467cc7d275a13ad6b5
   languageName: node
   linkType: hard
-
-"ai-cli@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "ai-cli@workspace:."
-  dependencies:
-    "@callstack/eslint-config": ^14.1.0
-    "@commitlint/config-conventional": ^17.0.2
-    "@evilmartians/lefthook": ^1.5.0
-    "@release-it/conventional-changelog": ^5.0.0
-    "@sinclair/typebox": ^0.32.5
-    "@types/inquirer": ^9.0.7
-    "@types/jest": ^28.1.2
-    chalk: ^4.1.2
-    commitlint: ^17.0.2
-    del-cli: ^5.0.0
-    dotenv: ^16.3.1
-    eslint: ^8.4.1
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-prettier: ^4.0.0
-    inquirer: ^8.2.4
-    jest: ^28.1.1
-    openai: ^4.24.1
-    prettier: ^2.0.5
-    react-native-builder-bob: ^0.20.0
-    release-it: ^15.0.0
-    typescript: ^5.0.2
-    yargs: ^17.7.2
-  bin:
-    ai: lib/commonjs/bin.js
-  languageName: unknown
-  linkType: soft
 
 "ajv@npm:^6.12.4":
   version: 6.12.6

@@ -8,9 +8,15 @@ import { outputError } from './output';
 const CONFIG_FILENAME = '.airc';
 const DEFAULT_MODEL = 'gpt-4';
 
+const ProvidersSchema = Type.Object({
+  openAi: Type.Object({
+    apiKey: Type.String({ default: '' }),
+    model: Type.String({ default: DEFAULT_MODEL }),
+  }),
+});
+
 const ConfigSchema = Type.Object({
-  openAiApiKey: Type.String({ default: '' }),
-  model: Type.String({ default: DEFAULT_MODEL }),
+  providers: ProvidersSchema,
 });
 
 export type Config = Static<typeof ConfigSchema>;
@@ -25,7 +31,7 @@ export async function parseConfig() {
 
   const configWithDefaults = Value.Default(ConfigSchema, json);
   const typedConfig = Value.Decode(ConfigSchema, configWithDefaults);
-  if (typedConfig.openAiApiKey === '') {
+  if (typedConfig.providers.openAi.apiKey === '') {
     outputError("Add your OpenAI API key to '~/.airc' and try again.");
     process.exit(1);
   }
