@@ -26,12 +26,12 @@ const systemMessage: SystemMessage = {
 
 export async function getChatCompletion(config: Config, messages: Message[]) {
   const openai = new OpenAI({
-    apiKey: config.openAiApiKey,
+    apiKey: config.providers.openAi.apiKey,
   });
 
   const response = await openai.chat.completions.create({
     messages: [systemMessage, ...messages],
-    model: config.model,
+    model: config.providers.openAi.model,
   });
 
   return [response.choices[0]?.message.content ?? null, response] as const;

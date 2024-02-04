@@ -1,21 +1,32 @@
-# ai-cli
+# AI CLI
 
 AI agent in your terminal.
 
 ## Installation
 
 ```sh
-npm install ai-cli
+npm install -g @callstack/ai-cli
+```
+
+Create `~/.airc` file (in your home directory):
+
+```json
+{
+  "providers": {
+    "openAi": {
+      "apiKey": "You API KEY HERE",
+      "model": "gpt-4"
+    }
+  }
+}
 ```
 
 ## Usage
 
-```js
-import { multiply } from 'ai-cli';
-
-// ...
-
-const result = await multiply(3, 7);
+```shell
+$ ai Tell me a joke
+me:  Tell me a joke
+ai:  Why don't scientists trust atoms? Because they make up everything!
 ```
 
 ## Contributing
