@@ -23,7 +23,7 @@ Create `~/.airc` file (in your home directory):
 
 ## Usage
 
-```shell
+```
 $ ai Tell me a joke
 me:  Tell me a joke
 ai:  Why don't scientists trust atoms? Because they make up everything!
@@ -36,7 +36,3 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
