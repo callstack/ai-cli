@@ -16,11 +16,11 @@ export function outputUser(...args: unknown[]) {
 }
 
 export function outputAi(...args: unknown[]) {
-  console.log(chalk.blue('ai: ', ...args));
+  console.log(chalk.cyan('ai: ', ...args));
 }
 
 export function outputAiProgress(message: string) {
-  process.stdout.write(chalk.blue('ai: ' + message));
+  process.stdout.write(chalk.cyan('ai: ' + message));
 }
 
 export function outputVerbose(message: string, ...args: unknown[]) {
@@ -29,8 +29,21 @@ export function outputVerbose(message: string, ...args: unknown[]) {
   console.debug(chalk.grey(message), ...args);
 }
 
-export function outputError(message: string, ...args: unknown[]) {
+export function outputError(error: unknown, ...args: unknown[]) {
+  const message = extractErrorMessage(error);
   console.error(chalk.red(`ERROR: ${message}`), ...args);
+}
+
+function extractErrorMessage(error: unknown) {
+  if (typeof error === 'object' && error != null && 'message' in error) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return 'Unknown error';
 }
 
 /**
