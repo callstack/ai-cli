@@ -7,12 +7,8 @@ export function setVerbose(value: boolean) {
   verbose = value;
 }
 
-export function output(message: string, ...args: unknown[]) {
-  console.log(message, ...args);
-}
-
-export function outputUser(...args: unknown[]) {
-  console.log('me:', ...args);
+export function outputUser(message: string[]) {
+  console.log('me:', message);
 }
 
 export function outputAi(message: string) {
