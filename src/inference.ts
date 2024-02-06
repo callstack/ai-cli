@@ -1,7 +1,3 @@
-import OpenAI from 'openai';
-import 'dotenv/config';
-import type { Config } from './config';
-
 export type Message = SystemMessage | UserMessage | AiMessage;
 
 export interface SystemMessage {
@@ -19,20 +15,7 @@ export interface AiMessage {
   content: string;
 }
 
-const systemMessage: SystemMessage = {
+export const genericSystemMessage: SystemMessage = {
   role: 'system',
   content: 'You are a helpful assistant responding in a concise manner to user questions.',
 };
-
-export async function getChatCompletion(config: Config, messages: Message[]) {
-  const openai = new OpenAI({
-    apiKey: config.providers.openAi.apiKey,
-  });
-
-  const response = await openai.chat.completions.create({
-    messages: [systemMessage, ...messages],
-    model: config.providers.openAi.model,
-  });
-
-  return [response.choices[0]?.message.content ?? null, response] as const;
-}

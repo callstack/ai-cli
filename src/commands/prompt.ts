@@ -1,8 +1,9 @@
 import type { CommandModule } from 'yargs';
 import { parseConfig } from '../config';
-import { getChatCompletion, type Message } from '../inference';
+import { type Message } from '../inference';
 import { inputLine } from '../input';
 import * as output from '../output';
+import * as openAi from '../providers/openAi';
 
 export interface PromptOptions {
   interactive: boolean;
@@ -46,7 +47,7 @@ export async function run(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: initialPrompt });
-    const [content, response] = await getChatCompletion(config, messages);
+    const [content, response] = await openAi.getChatCompletion(config, messages);
 
     output.clearLine();
     output.outputVerbose('Response:', response);
@@ -66,7 +67,7 @@ export async function run(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
-    const [content, response] = await getChatCompletion(config, messages);
+    const [content, response] = await openAi.getChatCompletion(config, messages);
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
     output.outputAi(content);

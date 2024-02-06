@@ -14,8 +14,12 @@ Create `~/.airc` file (in your home directory):
 {
   "providers": {
     "openAi": {
-      "apiKey": "You API KEY HERE",
+      "apiKey": "Your OpenAI API key",
       "model": "gpt-4"
+    },
+    "perplexity:" {
+      "apiKey": "Your Perplexity API key",
+      "model": "pplx-70b-chat",
     }
   }
 }
