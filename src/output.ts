@@ -12,15 +12,15 @@ export function output(message: string, ...args: unknown[]) {
 }
 
 export function outputUser(...args: unknown[]) {
-  console.log('me: ', ...args);
+  console.log('me:', ...args);
 }
 
-export function outputAi(...args: unknown[]) {
-  console.log(chalk.cyan('ai: ', ...args));
+export function outputAi(message: string) {
+  console.log(chalk.cyan('ai:', message));
 }
 
 export function outputAiProgress(message: string) {
-  process.stdout.write(chalk.cyan('ai: ' + message));
+  process.stdout.write(chalk.cyan('ai:', message));
 }
 
 export function outputVerbose(message: string, ...args: unknown[]) {
@@ -34,6 +34,14 @@ export function outputError(error: unknown, ...args: unknown[]) {
   console.error(chalk.red(`ERROR: ${message}`), ...args);
 }
 
+/**
+ * Clears current lint. To be used in conjunction with `progress`.
+ */
+export function clearLine() {
+  readline.clearLine(process.stdout, 0);
+  readline.cursorTo(process.stdout, 0);
+}
+
 function extractErrorMessage(error: unknown) {
   if (typeof error === 'object' && error != null && 'message' in error) {
     return error.message;
@@ -44,12 +52,4 @@ function extractErrorMessage(error: unknown) {
   }
 
   return 'Unknown error';
-}
-
-/**
- * Clears current lint. To be used in conjunction with `progress`.
- */
-export function clearLine() {
-  readline.clearLine(process.stdout, 0);
-  readline.cursorTo(process.stdout, 0);
 }

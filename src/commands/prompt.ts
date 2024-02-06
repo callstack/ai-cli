@@ -41,7 +41,7 @@ export const command: CommandModule<{}, PromptOptions> = {
 
 export async function run(initialPrompt: string, options: PromptOptions) {
   try {
-    await runInternal(initialPrompt, options);
+    await runInternal(initialPrompt.trim(), options);
   } catch (error) {
     output.clearLine();
     output.outputError(error);
@@ -55,14 +55,13 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   }
 
   const config = await parseConfig();
-  output.outputVerbose(`Config: ${JSON.stringify(config, null, 2)}`);
+  output.outputVerbose(`Config: ${JSON.stringify(config, filterOutApiKey, 2)}`);
 
-  const providerKey = resolveProviderName(options.provider, config);
-  const provider = providers[providerKey];
-  output.outputVerbose('Using provider:', providerKey);
+  const providerName = resolveProviderName(options.provider, config);
+  const provider = providers[providerName];
+  output.outputVerbose(`Using provider: ${providerName}`);
 
   const messages: Message[] = [];
-  initialPrompt = initialPrompt.trim();
 
   if (initialPrompt) {
     output.outputUser(initialPrompt);
@@ -72,8 +71,8 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     const [content, response] = await provider.getChatCompletion(config, messages);
 
     output.clearLine();
-    output.outputVerbose('Response:', response);
-    output.outputAi(content);
+    output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
+    output.outputAi(content ?? '(null)');
     messages.push({ role: 'assistant', content: content ?? '' });
   } else {
     output.outputAi('Hello, how can I help you? Press Ctrl+C to exit.');
@@ -92,7 +91,15 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     const [content, response] = await provider.getChatCompletion(config, messages);
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(content);
+    output.outputAi(content ?? '(null)');
     messages.push({ role: 'assistant', content: content ?? '' });
   }
+}
+
+function filterOutApiKey(key: string, value: unknown) {
+  if (key === 'apiKey' && typeof value === 'string') {
+    return value ? '***' : '';
+  }
+
+  return value;
 }
