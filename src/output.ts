@@ -7,7 +7,7 @@ export function setVerbose(value: boolean) {
   verbose = value;
 }
 
-export function outputUser(message: string[]) {
+export function outputUser(message: string) {
   console.log('me:', message);
 }
 
