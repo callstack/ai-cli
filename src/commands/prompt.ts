@@ -23,6 +23,11 @@ export const command: CommandModule<{}, PromptOptions> = {
         default: false,
         describe: 'Start an interactive conversation',
       })
+      .options('provider', {
+        alias: 'p',
+        type: 'string',
+        describe: 'AI provider to be used',
+      })
       .option('verbose', {
         alias: 'V',
         type: 'boolean',
