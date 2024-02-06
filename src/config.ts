@@ -33,8 +33,11 @@ export async function parseConfig() {
 
   const configWithDefaults = Value.Default(ConfigSchema, json);
   const typedConfig = Value.Decode(ConfigSchema, configWithDefaults);
-  if (typedConfig.providers.openAi.apiKey === '') {
-    throw new Error("Add your OpenAI API key to '~/.airc' and try again.");
+  if (
+    typedConfig.providers.openAi.apiKey === '' &&
+    typedConfig.providers.perplexity.apiKey === ''
+  ) {
+    throw new Error("Add your OpenAI or Perplexity API key to '~/.airc' and try again.");
   }
 
   return typedConfig;
