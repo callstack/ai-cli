@@ -7,20 +7,16 @@ export function setVerbose(value: boolean) {
   verbose = value;
 }
 
-export function output(message: string, ...args: unknown[]) {
-  console.log(message, ...args);
+export function outputUser(message: string) {
+  console.log('me:', message);
 }
 
-export function outputUser(...args: unknown[]) {
-  console.log('me: ', ...args);
-}
-
-export function outputAi(...args: unknown[]) {
-  console.log(chalk.blue('ai: ', ...args));
+export function outputAi(message: string) {
+  console.log(chalk.cyan('ai:', message));
 }
 
 export function outputAiProgress(message: string) {
-  process.stdout.write(chalk.blue('ai: ' + message));
+  process.stdout.write(chalk.cyan('ai:', message));
 }
 
 export function outputVerbose(message: string, ...args: unknown[]) {
@@ -29,7 +25,8 @@ export function outputVerbose(message: string, ...args: unknown[]) {
   console.debug(chalk.grey(message), ...args);
 }
 
-export function outputError(message: string, ...args: unknown[]) {
+export function outputError(error: unknown, ...args: unknown[]) {
+  const message = extractErrorMessage(error);
   console.error(chalk.red(`ERROR: ${message}`), ...args);
 }
 
@@ -39,4 +36,16 @@ export function outputError(message: string, ...args: unknown[]) {
 export function clearLine() {
   readline.clearLine(process.stdout, 0);
   readline.cursorTo(process.stdout, 0);
+}
+
+function extractErrorMessage(error: unknown) {
+  if (typeof error === 'object' && error != null && 'message' in error) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return 'Unknown error';
 }

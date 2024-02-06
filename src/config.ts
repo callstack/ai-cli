@@ -3,15 +3,17 @@ import * as os from 'os';
 import * as path from 'path';
 import { Type, type Static } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
-import { outputError } from './output';
 
 const CONFIG_FILENAME = '.airc';
-const DEFAULT_MODEL = 'gpt-4';
 
 const ProvidersSchema = Type.Object({
   openAi: Type.Object({
     apiKey: Type.String({ default: '' }),
-    model: Type.String({ default: DEFAULT_MODEL }),
+    model: Type.String({ default: 'gpt-4' }),
+  }),
+  perplexity: Type.Object({
+    apiKey: Type.String({ default: '' }),
+    model: Type.String({ default: 'pplx-70b-online' }),
   }),
 });
 
@@ -31,9 +33,11 @@ export async function parseConfig() {
 
   const configWithDefaults = Value.Default(ConfigSchema, json);
   const typedConfig = Value.Decode(ConfigSchema, configWithDefaults);
-  if (typedConfig.providers.openAi.apiKey === '') {
-    outputError("Add your OpenAI API key to '~/.airc' and try again.");
-    process.exit(1);
+  if (
+    typedConfig.providers.openAi.apiKey === '' &&
+    typedConfig.providers.perplexity.apiKey === ''
+  ) {
+    throw new Error("Add your OpenAI or Perplexity API key to '~/.airc' and try again.");
   }
 
   return typedConfig;

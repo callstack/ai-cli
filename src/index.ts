@@ -1,1 +1,0 @@
-export { getChatCompletion } from './inference';
