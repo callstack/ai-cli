@@ -6,8 +6,14 @@ import * as output from '../output';
 import { providers, providerOptions, resolveProviderName } from '../providers';
 
 export interface PromptOptions {
+  /** Interactive mode */
   interactive: boolean;
+
+  /** AI inference provider to be used */
   provider?: string;
+
+  /** AI model to be used */
+  model?: string;
 
   /** Show verbose-level logs. */
   verbose: boolean;
@@ -29,6 +35,11 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'string',
         describe: 'AI provider to be used',
         choices: providerOptions,
+      })
+      .options('model', {
+        alias: 'm',
+        type: 'string',
+        describe: 'AI model to be used',
       })
       .option('verbose', {
         alias: 'V',
@@ -54,12 +65,24 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.setVerbose(true);
   }
 
-  const config = await parseConfig();
-  output.outputVerbose(`Config: ${JSON.stringify(config, filterOutApiKey, 2)}`);
+  const fileConfig = await parseConfig();
+  output.outputVerbose(`Config: ${JSON.stringify(fileConfig, filterOutApiKey, 2)}`);
 
-  const providerName = resolveProviderName(options.provider, config);
+  const providerName = resolveProviderName(options.provider, fileConfig);
   const provider = providers[providerName];
   output.outputVerbose(`Using provider: ${providerName}`);
+
+  const providerConfig = fileConfig.providers[providerName];
+  if (!providerConfig) {
+    throw new Error(`Provider config not found: ${providerName}.`);
+  }
+
+  const config = {
+    model: options.model ?? providerConfig.model,
+    apiKey: providerConfig.apiKey,
+  };
+
+  output.outputVerbose(`Using model: ${config.model}`);
 
   const messages: Message[] = [];
 
