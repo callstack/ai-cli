@@ -1,5 +1,5 @@
 import type { CommandModule } from 'yargs';
-import { parseConfig } from '../config';
+import { parseConfigFile } from '../config-file';
 import { type Message } from '../inference';
 import { inputLine } from '../input';
 import * as output from '../output';
@@ -65,24 +65,24 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.setVerbose(true);
   }
 
-  const fileConfig = await parseConfig();
-  output.outputVerbose(`Config: ${JSON.stringify(fileConfig, filterOutApiKey, 2)}`);
+  const configFile = await parseConfigFile();
+  output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
 
-  const providerName = resolveProviderName(options.provider, fileConfig);
+  const providerName = resolveProviderName(options.provider, configFile);
   const provider = providers[providerName];
   output.outputVerbose(`Using provider: ${providerName}`);
 
-  const providerConfig = fileConfig.providers[providerName];
-  if (!providerConfig) {
+  const initialConfig = configFile.providers[providerName];
+  if (!initialConfig) {
     throw new Error(`Provider config not found: ${providerName}.`);
   }
 
-  const config = {
-    model: options.model ?? providerConfig.model,
-    apiKey: providerConfig.apiKey,
+  const actualConfig = {
+    model: options.model ?? initialConfig.model,
+    apiKey: initialConfig.apiKey,
   };
 
-  output.outputVerbose(`Using model: ${config.model}`);
+  output.outputVerbose(`Using model: ${actualConfig.model}`);
 
   const messages: Message[] = [];
 
@@ -91,7 +91,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: initialPrompt });
-    const [content, response] = await provider.getChatCompletion(config, messages);
+    const [content, response] = await provider.getChatCompletion(actualConfig, messages);
 
     output.clearLine();
     output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
@@ -111,7 +111,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
-    const [content, response] = await provider.getChatCompletion(config, messages);
+    const [content, response] = await provider.getChatCompletion(actualConfig, messages);
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
     output.outputAi(content ?? '(null)');
