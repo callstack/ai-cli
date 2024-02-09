@@ -1,13 +1,19 @@
 import type { CommandModule } from 'yargs';
-import { parseConfig } from '../config';
+import { parseConfigFile } from '../config-file';
 import { type Message } from '../inference';
 import { inputLine } from '../input';
 import * as output from '../output';
 import { providers, providerOptions, resolveProviderName } from '../providers';
 
 export interface PromptOptions {
+  /** Interactive mode */
   interactive: boolean;
+
+  /** AI inference provider to be used */
   provider?: string;
+
+  /** AI model to be used */
+  model?: string;
 
   /** Show verbose-level logs. */
   verbose: boolean;
@@ -29,6 +35,11 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'string',
         describe: 'AI provider to be used',
         choices: providerOptions,
+      })
+      .options('model', {
+        alias: 'm',
+        type: 'string',
+        describe: 'AI model to be used',
       })
       .option('verbose', {
         alias: 'V',
@@ -54,12 +65,24 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.setVerbose(true);
   }
 
-  const config = await parseConfig();
-  output.outputVerbose(`Config: ${JSON.stringify(config, filterOutApiKey, 2)}`);
+  const configFile = await parseConfigFile();
+  output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
 
-  const providerName = resolveProviderName(options.provider, config);
+  const providerName = resolveProviderName(options.provider, configFile);
   const provider = providers[providerName];
   output.outputVerbose(`Using provider: ${providerName}`);
+
+  const initialConfig = configFile.providers[providerName];
+  if (!initialConfig) {
+    throw new Error(`Provider config not found: ${providerName}.`);
+  }
+
+  const actualConfig = {
+    model: options.model ?? initialConfig.model,
+    apiKey: initialConfig.apiKey,
+  };
+
+  output.outputVerbose(`Using model: ${actualConfig.model}`);
 
   const messages: Message[] = [];
 
@@ -68,7 +91,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: initialPrompt });
-    const [content, response] = await provider.getChatCompletion(config, messages);
+    const [content, response] = await provider.getChatCompletion(actualConfig, messages);
 
     output.clearLine();
     output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
@@ -88,7 +111,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
-    const [content, response] = await provider.getChatCompletion(config, messages);
+    const [content, response] = await provider.getChatCompletion(actualConfig, messages);
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
     output.outputAi(content ?? '(null)');

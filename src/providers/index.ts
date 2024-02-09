@@ -1,4 +1,4 @@
-import type { Config } from '../config';
+import type { ConfigFile } from '../config-file';
 import * as openAi from './openAi';
 import * as perplexity from './perplexity';
 
@@ -18,7 +18,7 @@ const providerOptionMapping: Record<string, ProviderName> = {
 
 export const providerOptions = Object.keys(providerOptionMapping);
 
-export function resolveProviderName(option: string | undefined, config: Config): ProviderName {
+export function resolveProviderName(option: string | undefined, config: ConfigFile): ProviderName {
   if (option != null) {
     const provider = providerOptionMapping[option];
     if (!provider) {
