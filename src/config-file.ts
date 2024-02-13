@@ -4,18 +4,20 @@ import * as path from 'path';
 import { z } from 'zod';
 
 const CONFIG_FILENAME = '.airc';
+const DEFAULT_OPENAI_MODEL = 'gpt-4';
+const DEFAULT_PERPLEXITY_MODEL = 'pplx-7b-online';
 
 const ProvidersSchema = z.object({
   openAi: z.optional(
     z.object({
       apiKey: z.string(),
-      model: z.string().default('gpt-4'),
+      model: z.string().default(DEFAULT_OPENAI_MODEL),
     })
   ),
   perplexity: z.optional(
     z.object({
       apiKey: z.string(),
-      model: z.string().default('pplx-7b-online'),
+      model: z.string().default(DEFAULT_PERPLEXITY_MODEL),
     })
   ),
 });
