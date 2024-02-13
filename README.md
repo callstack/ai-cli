@@ -17,13 +17,15 @@ Create `~/.airc` file (in your home directory):
       "apiKey": "Your OpenAI API key",
       "model": "gpt-4"
     },
-    "perplexity:" {
+    "perplexity": {
       "apiKey": "Your Perplexity API key",
       "model": "pplx-70b-chat",
     }
   }
 }
 ```
+
+Note you need to add at least one AI inference provider and it's API key. Currently supported providers are OpenAI and Perplexity.
 
 ## Usage
 
