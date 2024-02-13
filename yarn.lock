@@ -1531,7 +1531,6 @@ __metadata:
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
     "@release-it/conventional-changelog": ^5.0.0
-    "@sinclair/typebox": ^0.32.5
     "@types/inquirer": ^9.0.7
     "@types/jest": ^28.1.2
     chalk: ^4.1.2
@@ -1549,6 +1548,7 @@ __metadata:
     release-it: ^15.0.0
     typescript: ^5.0.2
     yargs: ^17.7.2
+    zod: ^3.22.4
   bin:
     ai: lib/commonjs/bin.js
   languageName: unknown
@@ -2458,13 +2458,6 @@ __metadata:
   version: 0.24.51
   resolution: "@sinclair/typebox@npm:0.24.51"
   checksum: fd0d855e748ef767eb19da1a60ed0ab928e91e0f358c1dd198d600762c0015440b15755e96d1176e2a0db7e09c6a64ed487828ee10dd0c3e22f61eb09c478cd0
-  languageName: node
-  linkType: hard
-
-"@sinclair/typebox@npm:^0.32.5":
-  version: 0.32.5
-  resolution: "@sinclair/typebox@npm:0.32.5"
-  checksum: 56fa4246309eb771bab68caedef385f19e25d82591e9e04af2a0c0f68bce674cb0e713ae4677adf408751e53743af5b1b7109352772b2dacc6f8fe9731dd395e
   languageName: node
   linkType: hard
 
@@ -11302,5 +11295,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.22.4":
+  version: 3.22.4
+  resolution: "zod@npm:3.22.4"
+  checksum: 80bfd7f8039b24fddeb0718a2ec7c02aa9856e4838d6aa4864335a047b6b37a3273b191ef335bf0b2002e5c514ef261ffcda5a589fb084a48c336ffc4cdbab7f
   languageName: node
   linkType: hard
