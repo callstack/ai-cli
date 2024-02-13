@@ -1,31 +1,30 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { Type, type Static } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import { z } from 'zod';
 
 const CONFIG_FILENAME = '.airc';
 
-const ProvidersSchema = Type.Object({
-  openAi: Type.Optional(
-    Type.Object({
-      apiKey: Type.String({ default: '' }),
-      model: Type.String({ default: 'gpt-4' }),
+const ProvidersSchema = z.object({
+  openAi: z.optional(
+    z.object({
+      apiKey: z.string(),
+      model: z.string().default('gpt-4'),
     })
   ),
-  perplexity: Type.Optional(
-    Type.Object({
-      apiKey: Type.String({ default: '' }),
-      model: Type.String({ default: 'pplx-70b-online' }),
+  perplexity: z.optional(
+    z.object({
+      apiKey: z.string(),
+      model: z.string().default('pplx-7b-online'),
     })
   ),
 });
 
-const ConfigFileSchema = Type.Object({
+const ConfigFileSchema = z.object({
   providers: ProvidersSchema,
 });
 
-export type ConfigFile = Static<typeof ConfigFileSchema>;
+export type ConfigFile = z.infer<typeof ConfigFileSchema>;
 
 export async function parseConfigFile() {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
@@ -35,8 +34,7 @@ export async function parseConfigFile() {
   const content = await fs.promises.readFile(configPath);
   const json = JSON.parse(content.toString());
 
-  const configWithDefaults = Value.Default(ConfigFileSchema, json);
-  const typedConfig = Value.Decode(ConfigFileSchema, configWithDefaults);
+  const typedConfig = ConfigFileSchema.parse(json);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
     throw new Error("Add your OpenAI or Perplexity API key to '~/.airc' and try again.");
   }
