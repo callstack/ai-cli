@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { genericSystemMessage, type Message } from '../inference';
+import { type Message } from '../inference';
 import type { ProviderConfig } from './config';
 
 export async function getChatCompletion(config: ProviderConfig, messages: Message[]) {
@@ -8,8 +8,13 @@ export async function getChatCompletion(config: ProviderConfig, messages: Messag
     baseURL: 'https://api.perplexity.ai',
   });
 
+  const systemMessage: Message = {
+    role: 'system',
+    content: config.systemPrompt,
+  };
+
   const response = await perplexity.chat.completions.create({
-    messages: [genericSystemMessage, ...messages],
+    messages: [systemMessage, ...messages],
     model: config.model,
   });
 

@@ -27,7 +27,7 @@ export function outputVerbose(message: string, ...args: unknown[]) {
 
 export function outputError(error: unknown, ...args: unknown[]) {
   const message = extractErrorMessage(error);
-  console.error(chalk.red(`ERROR: ${message}`), ...args);
+  console.error(chalk.red(`ERROR: ${message}`), error, ...args);
 }
 
 /**

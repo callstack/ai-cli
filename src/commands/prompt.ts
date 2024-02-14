@@ -80,6 +80,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   const actualConfig = {
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
+    systemPrompt: initialConfig.systemPrompt,
   };
 
   output.outputVerbose(`Using model: ${actualConfig.model}`);

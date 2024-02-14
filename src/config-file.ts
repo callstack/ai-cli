@@ -2,22 +2,28 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { z } from 'zod';
+import {
+  DEFAULT_OPEN_AI_MODEL,
+  DEFAULT_PERPLEXITY_MODEL,
+  DEFAULT_SYSTEM_PROMPT,
+} from './default-config';
+import * as output from './output';
 
 const CONFIG_FILENAME = '.airc';
-const DEFAULT_OPENAI_MODEL = 'gpt-4';
-const DEFAULT_PERPLEXITY_MODEL = 'pplx-7b-online';
 
 const ProvidersSchema = z.object({
   openAi: z.optional(
     z.object({
       apiKey: z.string(),
-      model: z.string().default(DEFAULT_OPENAI_MODEL),
+      model: z.string().default(DEFAULT_OPEN_AI_MODEL),
+      systemPrompt: z.string().default(DEFAULT_SYSTEM_PROMPT),
     })
   ),
   perplexity: z.optional(
     z.object({
       apiKey: z.string(),
       model: z.string().default(DEFAULT_PERPLEXITY_MODEL),
+      systemPrompt: z.string().default(DEFAULT_SYSTEM_PROMPT),
     })
   ),
 });
@@ -37,6 +43,7 @@ export async function parseConfigFile() {
   const json = JSON.parse(content.toString());
 
   const typedConfig = ConfigFileSchema.parse(json);
+  output.outputVerbose(`Config with defaults: ${JSON.stringify(typedConfig, null, 2)}`);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
     throw new Error("Add your OpenAI or Perplexity API key to '~/.airc' and try again.");
   }
