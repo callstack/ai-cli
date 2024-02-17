@@ -76,8 +76,8 @@ CLI options are passed when invoking the `ai` commend:
 - `--help`: display available options
 - `--version`: display CLI version
 - `--interactive` (or `-i`): start an interactive session where user can ask follow-up questions
-- `--provider [provider name]` (or `-p [provider name]`): select an inference provider to use: `openai` or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc` file.
-- `--model [model name]` (or `-m [model name]`): select a model to use. This should be a model available for selected provider.
+- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai` or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc` file.
+- `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
 - `--verbose` (or `-V`): enable verbose mode
 
 ## CLI commands
