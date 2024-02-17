@@ -1,6 +1,6 @@
 {
   "name": "@callstack/ai-cli",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "AI assistent in your terminal.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
