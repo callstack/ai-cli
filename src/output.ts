@@ -56,7 +56,6 @@ function extractErrorMessage(error: unknown) {
   }
 
   if (typeof error === 'string') {
-    outputUser;
     return error;
   }
 
