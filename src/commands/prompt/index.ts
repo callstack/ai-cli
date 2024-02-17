@@ -1,9 +1,10 @@
 import type { CommandModule } from 'yargs';
-import { parseConfigFile } from '../config-file';
-import { type Message } from '../inference';
-import { inputLine } from '../input';
-import * as output from '../output';
-import { providers, providerOptions, resolveProviderName } from '../providers';
+import { parseConfigFile } from '../../config-file';
+import { type Message } from '../../inference';
+import { inputLine } from '../../input';
+import * as output from '../../output';
+import { providers, providerOptions, resolveProviderName } from '../../providers';
+import { processCommand } from './commands';
 
 export interface PromptOptions {
   /** Interactive mode */
@@ -113,7 +114,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const userPrompt = await inputLine('me: ');
-    const isCommand = processCommandIfNeeded(userPrompt, { messages, providerName, config });
+    const isCommand = processCommand(userPrompt, { messages, providerName, config });
     if (isCommand) {
       continue;
     }
@@ -135,58 +136,4 @@ function filterOutApiKey(key: string, value: unknown) {
   }
 
   return value;
-}
-
-interface CommandContext {
-  messages: Message[];
-  providerName: string;
-  config: {
-    model: string;
-    systemPrompt: string;
-  };
-}
-
-function processCommandIfNeeded(input: string, context: CommandContext): boolean {
-  if (!input.startsWith('/')) {
-    return false;
-  }
-
-  const [command, ...args] = input.split(' ');
-  if (command === '/exit') {
-    process.exit(0);
-    // No need to return.
-  }
-
-  if (command === '/help') {
-    output.outputInfo('Available commands:');
-    output.outputInfo('- /exit: Exit the program');
-    output.outputInfo(
-      '- /reset-context: Reset conversation context: AI replies will forget previous messages'
-    );
-    output.outputInfo('- /verbose [on|off]: Enable or disable verbose output.');
-    return true;
-  }
-
-  if (command === '/reset-context') {
-    // Drop all messages from context.
-    context.messages.length = 0;
-    output.outputInfo('Context reset: AI replies will forget previous messages.', context.messages);
-    return true;
-  }
-
-  if (command === '/verbose') {
-    output.setVerbose(args[0] !== 'off');
-    output.outputInfo(`Verbose mode: ${output.isVerbose() ? 'on' : 'off'}`);
-    return true;
-  }
-
-  if (command === '/info') {
-    output.outputInfo(`Provider: ${context.providerName}, model: ${context.config.model}`);
-    output.outputInfo('System prompt:', context.config.systemPrompt);
-    output.outputVerbose('Current context:', JSON.stringify(context.messages, null, 2));
-    return true;
-  }
-
-  output.outputError(`Unknown command: ${command} ${args.join(' ')}`);
-  return true;
 }

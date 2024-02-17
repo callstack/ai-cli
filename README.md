@@ -82,9 +82,9 @@ CLI commands are available when using CLI in interactive mode.
 
 - `/help`: display available commands
 - `/exit`: exit the CLI
-- `/reset-context`: forget previous messages in the session
 - `/info`: display information about current session
 - `/verbose [on|off]`: enable/disable verbose mode
+- `/forget`: forget previous messages in the session
 
 ## Contributing
 
