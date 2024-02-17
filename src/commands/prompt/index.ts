@@ -1,9 +1,10 @@
 import type { CommandModule } from 'yargs';
-import { parseConfigFile } from '../config-file';
-import { type Message } from '../inference';
-import { inputLine } from '../input';
-import * as output from '../output';
-import { providers, providerOptions, resolveProviderName } from '../providers';
+import { parseConfigFile } from '../../config-file';
+import { type Message } from '../../inference';
+import { inputLine } from '../../input';
+import * as output from '../../output';
+import { providers, providerOptions, resolveProviderName } from '../../providers';
+import { processCommand } from './commands';
 
 export interface PromptOptions {
   /** Interactive mode */
@@ -77,13 +78,13 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     throw new Error(`Provider config not found: ${providerName}.`);
   }
 
-  const actualConfig = {
+  const config = {
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
     systemPrompt: initialConfig.systemPrompt,
   };
 
-  output.outputVerbose(`Using model: ${actualConfig.model}`);
+  output.outputVerbose(`Using model: ${config.model}`);
 
   const messages: Message[] = [];
 
@@ -92,27 +93,36 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: initialPrompt });
-    const [content, response] = await provider.getChatCompletion(actualConfig, messages);
+    const [content, response] = await provider.getChatCompletion(config, messages);
 
     output.clearLine();
     output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
     output.outputAi(content ?? '(null)');
     messages.push({ role: 'assistant', content: content ?? '' });
   } else {
-    output.outputAi('Hello, how can I help you? Press Ctrl+C to exit.');
+    output.outputAi('Hello, how can I help you? ');
   }
 
-  if (!options.interactive && initialPrompt) {
+  if (options.interactive || !initialPrompt) {
+    output.outputInfo(
+      'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.'
+    );
+  } else {
     process.exit(0);
   }
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const userPrompt = await inputLine('me: ');
+    const isCommand = processCommand(userPrompt, { messages, providerName, config });
+    if (isCommand) {
+      continue;
+    }
+
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
-    const [content, response] = await provider.getChatCompletion(actualConfig, messages);
+    const [content, response] = await provider.getChatCompletion(config, messages);
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
     output.outputAi(content ?? '(null)');

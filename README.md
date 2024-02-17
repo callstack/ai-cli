@@ -1,6 +1,10 @@
 # AI CLI
 
-AI agent in your terminal.
+AI assistant in your terminal.
+
+```
+$ ai "What are generator functions is JS?"
+```
 
 ## Installation
 
@@ -19,6 +23,7 @@ You will need a valid API key from one of currently supported AI inference provi
 Create a minimal `~/.airc` file (in your home directory):
 
 For Open AI:
+
 ```json
 {
   "providers": {
@@ -30,6 +35,7 @@ For Open AI:
 ```
 
 For Perplexity:
+
 ```json
 {
   "providers": {
@@ -62,6 +68,27 @@ me: tell me another one
 ai: What do you call fake spaghetti? An impasta!
 me: _
 ```
+
+## CLI options
+
+CLI options are passed when invoking the `ai` commend:
+
+- `--help`: display available options
+- `--version`: display CLI version
+- `--interactive` (or `-i`): start an interactive session where user can ask follow-up questions
+- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai` or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc` file.
+- `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
+- `--verbose` (or `-V`): enable verbose mode
+
+## CLI commands
+
+CLI commands are available when using CLI in interactive mode.
+
+- `/help`: display available commands
+- `/exit`: exit the CLI
+- `/info`: display information about current session
+- `/verbose [on|off]`: enable/disable verbose mode
+- `/forget`: forget previous messages in the session
 
 ## Contributing
 

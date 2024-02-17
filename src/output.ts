@@ -7,6 +7,10 @@ export function setVerbose(value: boolean) {
   verbose = value;
 }
 
+export function isVerbose() {
+  return verbose;
+}
+
 export function outputUser(message: string) {
   console.log('me:', message);
 }
@@ -22,12 +26,20 @@ export function outputAiProgress(message: string) {
 export function outputVerbose(message: string, ...args: unknown[]) {
   if (!verbose) return;
 
-  console.debug(chalk.grey(message), ...args);
+  console.debug(chalk.grey(message, ...args));
+}
+
+export function outputInfo(message: string, ...args: unknown[]) {
+  console.log(chalk.dim(message, ...args));
 }
 
 export function outputError(error: unknown, ...args: unknown[]) {
   const message = extractErrorMessage(error);
-  console.error(chalk.red(`ERROR: ${message}`), error, ...args);
+  if (error === message) {
+    console.error(chalk.red(`ERROR: ${message}`, ...args));
+  } else {
+    console.error(chalk.red(`ERROR: ${message}`, error, ...args));
+  }
 }
 
 /**
