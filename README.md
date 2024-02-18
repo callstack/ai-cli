@@ -3,7 +3,7 @@
 AI assistant in your terminal.
 
 ```
-$ ai "What are generator functions is JS?"
+$ ai "What are generator functions in JS?"
 ```
 
 ## Installation
