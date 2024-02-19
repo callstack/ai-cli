@@ -1,7 +1,15 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
+import highlight from 'cli-highlight';
+import {
+  codeBlockAnnotationsRegExp,
+  langRegExp,
+  splitCodeBlocks,
+  stripCodeblockAnnotations,
+} from './syntax-highlighting';
 
 let verbose = false;
+let syntaxHighlighting = true;
 
 export function setVerbose(value: boolean) {
   verbose = value;
@@ -16,7 +24,31 @@ export function outputUser(message: string) {
 }
 
 export function outputAi(message: string) {
+  if (syntaxHighlighting) {
+    outputSyntaxHighlighting(message);
+    return;
+  }
+
   console.log(chalk.cyan('ai:', message));
+}
+
+export function outputSyntaxHighlighting(message: string) {
+  const splitted = splitCodeBlocks(message);
+  chalk.cyan('ai: ');
+  splitted.forEach((segment) => {
+    if (segment.match(codeBlockAnnotationsRegExp)) {
+      const lang = segment.match(langRegExp)?.[1];
+      const stripped = stripCodeblockAnnotations(segment);
+      console.log(
+        highlight(stripped, {
+          language: lang ?? 'plaintext',
+          ignoreIllegals: true,
+        })
+      );
+    } else {
+      console.log(chalk.cyan(segment));
+    }
+  });
 }
 
 export function outputAiProgress(message: string) {
