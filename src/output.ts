@@ -1,7 +1,9 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
+import type { ResponseStats } from './inference';
 
 let verbose = false;
+let showStats = false;
 
 export function setVerbose(value: boolean) {
   verbose = value;
@@ -11,12 +13,22 @@ export function isVerbose() {
   return verbose;
 }
 
+export function setShowStats(value: boolean) {
+  showStats = value;
+}
+
+export function shouldShowStats() {
+  return showStats;
+}
+
 export function outputUser(message: string) {
   console.log('me:', message);
 }
 
-export function outputAi(message: string) {
-  console.log(chalk.cyan('ai:', message));
+export function outputAi(message: string, stats?: ResponseStats) {
+  const statsOutput = stats && showStats ? chalk.dim(formatStats(stats)) : '';
+
+  console.log(chalk.cyan('ai:', message), statsOutput);
 }
 
 export function outputAiProgress(message: string) {
@@ -68,4 +80,13 @@ function extractErrorMessage(error: unknown) {
   }
 
   return 'Unknown error';
+}
+
+function formatStats(stats: ResponseStats) {
+  const parts = [
+    `time: ${(stats.responseTime / 1000).toFixed(1)} s`,
+    `tokens: ${stats.prompt_tokens} in + ${stats.completion_tokens} out`,
+  ];
+
+  return `(${parts.join(', ')})`;
 }
