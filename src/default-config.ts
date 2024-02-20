@@ -14,3 +14,12 @@ If you don't know the answer, just say that you don't know, don't try to make up
 Use three sentences maximum and keep the answer as concise as possible.
 
 {fileContent}`;
+export const RESPONSE_STYLE_CREATIVE = {
+  temperature: 0.7,
+  top_p: 0.9,
+};
+
+export const RESPONSE_STYLE_PRECISE = {
+  temperature: 0.3,
+  top_p: 0.5,
+};

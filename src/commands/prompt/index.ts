@@ -31,6 +31,10 @@ export interface PromptOptions {
   color?: boolean;
   /** Add file to conversation */
   file?: string;
+  /** Creative response style */
+  creative?: boolean;
+  /** Precise response style */
+  precise?: boolean;
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
@@ -60,6 +64,14 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         default: false,
         describe: 'Verbose output',
+      })
+      .option('creative', {
+        type: 'boolean',
+        describe: 'Response style: creative',
+      })
+      .option('precise', {
+        type: 'boolean',
+        describe: 'Response style: precise',
       })
       .option('stats', {
         type: 'boolean',
