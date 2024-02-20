@@ -19,6 +19,9 @@ export interface PromptOptions {
 
   /** Show verbose-level logs. */
   verbose: boolean;
+
+  /** Display colorized output. Default == autodetect */
+  color?: boolean;
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
@@ -48,6 +51,12 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         default: false,
         describe: 'Verbose output',
+      })
+      // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
+      .option('color', {
+        type: 'boolean',
+        describe:
+          'Forces color output (even if stdout is not a terminal). Use --no-color to disable colors.',
       }),
   handler: (args) => run(args._.join(' '), args),
 };
