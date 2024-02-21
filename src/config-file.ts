@@ -37,8 +37,6 @@ export type ConfigFile = z.infer<typeof ConfigFileSchema>;
 export async function parseConfigFile() {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
 
-  await writeEmptyConfigFileIfNeeded();
-
   const content = await fs.promises.readFile(configPath);
   const json = JSON.parse(content.toString());
 
@@ -51,15 +49,12 @@ export async function parseConfigFile() {
   return typedConfig;
 }
 
-const emptyConfigContents = {
-  providers: {},
-};
-
-export async function writeEmptyConfigFileIfNeeded() {
+export async function createConfigFile(configContents: ConfigFile) {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
-  if (fs.existsSync(configPath)) {
-    return;
-  }
+  await fs.promises.writeFile(configPath, JSON.stringify(configContents, null, 2) + '\n');
+}
 
-  await fs.promises.writeFile(configPath, JSON.stringify(emptyConfigContents, null, 2) + '\n');
+export function checkIfConfigExists() {
+  const configPath = path.join(os.homedir(), CONFIG_FILENAME);
+  return fs.existsSync(configPath);
 }

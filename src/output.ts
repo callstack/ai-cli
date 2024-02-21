@@ -33,6 +33,14 @@ export function outputInfo(message: string, ...args: unknown[]) {
   console.log(chalk.dim(message, ...args));
 }
 
+export function outputBold(message: string, ...args: unknown[]) {
+  console.log(chalk.bold(message, ...args));
+}
+
+export function outputDefault(message: string, ...args: unknown[]) {
+  console.log(message, ...args);
+}
+
 export function outputError(error: unknown, ...args: unknown[]) {
   const message = extractErrorMessage(error);
   if (error === message) {

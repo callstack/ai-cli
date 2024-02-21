@@ -1,9 +1,10 @@
 import type { CommandModule } from 'yargs';
-import { parseConfigFile } from '../../config-file';
+import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
 import { providers, providerOptions, resolveProviderName } from '../../providers';
+import { init } from '../init';
 import { processCommand } from './commands';
 
 export interface PromptOptions {
@@ -48,7 +49,13 @@ export const command: CommandModule<{}, PromptOptions> = {
         default: false,
         describe: 'Verbose output',
       }),
-  handler: (args) => run(args._.join(' '), args),
+  handler: (args) => {
+    if (args._[0] === 'init') {
+      return init();
+    } else {
+      return run(args._.join(' '), args);
+    }
+  },
 };
 
 export async function run(initialPrompt: string, options: PromptOptions) {
@@ -64,6 +71,12 @@ export async function run(initialPrompt: string, options: PromptOptions) {
 async function runInternal(initialPrompt: string, options: PromptOptions) {
   if (options.verbose) {
     output.setVerbose(true);
+  }
+
+  const configExists = await checkIfConfigExists();
+  if (!configExists) {
+    await init();
+    return;
   }
 
   const configFile = await parseConfigFile();
