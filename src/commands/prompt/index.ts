@@ -17,7 +17,7 @@ export interface PromptOptions {
   /** Show verbose-level logs. */
   verbose: boolean;
   /** Display usage stats. */
-  stats: boolean;
+  stats?: boolean;
   /** Display colorized output. Default == autodetect */
   color?: boolean;
 }
@@ -52,7 +52,6 @@ export const command: CommandModule<{}, PromptOptions> = {
       })
       .option('stats', {
         type: 'boolean',
-        default: false,
         describe: 'Display response stats',
       })
       // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
@@ -76,7 +75,6 @@ export async function run(initialPrompt: string, options: PromptOptions) {
 
 async function runInternal(initialPrompt: string, options: PromptOptions) {
   output.setVerbose(options.verbose);
-  output.setShowStats(options.stats);
 
   const configExists = await checkIfConfigExists();
   if (!configExists) {
@@ -87,10 +85,11 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   const configFile = await parseConfigFile();
   output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
 
+  output.setShowStats(options.stats ?? configFile.showStats);
+
   const provider = options.provider
     ? resolveProviderFromOption(options.provider)
     : getDefaultProvider(configFile);
-
   output.outputVerbose(`Using provider: ${provider.label}`);
 
   const initialConfig = configFile.providers[provider.name];

@@ -71,6 +71,7 @@ async function initInternal() {
         apiKey: response.apiKey,
       },
     },
+    showStats: false,
   });
 
   output.outputDefault(
