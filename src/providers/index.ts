@@ -42,11 +42,11 @@ export function resolveProvider(option: string | undefined, config?: ConfigFile)
   }
 
   const providerNames = Object.keys(config.providers) as ProviderName[];
-  const providerName = providerNames ? providerNames[0] : undefined;
+  const firstProviderName = providerNames ? providerNames[0] : undefined;
 
-  if (!providerName) {
-    throw new Error('No providers found in ~/.airc file.');
+  if (!firstProviderName) {
+    throw new Error('No providers found in ~/.airc.json file.');
   }
 
-  return providers[providerName]!;
+  return providers[firstProviderName]!;
 }
