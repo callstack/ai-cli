@@ -25,8 +25,8 @@ export interface PromptOptions {
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
-  command: ['$0'],
-  describe: 'ask the AI with prompt',
+  command: ['prompt', '$0'],
+  describe: '[Default] Ask AI assistant a question or start an interactive conversation.',
   builder: (yargs) =>
     yargs
       .option('interactive', {
