@@ -1,9 +1,10 @@
 import type { CommandModule } from 'yargs';
-import { parseConfigFile } from '../../config-file';
+import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
-import { providers, providerOptions, resolveProviderName } from '../../providers';
+import { providerOptions, resolveProvider } from '../../providers';
+import { init } from '../init/init';
 import { processCommand } from './commands';
 
 export interface PromptOptions {
@@ -66,16 +67,21 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.setVerbose(true);
   }
 
+  const configExists = await checkIfConfigExists();
+  if (!configExists) {
+    await init();
+    return;
+  }
+
   const configFile = await parseConfigFile();
   output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
 
-  const providerName = resolveProviderName(options.provider, configFile);
-  const provider = providers[providerName];
-  output.outputVerbose(`Using provider: ${providerName}`);
+  const provider = resolveProvider(options.provider, configFile);
+  output.outputVerbose(`Using provider: ${provider.label}`);
 
-  const initialConfig = configFile.providers[providerName];
+  const initialConfig = configFile.providers[provider.name];
   if (!initialConfig) {
-    throw new Error(`Provider config not found: ${providerName}.`);
+    throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
   const config = {
@@ -114,7 +120,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const userPrompt = await inputLine('me: ');
-    const isCommand = processCommand(userPrompt, { messages, providerName, config });
+    const isCommand = processCommand(userPrompt, { messages, providerName: provider.name, config });
     if (isCommand) {
       continue;
     }

@@ -9,7 +9,8 @@ import {
 } from './default-config';
 import * as output from './output';
 
-const CONFIG_FILENAME = '.airc';
+const LEGACY_CONFIG_FILENAME = '.airc';
+const CONFIG_FILENAME = '.airc.json';
 
 const ProvidersSchema = z.object({
   openAi: z.optional(
@@ -37,8 +38,6 @@ export type ConfigFile = z.infer<typeof ConfigFileSchema>;
 export async function parseConfigFile() {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
 
-  await writeEmptyConfigFileIfNeeded();
-
   const content = await fs.promises.readFile(configPath);
   const json = JSON.parse(content.toString());
 
@@ -51,15 +50,18 @@ export async function parseConfigFile() {
   return typedConfig;
 }
 
-const emptyConfigContents = {
-  providers: {},
-};
-
-export async function writeEmptyConfigFileIfNeeded() {
+export async function createConfigFile(configContents: ConfigFile) {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
-  if (fs.existsSync(configPath)) {
-    return;
+  await fs.promises.writeFile(configPath, JSON.stringify(configContents, null, 2) + '\n');
+}
+
+export function checkIfConfigExists() {
+  const legacyConfigPath = path.join(os.homedir(), LEGACY_CONFIG_FILENAME);
+  const configPath = path.join(os.homedir(), CONFIG_FILENAME);
+
+  if (fs.existsSync(legacyConfigPath) && !fs.existsSync(configPath)) {
+    fs.renameSync(legacyConfigPath, configPath);
   }
 
-  await fs.promises.writeFile(configPath, JSON.stringify(emptyConfigContents, null, 2) + '\n');
+  return fs.existsSync(configPath);
 }
