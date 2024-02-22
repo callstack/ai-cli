@@ -35,7 +35,7 @@ async function initInternal() {
     {
       type: 'select',
       name: 'provider',
-      message: 'Which inference provider would you like to set up:',
+      message: 'Which inference provider would you like to use:',
       choices: [
         { title: 'OpenAI', value: 'openai' },
         { title: 'Perplexity', value: 'perplexity' },
@@ -60,7 +60,7 @@ async function initInternal() {
 
   if (!response.hasApiKey) {
     const provider = resolveProvider(response.provider);
-    output.outputDefault(`You can get API key for ${provider.label} from here:`);
+    output.outputDefault(`You can get your ${provider.label} API key here:`);
     output.outputDefault(provider.apiKeyUrl);
     return;
   }
@@ -76,12 +76,12 @@ async function initInternal() {
   output.outputBold(
     "\nI have written your settings into '~/.airc.json` file. You can now start using AI CLI.\n"
   );
-  output.outputBold('For one of questions ask the prompt as command params');
+  output.outputBold('For a single question and answer just pass the prompt as param');
   output.outputDefault('$ ai "Tell me a joke" \n');
 
-  output.outputBold('For interactive session use `-i` (or "--interactive") option. ');
+  output.outputBold('For interactive session use "-i" (or "--interactive") option. ');
   output.outputDefault('$ ai -i "Tell me an interesting fact about JavaScript"\n');
 
-  output.outputBold("Or just start 'ai' without any parameters.");
+  output.outputBold('or just start "ai" without any params.');
   output.outputDefault('$ ai \n');
 }

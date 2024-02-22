@@ -59,7 +59,7 @@ export function checkIfConfigExists() {
   const legacyConfigPath = path.join(os.homedir(), LEGACY_CONFIG_FILENAME);
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
 
-  if (fs.existsSync(legacyConfigPath)) {
+  if (fs.existsSync(legacyConfigPath) && !fs.existsSync(configPath)) {
     fs.renameSync(legacyConfigPath, configPath);
   }
 

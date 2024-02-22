@@ -3,6 +3,6 @@ import { init } from './init';
 
 export const command: CommandModule<{}> = {
   command: ['$0', 'init'],
-  describe: 'initialize the AI Cli',
+  describe: 'User-friendly config setup',
   handler: () => init(),
 };

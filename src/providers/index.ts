@@ -37,15 +37,16 @@ export function resolveProvider(option: string | undefined, config?: ConfigFile)
     return provider;
   }
 
-  if (config) {
-    const providerNames = Object.keys(config.providers) as ProviderName[];
-    const providerName = providerNames ? providerNames[0] : undefined;
-    if (providerName) {
-      return providers[providerName]!;
-    } else {
-      throw new Error('No providers found in ~/.airc file.');
-    }
-  } else {
+  if (!config) {
     throw new Error('No config file found.');
   }
+
+  const providerNames = Object.keys(config.providers) as ProviderName[];
+  const providerName = providerNames ? providerNames[0] : undefined;
+
+  if (!providerName) {
+    throw new Error('No providers found in ~/.airc file.');
+  }
+
+  return providers[providerName]!;
 }
