@@ -9,7 +9,8 @@ import {
 } from './default-config';
 import * as output from './output';
 
-const CONFIG_FILENAME = '.airc';
+const LEGACY_CONFIG_FILENAME = '.airc';
+const CONFIG_FILENAME = '.airc.json';
 
 const ProvidersSchema = z.object({
   openAi: z.optional(
@@ -55,6 +56,12 @@ export async function createConfigFile(configContents: ConfigFile) {
 }
 
 export function checkIfConfigExists() {
+  const legacyConfigPath = path.join(os.homedir(), LEGACY_CONFIG_FILENAME);
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
+
+  if (fs.existsSync(legacyConfigPath)) {
+    fs.renameSync(legacyConfigPath, configPath);
+  }
+
   return fs.existsSync(configPath);
 }

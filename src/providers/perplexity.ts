@@ -1,22 +1,30 @@
 import OpenAI from 'openai';
 import { type Message } from '../inference';
 import type { ProviderConfig } from './config';
+import type { Provider } from '.';
 
-export async function getChatCompletion(config: ProviderConfig, messages: Message[]) {
-  const perplexity = new OpenAI({
-    apiKey: config.apiKey,
-    baseURL: 'https://api.perplexity.ai',
-  });
+const Perplexity: Provider = {
+  label: 'Perplexity',
+  name: 'perplexity',
+  apiKeyUrl: 'https://www.perplexity.ai/settings/api',
+  getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
+    const perplexity = new OpenAI({
+      apiKey: config.apiKey,
+      baseURL: 'https://api.perplexity.ai',
+    });
 
-  const systemMessage: Message = {
-    role: 'system',
-    content: config.systemPrompt,
-  };
+    const systemMessage: Message = {
+      role: 'system',
+      content: config.systemPrompt,
+    };
 
-  const response = await perplexity.chat.completions.create({
-    messages: [systemMessage, ...messages],
-    model: config.model,
-  });
+    const response = await perplexity.chat.completions.create({
+      messages: [systemMessage, ...messages],
+      model: config.model,
+    });
 
-  return [response.choices[0]?.message.content ?? null, response] as const;
-}
+    return [response.choices[0]?.message.content ?? null, response] as const;
+  },
+};
+
+export default Perplexity;
