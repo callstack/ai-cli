@@ -14,7 +14,7 @@ export type Provider = {
   getChatCompletion: (config: ProviderConfig, messages: Message[]) => any;
 };
 
-const providers = {
+const providers: Record<ProviderName, Provider> = {
   openAi,
   perplexity,
 };
@@ -27,25 +27,30 @@ const providerOptionMapping: Record<string, Provider> = {
 
 export const providerOptions = Object.keys(providerOptionMapping);
 
-export function resolveProvider(option: string | undefined, config?: ConfigFile): Provider {
-  if (option != null) {
-    const provider = providerOptionMapping[option];
-    if (!provider) {
-      throw new Error(`Provider not found: ${option}.`);
-    }
-
-    return provider;
+export function getProvider(providerName: ProviderName): Provider {
+  const provider = providers[providerName];
+  if (!provider) {
+    throw new Error(`Provider not found: ${providerName}.`);
   }
 
-  if (!config) {
-    throw new Error('No config file found.');
+  return provider;
+}
+
+export function resolveProviderFromOption(providerOption: string): Provider {
+  const provider = providerOptionMapping[providerOption];
+  if (!provider) {
+    throw new Error(`Provider not found: ${providerOption}.`);
   }
 
+  return provider;
+}
+
+export function getDefaultProvider(config: ConfigFile): Provider {
   const providerNames = Object.keys(config.providers) as ProviderName[];
   const providerName = providerNames ? providerNames[0] : undefined;
 
   if (!providerName) {
-    throw new Error('No providers found in ~/.airc file.');
+    throw new Error('No providers found in "~/.airc.json" file.');
   }
 
   return providers[providerName]!;

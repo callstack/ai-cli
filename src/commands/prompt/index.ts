@@ -3,7 +3,7 @@ import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
-import { providerOptions, resolveProvider } from '../../providers';
+import { getDefaultProvider, providerOptions, resolveProviderFromOption } from '../../providers';
 import { init } from '../init/init';
 import { processCommand } from './commands';
 
@@ -25,8 +25,8 @@ export interface PromptOptions {
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
-  command: ['$0'],
-  describe: 'ask the AI with prompt',
+  command: ['prompt', '$0'],
+  describe: '[Default] Ask AI assistant a question or start an interactive conversation.',
   builder: (yargs) =>
     yargs
       .option('interactive', {
@@ -85,7 +85,10 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   const configFile = await parseConfigFile();
   output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
 
-  const provider = resolveProvider(options.provider, configFile);
+  const provider = options.provider
+    ? resolveProviderFromOption(options.provider)
+    : getDefaultProvider(configFile);
+
   output.outputVerbose(`Using provider: ${provider.label}`);
 
   const initialConfig = configFile.providers[provider.name];

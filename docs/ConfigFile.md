@@ -2,7 +2,7 @@
 
 ## Minimal config
 
-A minimal `.airc` file consists only of API key for selected AI inference provider.
+A minimal `.airc.json` file consists only of API key for selected AI inference provider.
 
 ### Minimal OpenAI config
 
