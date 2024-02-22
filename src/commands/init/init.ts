@@ -24,7 +24,7 @@ async function initInternal() {
     });
 
     if (!response.reinitialize) {
-      output.outputBold('Cancelling initialization');
+      output.outputDefault('Nothing to do. Exiting.\n');
       return;
     }
   }
