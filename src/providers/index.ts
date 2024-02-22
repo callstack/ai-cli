@@ -45,11 +45,7 @@ export function resolveProviderFromOption(providerOption: string): Provider {
   return provider;
 }
 
-export function getDefaultProvider(config: ConfigFile | undefined): Provider {
-  if (!config) {
-    throw new Error('No "~/.airc.json" config file found.');
-  }
-
+export function getDefaultProvider(config: ConfigFile): Provider {
   const providerNames = Object.keys(config.providers) as ProviderName[];
   const providerName = providerNames ? providerNames[0] : undefined;
 
