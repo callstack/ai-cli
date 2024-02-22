@@ -44,7 +44,7 @@ export async function parseConfigFile() {
   const typedConfig = ConfigFileSchema.parse(json);
   output.outputVerbose(`Config with defaults: ${JSON.stringify(typedConfig, null, 2)}`);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
-    throw new Error("Add your OpenAI or Perplexity API key to '~/.airc' and try again.");
+    throw new Error('Add your OpenAI or Perplexity API key to "~/.airc.json" and try again.');
   }
 
   return typedConfig;

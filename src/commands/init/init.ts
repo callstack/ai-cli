@@ -1,7 +1,7 @@
 import prompts from 'prompts';
 import { checkIfConfigExists, createConfigFile } from '../../config-file';
 import * as output from '../../output';
-import { resolveProvider } from '../../providers';
+import { getProvider } from '../../providers';
 
 export async function init() {
   try {
@@ -19,7 +19,7 @@ async function initInternal() {
   if (configExists) {
     const response = await prompts({
       type: 'confirm',
-      message: 'Config found, do you want to re-initialize it?',
+      message: 'Existing "~/.airc.json" file found, do you want to re-initialize it?',
       name: 'reinitialize',
     });
 
@@ -29,7 +29,7 @@ async function initInternal() {
     }
   }
 
-  output.outputBold("Welcome to AI CLI. Let's set you up quickly.");
+  output.outputDefault("Welcome to AI CLI. Let's set you up quickly.\n");
 
   const response = await prompts([
     {
@@ -37,7 +37,7 @@ async function initInternal() {
       name: 'provider',
       message: 'Which inference provider would you like to use:',
       choices: [
-        { title: 'OpenAI', value: 'openai' },
+        { title: 'OpenAI', value: 'openAi' },
         { title: 'Perplexity', value: 'perplexity' },
       ],
       initial: 0,
@@ -45,21 +45,21 @@ async function initInternal() {
     },
     {
       type: 'confirm',
-      message: (_, { provider }) =>
-        `Do you already have ${resolveProvider(provider).label} API key?`,
+      message: (_, { provider }) => `Do you already have ${getProvider(provider).label} API key?`,
       name: 'hasApiKey',
+      initial: true,
     },
     {
       type: (prev) => (prev ? 'password' : null),
       name: 'apiKey',
-      message: (_, { provider }) => `Paste ${resolveProvider(provider).label} API key here:`,
+      message: (_, { provider }) => `Paste ${getProvider(provider).label} API key here:`,
       mask: '',
       validate: (value) => (value === '' ? 'API key cannot be an empty string' : true),
     },
   ]);
 
+  const provider = getProvider(response.provider);
   if (!response.hasApiKey) {
-    const provider = resolveProvider(response.provider);
     output.outputDefault(`You can get your ${provider.label} API key here:`);
     output.outputDefault(provider.apiKeyUrl);
     return;
@@ -67,21 +67,18 @@ async function initInternal() {
 
   await createConfigFile({
     providers: {
-      [response.provider]: {
+      [provider.name]: {
         apiKey: response.apiKey,
       },
     },
   });
 
-  output.outputBold(
-    "\nI have written your settings into '~/.airc.json` file. You can now start using AI CLI.\n"
+  output.outputDefault(
+    '\nI have written your settings into "~/.airc.json" file. You can now start using AI CLI.\n'
   );
-  output.outputBold('For a single question and answer just pass the prompt as param');
-  output.outputDefault('$ ai "Tell me a joke" \n');
+  output.outputDefault('For a single question and answer just pass a prompt as a param:');
+  output.outputBold('$ ai "Tell me a useful productivity hack"\n');
 
-  output.outputBold('For interactive session use "-i" (or "--interactive") option. ');
-  output.outputDefault('$ ai -i "Tell me an interesting fact about JavaScript"\n');
-
-  output.outputBold('or just start "ai" without any params.');
-  output.outputDefault('$ ai \n');
+  output.outputDefault('For interactive session use "-i" (or "--interactive") option: ');
+  output.outputBold('$ ai -i "Tell me an interesting fact about JavaScript"\n');
 }
