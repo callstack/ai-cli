@@ -3,7 +3,7 @@
 AI assistant in your terminal.
 
 ```
-$ ai "Tell me an interesting fact about the Roman Empire?"
+$ ai "Tell me an interesting fact about the Roman Empire"
 ```
 
 ## Installation
@@ -53,7 +53,7 @@ Read more about our configuration file in a [dedicated document](./docs/ConfigFi
 You can invoke `ai` either in single-answer mode:
 
 ```
-$ ai Tell me a joke
+$ ai "Tell me a joke"
 me:  Tell me a joke
 ai:  Why don't scientists trust atoms? Because they make up everything!
 ```
@@ -61,7 +61,7 @@ ai:  Why don't scientists trust atoms? Because they make up everything!
 Or you can start a longer conversation using interactive mode (`-i` or `--interactive` option):
 
 ```
-$ ai -i Tell me a joke
+$ ai -i "Tell me a joke"
 me: Tell me a joke
 ai: Why don’t skeletons fight each other? They don’t have the guts.
 me: tell me another one
