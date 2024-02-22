@@ -10,16 +10,14 @@ import { processCommand } from './commands';
 export interface PromptOptions {
   /** Interactive mode */
   interactive: boolean;
-
   /** AI inference provider to be used */
   provider?: string;
-
   /** AI model to be used */
   model?: string;
-
   /** Show verbose-level logs. */
   verbose: boolean;
-
+  /** Display usage stats. */
+  stats?: boolean;
   /** Display colorized output. Default == autodetect */
   color?: boolean;
 }
@@ -52,6 +50,10 @@ export const command: CommandModule<{}, PromptOptions> = {
         default: false,
         describe: 'Verbose output',
       })
+      .option('stats', {
+        type: 'boolean',
+        describe: 'Display response stats',
+      })
       // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
       .option('color', {
         type: 'boolean',
@@ -72,9 +74,7 @@ export async function run(initialPrompt: string, options: PromptOptions) {
 }
 
 async function runInternal(initialPrompt: string, options: PromptOptions) {
-  if (options.verbose) {
-    output.setVerbose(true);
-  }
+  output.setVerbose(options.verbose);
 
   const configExists = await checkIfConfigExists();
   if (!configExists) {
@@ -85,10 +85,11 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   const configFile = await parseConfigFile();
   output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
 
+  output.setShowStats(options.stats ?? configFile.showStats);
+
   const provider = options.provider
     ? resolveProviderFromOption(options.provider)
     : getDefaultProvider(configFile);
-
   output.outputVerbose(`Using provider: ${provider.label}`);
 
   const initialConfig = configFile.providers[provider.name];
@@ -111,14 +112,18 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: initialPrompt });
+
+    const startTimestamp = performance.now();
     const [content, response] = await provider.getChatCompletion(config, messages);
+    const responseTime = performance.now() - startTimestamp;
+    const stats = { ...response?.usage, responseTime };
 
     output.clearLine();
     output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(content ?? '(null)');
+    output.outputAi(content ?? '(null)', stats);
     messages.push({ role: 'assistant', content: content ?? '' });
   } else {
-    output.outputAi('Hello, how can I help you? ');
+    output.outputAi('Hello, how can I help you?');
   }
 
   if (options.interactive || !initialPrompt) {
@@ -140,10 +145,15 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
+
+    const startTimestamp = performance.now();
     const [content, response] = await provider.getChatCompletion(config, messages);
+    const responseTime = performance.now() - startTimestamp;
+    const stats = { ...response?.usage, responseTime };
+
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(content ?? '(null)');
+    output.outputAi(content ?? '(null)', stats);
     messages.push({ role: 'assistant', content: content ?? '' });
   }
 }

@@ -26,6 +26,7 @@ export function processCommand(input: string, context: CommandContext): boolean 
     output.outputInfo('- /exit: Exit the CLI');
     output.outputInfo('- /info: Show current provider, model, and system prompt');
     output.outputInfo('- /verbose [on|off]: Enable or disable verbose output');
+    output.outputInfo('- /stats [on|off]: Enable or disable displaying of response stats');
     output.outputInfo('- /forget: AI will forget previous messages');
 
     return true;
@@ -41,6 +42,12 @@ export function processCommand(input: string, context: CommandContext): boolean 
   if (command === '/verbose') {
     output.setVerbose(args[0] !== 'off');
     output.outputInfo(`Verbose mode: ${output.isVerbose() ? 'on' : 'off'}`);
+    return true;
+  }
+
+  if (command === '/stats') {
+    output.setShowStats(args[0] !== 'off');
+    output.outputInfo(`Show stats: ${output.shouldShowStats() ? 'on' : 'off'}`);
     return true;
   }
 
