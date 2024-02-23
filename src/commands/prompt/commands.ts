@@ -3,7 +3,8 @@ import * as path from 'path';
 import * as os from 'os';
 import type { Message } from '../../inference';
 import * as output from '../../output';
-import { getChatSaveDirectory } from '../../config-file';
+import { getConversationStoragePath } from '../../config-file';
+import { getDefaultFileName, getUniqueFileName } from '../../file-utils';
 
 export interface CommandContext {
   messages: Message[];
@@ -66,49 +67,38 @@ export function processCommand(input: string, context: CommandContext): boolean 
   if (command === '/save') {
     if (context.messages.length === 0) {
       output.outputInfo('There are no messages to save.');
-
       return true;
     }
 
-    const conversation = context.messages.reduce((prev, current) => {
-      return prev + `${current.role}: ${current.content}\n`;
-    }, '');
-
-    let filePath = getChatSaveDirectory();
-
-    if (args[0]) {
-      filePath = path.join(filePath, args[0]);
-    } else {
-      const currentDate = new Date();
-      const today = currentDate.toISOString().split('T')[0];
-      const time = `${currentDate.getHours()}\u2236${currentDate.getMinutes()}`;
-      const firstMessagePart = context.messages[0]?.content.split(' ', 5);
-      filePath = path.join(filePath, `${today} ${time} ${firstMessagePart}`);
-    }
-
-    // Adding -{number} if file exists
-    if (fs.existsSync(`${filePath}.txt`)) {
-      output.outputInfo(`${filePath.replace(os.homedir(), '~')} already exists`);
-      let numerator = 1;
-      // Case when -1 exists, we increase as long as we find a free numerator
-      while (fs.existsSync(`${filePath}-${numerator}.txt`)) numerator++;
-      filePath = `${filePath}-${numerator}.txt`;
-    } else {
-      filePath = `${filePath}.txt`;
-    }
-
     try {
-      fs.writeFileSync(path.normalize(filePath), conversation);
+      saveConversation(context, args);
+      return true;
     } catch (error) {
       output.outputError(error);
       return true;
     }
-
-    output.outputInfo(`Conversation saved to ${filePath.replace(os.homedir(), '~')}`);
-
-    return true;
   }
 
   output.outputError(`Unknown command: ${command} ${args.join(' ')}`);
   return true;
+}
+
+function saveConversation(context: CommandContext, args: string[]) {
+  const conversation = context.messages.reduce((prev, current) => {
+    return prev + `${current.role}: ${current.content}\n`;
+  }, '');
+
+  const conversationStoragePath = getConversationStoragePath();
+  const fileName = args[0] ? path.parse(args[0]).name : getDefaultFileName(context);
+  let filePath = path.join(conversationStoragePath, fileName);
+
+  if (fs.existsSync(`${filePath}.txt`)) {
+    output.outputInfo(`${filePath.replace(os.homedir(), '~')} already exists`);
+  }
+
+  filePath = getUniqueFileName(path.join(conversationStoragePath, fileName), 'txt');
+
+  fs.writeFileSync(path.normalize(filePath), conversation);
+
+  output.outputInfo(`Conversation saved to ${filePath.replace(os.homedir(), '~')}`);
 }

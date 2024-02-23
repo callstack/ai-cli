@@ -69,7 +69,7 @@ export function checkIfConfigExists() {
   return fs.existsSync(configPath);
 }
 
-export function getChatSaveDirectory() {
+export function getConversationStoragePath() {
   const chatsSaveDirectory = path.join(os.homedir(), CHATS_SAVE_DIRECTORY);
 
   if (fs.existsSync(chatsSaveDirectory)) {
