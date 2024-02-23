@@ -12,6 +12,8 @@ import * as output from './output';
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';
 
+const CHATS_SAVE_DIRECTORY = '/ai-chats';
+
 const ProvidersSchema = z.object({
   openAi: z.optional(
     z.object({
@@ -65,4 +67,15 @@ export function checkIfConfigExists() {
   }
 
   return fs.existsSync(configPath);
+}
+
+export function getChatSaveDirectory() {
+  const chatsSaveDirectory = path.join(os.homedir(), CHATS_SAVE_DIRECTORY);
+
+  if (fs.existsSync(chatsSaveDirectory)) {
+    return chatsSaveDirectory;
+  } else {
+    fs.mkdirSync(chatsSaveDirectory);
+    return chatsSaveDirectory;
+  }
 }
