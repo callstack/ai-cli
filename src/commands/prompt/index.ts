@@ -3,7 +3,11 @@ import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
-import { getDefaultProvider, providerOptions, resolveProviderFromOption } from '../../providers';
+import {
+  getDefaultProvider,
+  providerOptions,
+  resolveProviderFromOption,
+} from '../../providers/provider';
 import { init } from '../init/init';
 import { processCommand } from './commands';
 
@@ -112,16 +116,12 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: initialPrompt });
-
-    const startTimestamp = performance.now();
-    const [content, response] = await provider.getChatCompletion(config, messages);
-    const responseTime = performance.now() - startTimestamp;
-    const stats = { ...response?.usage, responseTime };
+    const { messageText, stats, response } = await provider.getChatCompletion(config, messages);
 
     output.clearLine();
     output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(content ?? '(null)', stats);
-    messages.push({ role: 'assistant', content: content ?? '' });
+    output.outputAi(messageText ?? '(null)', stats);
+    messages.push({ role: 'assistant', content: messageText ?? '' });
   } else {
     output.outputAi('Hello, how can I help you?');
   }
@@ -145,16 +145,12 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     output.outputAiProgress('Thinking...');
 
     messages.push({ role: 'user', content: userPrompt });
-
-    const startTimestamp = performance.now();
-    const [content, response] = await provider.getChatCompletion(config, messages);
-    const responseTime = performance.now() - startTimestamp;
-    const stats = { ...response?.usage, responseTime };
+    const { messageText, stats, response } = await provider.getChatCompletion(config, messages);
 
     output.clearLine();
     output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(content ?? '(null)', stats);
-    messages.push({ role: 'assistant', content: content ?? '' });
+    output.outputAi(messageText ?? '(null)', stats);
+    messages.push({ role: 'assistant', content: messageText ?? '' });
   }
 }
 

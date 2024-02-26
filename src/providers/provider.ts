@@ -1,5 +1,5 @@
 import type { ConfigFile } from '../config-file';
-import type { Message } from '../inference';
+import type { Message, ModelResponse } from '../inference';
 import type { ProviderConfig } from './config';
 import openAi from './openAi';
 import perplexity from './perplexity';
@@ -11,7 +11,7 @@ export type Provider = {
   name: ProviderName;
   label: string;
   apiKeyUrl: string;
-  getChatCompletion: (config: ProviderConfig, messages: Message[]) => any;
+  getChatCompletion: (config: ProviderConfig, messages: Message[]) => Promise<ModelResponse>;
 };
 
 const providers: Record<ProviderName, Provider> = {
