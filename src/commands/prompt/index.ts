@@ -3,7 +3,15 @@ import * as path from 'path';
 import * as os from 'os';
 import type { CommandModule } from 'yargs';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file';
-import { type Message } from '../../inference';
+import {
+  DEFAULT_FILE_PROMPT,
+  FILE_COST_WARNING,
+  FILE_TOKEN_COUNT_WARNING,
+  RESPONSE_STYLE_CREATIVE,
+  RESPONSE_STYLE_PRECISE,
+} from '../../default-config';
+import { formatCost, formatTokenCount } from '../../format';
+import { type ModelResponse } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
 import {
@@ -11,36 +19,11 @@ import {
   providerOptions,
   resolveProviderFromOption,
 } from '../../providers/provider';
-import { init } from '../init/init';
-import {
-  DEFAULT_FILE_PROMPT,
-  FILE_TOKEN_COUNT_WARNING,
-  RESPONSE_STYLE_CREATIVE,
-  RESPONSE_STYLE_PRECISE,
-} from '../../default-config';
+import { calculateSessionCosts, calculateUsageCost, combineUsage } from '../../providers/session';
 import { tokenizer } from '../../tokenizer';
+import { init } from '../init/init';
 import { processCommand } from './commands';
-
-export interface PromptOptions {
-  /** Interactive mode */
-  interactive: boolean;
-  /** AI inference provider to be used */
-  provider?: string;
-  /** AI model to be used */
-  model?: string;
-  /** Show verbose-level logs. */
-  verbose: boolean;
-  /** Display usage stats. */
-  stats?: boolean;
-  /** Display colorized output. Default == autodetect */
-  color?: boolean;
-  /** Add file to conversation */
-  file?: string;
-  /** Creative response style */
-  creative?: boolean;
-  /** Precise response style */
-  precise?: boolean;
-}
+import type { PromptOptions, SessionContext } from './types';
 
 export const command: CommandModule<{}, PromptOptions> = {
   command: ['prompt', '$0'],
@@ -78,9 +61,13 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         describe: 'Response style: precise',
       })
+      .option('costs', {
+        type: 'boolean',
+        describe: 'Display usage costs',
+      })
       .option('stats', {
         type: 'boolean',
-        describe: 'Display response stats',
+        describe: 'Display usage stats',
       })
       // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
       .option('color', {
@@ -116,8 +103,8 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   const configFile = await parseConfigFile();
   output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
-
   output.setShowStats(options.stats ?? configFile.showStats);
+  output.setShowCosts(options.costs ?? configFile.showCosts);
 
   const provider = options.provider
     ? resolveProviderFromOption(options.provider)
@@ -153,45 +140,31 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   output.outputVerbose(`Using model: ${config.model}`);
 
-  const messages: Message[] = [];
+  const session: SessionContext = {
+    config,
+    provider,
+    messages: [],
+    totalUsage: { inputTokens: 0, outputTokens: 0, requests: 0 },
+  };
 
   if (options.file) {
-    const filePath = path.resolve(options.file.replace('~', os.homedir()));
-
-    if (!fs.existsSync(filePath)) {
-      throw new Error(`Couln't find provided file: ${options.file}`);
-    }
-    const fileContent = fs.readFileSync(filePath).toString();
-
-    const tokenCount = tokenizer.getTokensCount(fileContent);
-
-    if (tokenCount <= FILE_TOKEN_COUNT_WARNING) {
-      output.outputInfo(
-        `File you provided adds: ~${tokenCount} tokens to conversation for each message`
-      );
-    } else {
-      output.outputWarning(
-        `File you provided adds: ~${tokenCount} tokens to conversation for each message. This might impact the cost.`
-      );
-    }
-
-    messages.push({
-      role: 'system',
-      content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
-    });
+    handleInputFile(session, options.file);
   }
 
   if (initialPrompt) {
     output.outputUser(initialPrompt);
     output.outputAiProgress('Thinking...');
 
-    messages.push({ role: 'user', content: initialPrompt });
-    const { messageText, stats, response } = await provider.getChatCompletion(config, messages);
+    session.messages.push({ role: 'user', content: initialPrompt });
+    const response = await provider.getChatCompletion(config, session.messages);
+    session.totalUsage = combineUsage(session.totalUsage, response.usage);
 
     output.clearLine();
-    output.outputVerbose(`Response: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(messageText ?? '(null)', stats);
-    messages.push({ role: 'assistant', content: messageText ?? '' });
+    output.outputVerbose(`Response: ${JSON.stringify(response.response, null, 2)}`);
+
+    const outputParams = getOutputParams(session, response);
+    output.outputAi(response.messageText ?? '(null)', outputParams);
+    session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
   } else {
     output.outputAi('Hello, how can I help you?');
   }
@@ -207,20 +180,23 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const userPrompt = await inputLine('me: ');
-    const isCommand = processCommand(userPrompt, { messages, providerName: provider.name, config });
+    const isCommand = processCommand(session, userPrompt);
     if (isCommand) {
       continue;
     }
 
     output.outputAiProgress('Thinking...');
 
-    messages.push({ role: 'user', content: userPrompt });
-    const { messageText, stats, response } = await provider.getChatCompletion(config, messages);
+    session.messages.push({ role: 'user', content: userPrompt });
+    const response = await provider.getChatCompletion(config, session.messages);
+    session.totalUsage = combineUsage(session.totalUsage, response.usage);
 
     output.clearLine();
-    output.outputVerbose(`Response Object: ${JSON.stringify(response, null, 2)}`);
-    output.outputAi(messageText ?? '(null)', stats);
-    messages.push({ role: 'assistant', content: messageText ?? '' });
+    output.outputVerbose(`Response Object: ${JSON.stringify(response.response, null, 2)}`);
+
+    const outputParams = getOutputParams(session, response);
+    output.outputAi(response.messageText ?? '(null)', outputParams);
+    session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
   }
 }
 
@@ -230,4 +206,55 @@ function filterOutApiKey(key: string, value: unknown) {
   }
 
   return value;
+}
+
+function handleInputFile(context: SessionContext, inputFile: string) {
+  const filePath = path.resolve(inputFile.replace('~', os.homedir()));
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`Couldn't find provided file: ${inputFile}`);
+  }
+
+  const fileContent = fs.readFileSync(filePath).toString();
+  const fileTokens = tokenizer.getTokensCount(fileContent);
+  const fileCost = calculateUsageCost(
+    { inputTokens: fileTokens, outputTokens: 0, requests: 0 },
+    context.provider.pricing[context.config.model]
+  );
+
+  const costOrTokens = fileCost
+    ? formatCost(fileCost)
+    : `~${formatTokenCount(fileTokens, 100)} tokens`;
+  if ((fileCost ?? 0) >= FILE_COST_WARNING || fileTokens >= FILE_TOKEN_COUNT_WARNING) {
+    output.outputWarning(
+      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`
+    );
+  } else {
+    output.outputInfo(
+      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`
+    );
+  }
+
+  context.messages.push({
+    role: 'system',
+    content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
+  });
+}
+
+function getOutputParams(session: SessionContext, response: ModelResponse): output.OutputAiOptions {
+  const usage = {
+    total: session.totalUsage,
+    current: response.usage,
+  };
+
+  const pricing =
+    session.provider.pricing[response.responseModel] ??
+    session.provider.pricing[session.config.model];
+  const costs = calculateSessionCosts(usage, pricing);
+
+  return {
+    responseTime: response.responseTime,
+    usage,
+    costs,
+  };
 }

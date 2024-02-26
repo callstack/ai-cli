@@ -17,12 +17,14 @@ export interface AiMessage {
 
 export interface ModelResponse {
   messageText: string | null;
-  stats: ModelResponseStats;
+  usage: ModelUsage;
+  responseTime: number;
+  responseModel: string;
   response: unknown;
 }
 
-export interface ModelResponseStats {
-  responseTime: number;
-  inputTokens?: number;
-  outputTokens?: number;
+export interface ModelUsage {
+  inputTokens: number;
+  outputTokens: number;
+  requests: number;
 }

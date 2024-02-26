@@ -1,9 +1,11 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
-import type { ModelResponseStats } from './inference';
+import type { SessionCosts, SessionUsage } from './providers/session';
+import { formatCost } from './format';
 
 let verbose = false;
 let showStats = false;
+let showCosts = false;
 
 export function setVerbose(value: boolean) {
   verbose = value;
@@ -21,14 +23,29 @@ export function shouldShowStats() {
   return showStats;
 }
 
+export function setShowCosts(value: boolean) {
+  showCosts = value;
+}
+
 export function outputUser(message: string) {
   console.log('me:', message);
 }
 
-export function outputAi(message: string, stats?: ModelResponseStats) {
-  const statsOutput = stats && showStats ? chalk.dim(formatStats(stats)) : '';
+export interface OutputAiOptions {
+  responseTime?: number;
+  usage?: SessionUsage;
+  costs?: SessionCosts;
+}
 
-  console.log(chalk.cyan('ai:', message), statsOutput);
+export function outputAi(message: string, options?: OutputAiOptions) {
+  if (options) {
+    const statsOutput = formatSessionStats(options.responseTime, options.usage);
+    const costsOutput = formatSessionCosts(options.costs);
+    const formatted = [statsOutput, costsOutput].filter((x) => x !== undefined).join(', ');
+    console.log(chalk.cyan('ai:', message), chalk.dim(formatted));
+  } else {
+    console.log(chalk.cyan('ai:', message));
+  }
 }
 
 export function outputAiProgress(message: string) {
@@ -86,11 +103,27 @@ function extractErrorMessage(error: unknown) {
   return 'Unknown error';
 }
 
-function formatStats(stats: ModelResponseStats) {
+function formatSessionStats(responseTime?: number, usage?: SessionUsage) {
+  if (!showStats) {
+    return undefined;
+  }
+
   const parts = [
-    `time: ${(stats.responseTime / 1000).toFixed(1)} s`,
-    `tokens: ${stats.inputTokens} in + ${stats.outputTokens} out`,
+    responseTime ? `time: ${(responseTime / 1000).toFixed(1)} s` : undefined,
+    usage
+      ? `tokens: ${usage.current.inputTokens}+${usage.current.outputTokens} (total: ${usage.total.inputTokens}+${usage.total.outputTokens})`
+      : undefined,
   ];
 
-  return `(${parts.join(', ')})`;
+  return parts.filter((x) => x !== undefined).join(', ');
+}
+
+function formatSessionCosts(costs?: SessionCosts) {
+  const show = showStats || showCosts;
+
+  if (!show || costs === undefined) {
+    return undefined;
+  }
+
+  return `costs: ${formatCost(costs.current)} (total: ${formatCost(costs.total)})`;
 }

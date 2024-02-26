@@ -72,6 +72,7 @@ async function initInternal() {
       },
     },
     showStats: false,
+    showCosts: false,
   });
 
   output.outputDefault(
