@@ -6,7 +6,7 @@ import type { Provider } from '.';
 const OpenAi: Provider = {
   label: 'OpenAI',
   name: 'openAi',
-  apiKeyUrl: 'https://www.platform.openai.com/api-keys',
+  apiKeyUrl: 'https://platform.openai.com/api-keys',
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
     const openai = new OpenAI({
       apiKey: config.apiKey,
