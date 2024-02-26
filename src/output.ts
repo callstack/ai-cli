@@ -53,6 +53,10 @@ export function outputDefault(message: string, ...args: unknown[]) {
   console.log(message, ...args);
 }
 
+export function outputWarning(message: unknown, ...args: unknown[]) {
+  console.log(chalk.yellow(message, ...args));
+}
+
 export function outputError(error: unknown, ...args: unknown[]) {
   const message = extractErrorMessage(error);
   if (error === message) {

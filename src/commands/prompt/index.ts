@@ -1,10 +1,13 @@
+import * as fs from 'fs';
 import type { CommandModule } from 'yargs';
+import { get_encoding } from 'tiktoken';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
 import { getDefaultProvider, providerOptions, resolveProviderFromOption } from '../../providers';
 import { init } from '../init/init';
+import { DEFAULT_FILE_PROMPT } from '../../default-config';
 import { processCommand } from './commands';
 
 export interface PromptOptions {
@@ -20,6 +23,8 @@ export interface PromptOptions {
   stats?: boolean;
   /** Display colorized output. Default == autodetect */
   color?: boolean;
+  /** Add file to conversation */
+  file?: string;
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
@@ -59,6 +64,11 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         describe:
           'Forces color output (even if stdout is not a terminal). Use --no-color to disable colors.',
+      })
+      .option('file', {
+        alias: 'f',
+        type: 'string',
+        describe: 'Adds a file to conversation.',
       }),
   handler: (args) => run(args._.join(' '), args),
 };
@@ -105,7 +115,34 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   output.outputVerbose(`Using model: ${config.model}`);
 
+  let fileContent = '';
+  if (options.file) {
+    const filePath = `${process.cwd()}/${options.file}`;
+
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`Couln't find provided file: ${options.file}`);
+    }
+    fileContent = fs.readFileSync(filePath).toString();
+
+    const encoder = get_encoding('cl100k_base');
+    const tokens = encoder.encode(fileContent);
+
+    if (tokens.length <= 2000) {
+      output.outputInfo(`File you provided adds: ~${tokens.length} tokens to conversation`);
+    } else {
+      output.outputWarning(
+        `File you provided adds: ~${tokens.length} tokens to conversation. This might impact the cost.`
+      );
+    }
+  }
+
   const messages: Message[] = [];
+  const internalMessages: Message[] = [];
+
+  if (fileContent !== '') {
+    internalMessages.push({ role: 'system', content: DEFAULT_FILE_PROMPT });
+    internalMessages.push({ role: 'system', content: fileContent });
+  }
 
   if (initialPrompt) {
     output.outputUser(initialPrompt);
@@ -114,7 +151,10 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     messages.push({ role: 'user', content: initialPrompt });
 
     const startTimestamp = performance.now();
-    const [content, response] = await provider.getChatCompletion(config, messages);
+    const [content, response] = await provider.getChatCompletion(config, [
+      ...internalMessages,
+      ...messages,
+    ]);
     const responseTime = performance.now() - startTimestamp;
     const stats = { ...response?.usage, responseTime };
 

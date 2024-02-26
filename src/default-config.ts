@@ -6,3 +6,7 @@ export const DEFAULT_PERPLEXITY_MODEL = 'sonar-medium-chat';
 
 export const DEFAULT_SYSTEM_PROMPT =
   'You are a helpful assistant responding in a concise manner to user questions.';
+
+export const DEFAULT_FILE_PROMPT = `Below is a file attached to conversation.
+  Answer the questions using it as context provider.
+  If you can't answer the question based on context provided, respond with "I don't know"`;

@@ -1546,6 +1546,7 @@ __metadata:
     prompts: ^2.4.2
     react-native-builder-bob: ^0.20.0
     release-it: ^15.0.0
+    tiktoken: ^1.0.13
     typescript: ^5.0.2
     yargs: ^17.7.2
     zod: ^3.22.4
@@ -10382,6 +10383,13 @@ __metadata:
   version: 2.3.8
   resolution: "through@npm:2.3.8"
   checksum: a38c3e059853c494af95d50c072b83f8b676a9ba2818dcc5b108ef252230735c54e0185437618596c790bbba8fcdaef5b290405981ffa09dce67b1f1bf190cbd
+  languageName: node
+  linkType: hard
+
+"tiktoken@npm:^1.0.13":
+  version: 1.0.13
+  resolution: "tiktoken@npm:1.0.13"
+  checksum: b8ad3d6ff5a4764c752afc7087d334492938b4028d6a5b7769e8dc77c9c31a5190a0548f0887f68201e01729044fa5e0f6fc1f40a4229fc1f05a4e95202cb949
   languageName: node
   linkType: hard
 
