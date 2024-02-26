@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 import type { CommandModule } from 'yargs';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
@@ -67,7 +68,6 @@ export const command: CommandModule<{}, PromptOptions> = {
           'Forces color output (even if stdout is not a terminal). Use --no-color to disable colors.',
       })
       .option('file', {
-        alias: 'f',
         type: 'string',
         describe: 'Add given file to conversation context.',
       }),
@@ -119,9 +119,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   const messages: Message[] = [];
 
   if (options.file) {
-    const filePath = path.isAbsolute(options.file)
-      ? options.file
-      : `${process.cwd()}/${options.file}`;
+    const filePath = path.resolve(options.file.replace('~', os.homedir()));
 
     if (!fs.existsSync(filePath)) {
       throw new Error(`Couln't find provided file: ${options.file}`);
@@ -131,10 +129,12 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     const tokenCount = tokenizer.getTokensCount(fileContent);
 
     if (tokenCount <= FILE_TOKEN_COUNT_WARNING) {
-      output.outputInfo(`File you provided adds: ~${tokenCount} tokens to conversation`);
+      output.outputInfo(
+        `File you provided adds: ~${tokenCount} tokens to conversation for each message`
+      );
     } else {
       output.outputWarning(
-        `File you provided adds: ~${tokenCount} tokens to conversation. This might impact the cost.`
+        `File you provided adds: ~${tokenCount} tokens to conversation for each message. This might impact the cost.`
       );
     }
 

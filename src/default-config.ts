@@ -9,9 +9,8 @@ export const DEFAULT_SYSTEM_PROMPT =
 
 export const FILE_TOKEN_COUNT_WARNING = 2000;
 
-export const DEFAULT_FILE_PROMPT = `Answer using following content as a reference.
-If you can't find the answer to the question in provided content just respond "I don't know".
-CONTENT:
-###
-{fileContent}
-###`;
+export const DEFAULT_FILE_PROMPT = `Use the following pieces of context to answer the question at the end.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.
+Use three sentences maximum and keep the answer as concise as possible.
+
+{fileContent}`;
