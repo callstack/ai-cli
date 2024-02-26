@@ -6,7 +6,7 @@ import type { Provider } from '.';
 const Perplexity: Provider = {
   label: 'Perplexity',
   name: 'perplexity',
-  apiKeyUrl: 'https://www.perplexity.ai/settings/api',
+  apiKeyUrl: 'https://perplexity.ai/settings/api',
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
     const perplexity = new OpenAI({
       apiKey: config.apiKey,
