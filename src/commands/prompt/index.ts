@@ -1,13 +1,14 @@
 import * as fs from 'fs';
+import * as path from 'path';
 import type { CommandModule } from 'yargs';
-import { get_encoding } from 'tiktoken';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
 import { inputLine } from '../../input';
 import * as output from '../../output';
 import { getDefaultProvider, providerOptions, resolveProviderFromOption } from '../../providers';
 import { init } from '../init/init';
-import { DEFAULT_FILE_PROMPT } from '../../default-config';
+import { DEFAULT_FILE_PROMPT, FILE_TOKEN_COUNT_WARNING } from '../../default-config';
+import { tokenizer } from '../../tokenizer';
 import { processCommand } from './commands';
 
 export interface PromptOptions {
@@ -68,7 +69,7 @@ export const command: CommandModule<{}, PromptOptions> = {
       .option('file', {
         alias: 'f',
         type: 'string',
-        describe: 'Adds a file to conversation.',
+        describe: 'Add given file to conversation context.',
       }),
   handler: (args) => run(args._.join(' '), args),
 };
@@ -115,33 +116,32 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   output.outputVerbose(`Using model: ${config.model}`);
 
-  let fileContent = '';
+  const messages: Message[] = [];
+
   if (options.file) {
-    const filePath = `${process.cwd()}/${options.file}`;
+    const filePath = path.isAbsolute(options.file)
+      ? options.file
+      : `${process.cwd()}/${options.file}`;
 
     if (!fs.existsSync(filePath)) {
       throw new Error(`Couln't find provided file: ${options.file}`);
     }
-    fileContent = fs.readFileSync(filePath).toString();
+    const fileContent = fs.readFileSync(filePath).toString();
 
-    const encoder = get_encoding('cl100k_base');
-    const tokens = encoder.encode(fileContent);
+    const tokenCount = tokenizer.getTokensCount(fileContent);
 
-    if (tokens.length <= 2000) {
-      output.outputInfo(`File you provided adds: ~${tokens.length} tokens to conversation`);
+    if (tokenCount <= FILE_TOKEN_COUNT_WARNING) {
+      output.outputInfo(`File you provided adds: ~${tokenCount} tokens to conversation`);
     } else {
       output.outputWarning(
-        `File you provided adds: ~${tokens.length} tokens to conversation. This might impact the cost.`
+        `File you provided adds: ~${tokenCount} tokens to conversation. This might impact the cost.`
       );
     }
-  }
 
-  const messages: Message[] = [];
-  const internalMessages: Message[] = [];
-
-  if (fileContent !== '') {
-    internalMessages.push({ role: 'system', content: DEFAULT_FILE_PROMPT });
-    internalMessages.push({ role: 'system', content: fileContent });
+    messages.push({
+      role: 'system',
+      content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
+    });
   }
 
   if (initialPrompt) {
@@ -151,10 +151,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     messages.push({ role: 'user', content: initialPrompt });
 
     const startTimestamp = performance.now();
-    const [content, response] = await provider.getChatCompletion(config, [
-      ...internalMessages,
-      ...messages,
-    ]);
+    const [content, response] = await provider.getChatCompletion(config, messages);
     const responseTime = performance.now() - startTimestamp;
     const stats = { ...response?.usage, responseTime };
 
