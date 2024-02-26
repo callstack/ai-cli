@@ -1,6 +1,6 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
-import type { ResponseStats } from './inference';
+import type { ModelResponseStats } from './inference';
 
 let verbose = false;
 let showStats = false;
@@ -25,7 +25,7 @@ export function outputUser(message: string) {
   console.log('me:', message);
 }
 
-export function outputAi(message: string, stats?: ResponseStats) {
+export function outputAi(message: string, stats?: ModelResponseStats) {
   const statsOutput = stats && showStats ? chalk.dim(formatStats(stats)) : '';
 
   console.log(chalk.cyan('ai:', message), statsOutput);
@@ -82,10 +82,10 @@ function extractErrorMessage(error: unknown) {
   return 'Unknown error';
 }
 
-function formatStats(stats: ResponseStats) {
+function formatStats(stats: ModelResponseStats) {
   const parts = [
     `time: ${(stats.responseTime / 1000).toFixed(1)} s`,
-    `tokens: ${stats.prompt_tokens} in + ${stats.completion_tokens} out`,
+    `tokens: ${stats.inputTokens} in + ${stats.outputTokens} out`,
   ];
 
   return `(${parts.join(', ')})`;

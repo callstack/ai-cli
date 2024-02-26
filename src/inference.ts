@@ -15,13 +15,14 @@ export interface AiMessage {
   content: string;
 }
 
-export interface UsageStats {
-  prompt_tokens: number;
-  completion_tokens: number;
+export interface ModelResponse {
+  messageText: string | null;
+  stats: ModelResponseStats;
+  response: unknown;
 }
 
-export interface ResponseStats {
+export interface ModelResponseStats {
   responseTime: number;
-  prompt_tokens?: number;
-  completion_tokens?: number;
+  inputTokens?: number;
+  outputTokens?: number;
 }
