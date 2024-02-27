@@ -132,7 +132,9 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   let style = {};
 
   if (options.creative && options.precise) {
-    output.outputInfo('You set both creative and precise response styles, falling back to default');
+    output.outputWarning(
+      'You set both creative and precise response styles, falling back to default'
+    );
   } else {
     if (options.creative) {
       style = RESPONSE_STYLE_CREATIVE;
