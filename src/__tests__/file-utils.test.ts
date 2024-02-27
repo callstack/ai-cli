@@ -12,14 +12,6 @@ const mockContext: CommandContext = {
   },
 };
 
-mockFs({
-  '/path/to/': {
-    'file.txt': 'Content',
-    'incr.txt': 'Content',
-    'incr-1.txt': 'Content',
-  },
-});
-
 // Allows for mocking the time on CLI
 Object.defineProperty(global, 'performance', {
   writable: true,
@@ -28,6 +20,16 @@ Object.defineProperty(global, 'performance', {
 beforeAll(() => {
   jest.useFakeTimers();
   jest.setSystemTime(new Date(2020, 3, 1, 12, 0));
+});
+
+beforeEach(() => {
+  mockFs({
+    '/path/to/': {
+      'file.txt': 'Content',
+      'incr.txt': 'Content',
+      'incr-1.txt': 'Content',
+    },
+  });
 });
 
 // Restores the filesystem functions
