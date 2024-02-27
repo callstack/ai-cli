@@ -20,11 +20,17 @@ mockFs({
   },
 });
 
+// Allows for mocking the time on CLI
+Object.defineProperty(global, 'performance', {
+  writable: true,
+});
+
 beforeAll(() => {
   jest.useFakeTimers();
   jest.setSystemTime(new Date(2020, 3, 1, 12, 0));
 });
 
+// Restores the filesystem functions
 afterEach(() => {
   mockFs.restore();
 });
