@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 import type { CommandModule } from 'yargs';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { type Message } from '../../inference';
@@ -9,6 +12,8 @@ import {
   resolveProviderFromOption,
 } from '../../providers/provider';
 import { init } from '../init/init';
+import { DEFAULT_FILE_PROMPT, FILE_TOKEN_COUNT_WARNING } from '../../default-config';
+import { tokenizer } from '../../tokenizer';
 import { processCommand } from './commands';
 
 export interface PromptOptions {
@@ -24,6 +29,8 @@ export interface PromptOptions {
   stats?: boolean;
   /** Display colorized output. Default == autodetect */
   color?: boolean;
+  /** Add file to conversation */
+  file?: string;
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
@@ -63,6 +70,10 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         describe:
           'Forces color output (even if stdout is not a terminal). Use --no-color to disable colors.',
+      })
+      .option('file', {
+        type: 'string',
+        describe: 'Add given file to conversation context.',
       }),
   handler: (args) => run(args._.join(' '), args),
 };
@@ -110,6 +121,32 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
   output.outputVerbose(`Using model: ${config.model}`);
 
   const messages: Message[] = [];
+
+  if (options.file) {
+    const filePath = path.resolve(options.file.replace('~', os.homedir()));
+
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`Couln't find provided file: ${options.file}`);
+    }
+    const fileContent = fs.readFileSync(filePath).toString();
+
+    const tokenCount = tokenizer.getTokensCount(fileContent);
+
+    if (tokenCount <= FILE_TOKEN_COUNT_WARNING) {
+      output.outputInfo(
+        `File you provided adds: ~${tokenCount} tokens to conversation for each message`
+      );
+    } else {
+      output.outputWarning(
+        `File you provided adds: ~${tokenCount} tokens to conversation for each message. This might impact the cost.`
+      );
+    }
+
+    messages.push({
+      role: 'system',
+      content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
+    });
+  }
 
   if (initialPrompt) {
     output.outputUser(initialPrompt);
