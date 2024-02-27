@@ -12,7 +12,12 @@ import {
   resolveProviderFromOption,
 } from '../../providers/provider';
 import { init } from '../init/init';
-import { DEFAULT_FILE_PROMPT, FILE_TOKEN_COUNT_WARNING } from '../../default-config';
+import {
+  DEFAULT_FILE_PROMPT,
+  FILE_TOKEN_COUNT_WARNING,
+  RESPONSE_STYLE_CREATIVE,
+  RESPONSE_STYLE_PRECISE,
+} from '../../default-config';
 import { tokenizer } from '../../tokenizer';
 import { processCommand } from './commands';
 
@@ -124,10 +129,20 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
+  let style = {};
+
+  if (options.creative) {
+    style = RESPONSE_STYLE_CREATIVE;
+  }
+  if (options.precise) {
+    style = RESPONSE_STYLE_PRECISE;
+  }
+
   const config = {
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
     systemPrompt: initialConfig.systemPrompt,
+    ...style,
   };
 
   output.outputVerbose(`Using model: ${config.model}`);

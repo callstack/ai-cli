@@ -7,7 +7,6 @@ const Perplexity: Provider = {
   label: 'Perplexity',
   name: 'perplexity',
   apiKeyUrl: 'https://perplexity.ai/settings/api',
-
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
     const openai = new OpenAI({
       apiKey: config.apiKey,
@@ -23,6 +22,8 @@ const Perplexity: Provider = {
     const response = await openai.chat.completions.create({
       messages: [systemMessage, ...messages],
       model: config.model,
+      temperature: config.temperature,
+      top_p: config.top_p,
     });
     const responseTime = performance.now() - startTime;
 

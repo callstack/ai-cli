@@ -22,7 +22,7 @@ const OpenAi: Provider = {
       messages: [systemMessage, ...messages],
       model: config.model,
       temperature: config.temperature,
-      topP: config.top_p,
+      top_p: config.top_p,
     });
     const responseTime = performance.now() - startTime;
 
