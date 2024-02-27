@@ -3,8 +3,11 @@ import * as path from 'path';
 import * as os from 'os';
 import type { Message } from '../../inference';
 import * as output from '../../output';
-import { getConversationStoragePath } from '../../config-file';
-import { getDefaultFileName, getUniqueFileName } from '../../file-utils';
+import {
+  getConversationStoragePath,
+  getDefaultFileName,
+  getUniqueFileName,
+} from '../../file-utils';
 
 export interface CommandContext {
   messages: Message[];
@@ -33,7 +36,7 @@ export function processCommand(input: string, context: CommandContext): boolean 
     output.outputInfo('- /verbose [on|off]: Enable or disable verbose output');
     output.outputInfo('- /stats [on|off]: Enable or disable displaying of response stats');
     output.outputInfo('- /forget: AI will forget previous messages');
-    output.outputInfo('- /save [file]: Conversation will be saved in txt file');
+    output.outputInfo('- /save: Conversation will be saved in a text file');
 
     return true;
   }
@@ -71,34 +74,27 @@ export function processCommand(input: string, context: CommandContext): boolean 
     }
 
     try {
-      saveConversation(context, args);
-      return true;
+      saveConversation(context);
     } catch (error) {
       output.outputError(error);
-      return true;
     }
+    return true;
   }
 
   output.outputError(`Unknown command: ${command} ${args.join(' ')}`);
   return true;
 }
 
-function saveConversation(context: CommandContext, args: string[]) {
-  const conversation = context.messages.reduce((prev, current) => {
-    return prev + `${current.role}: ${current.content}\n`;
+function saveConversation(context: CommandContext) {
+  let conversation = '';
+  context.messages.forEach((message) => {
+    conversation += `${message.role}: ${message.content}\n`;
   }, '');
 
   const conversationStoragePath = getConversationStoragePath();
-  const fileName = args[0]
-    ? path.parse(args[0]).name.replace(/\/.*\\/i, '')
-    : getDefaultFileName(context);
-  let filePath = path.join(conversationStoragePath, fileName);
-
-  if (fs.existsSync(`${filePath}.txt`)) {
-    output.outputInfo(`${filePath.replace(os.homedir(), '~')} already exists`);
-  }
-
-  filePath = getUniqueFileName(path.join(conversationStoragePath, fileName), 'txt');
+  const filePath = getUniqueFileName(
+    path.join(conversationStoragePath, getDefaultFileName(context))
+  );
 
   fs.writeFileSync(filePath, conversation);
 

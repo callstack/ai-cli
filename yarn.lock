@@ -1536,6 +1536,7 @@ __metadata:
     "@types/prompts": ^2.4.9
     chalk: ^4.1.2
     commitlint: ^17.0.2
+    date-fns: ^3.3.1
     del-cli: ^5.0.0
     dotenv: ^16.3.1
     eslint: ^8.4.1
@@ -4368,6 +4369,13 @@ __metadata:
   version: 6.0.1
   resolution: "data-uri-to-buffer@npm:6.0.1"
   checksum: 9140e68c585ae33d950f5943bd476751346c8b789ae80b01a578a33cb8f7f706d1ca7378aff2b1878b2a6d9a8c88c55cc286d88191c8b8ead8255c3c4d934530
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "date-fns@npm:3.3.1"
+  checksum: 6245e93a47de28ac96dffd4d62877f86e6b64854860ae1e00a4f83174d80bc8e59bd1259cf265223fb2ddce5c8e586dc9cc210f0d052faba2f7660e265877283
   languageName: node
   linkType: hard
 

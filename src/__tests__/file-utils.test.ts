@@ -55,23 +55,20 @@ describe('getDefaultFileName', () => {
 
 describe('getUniqueFileName', () => {
   it('should return a unique file name', () => {
-    const filePath = '/path/to/file';
-    const fileExtension = 'txt';
-    const uniqueFileName = getUniqueFileName(filePath, fileExtension);
-    expect(uniqueFileName).toMatch(`${filePath}-1.${fileExtension}`);
+    const filePath = '/path/to/file.txt';
+    const uniqueFileName = getUniqueFileName(filePath);
+    expect(uniqueFileName).toMatch(`/path/to/file-1.txt`);
   });
 
   it('should properly increment the name', () => {
-    const filePath = '/path/to/incr';
-    const fileExtension = 'txt';
-    const uniqueFileName = getUniqueFileName(filePath, fileExtension);
-    expect(uniqueFileName).toMatch(`${filePath}-2.${fileExtension}`);
+    const filePath = '/path/to/incr.txt';
+    const uniqueFileName = getUniqueFileName(filePath);
+    expect(uniqueFileName).toMatch(`/path/to/incr-2.txt`);
   });
 
   it('should not modify already unique name', () => {
-    const filePath = '/path/to/another/file';
-    const fileExtension = 'txt';
-    const uniqueFileName = getUniqueFileName(filePath, fileExtension);
-    expect(uniqueFileName).toMatch(`${filePath}.${fileExtension}`);
+    const filePath = '/path/to/another/file.txt';
+    const uniqueFileName = getUniqueFileName(filePath);
+    expect(uniqueFileName).toMatch(`/path/to/another/file.txt`);
   });
 });

@@ -1,43 +1,46 @@
 import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+import { format } from 'date-fns';
 import type { CommandContext } from './commands/prompt/commands';
 
-const formatDate = (date: Date) => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1; //Month from 0 to 11
-  const year = date.getFullYear();
-
-  return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-};
-
-const formatTime = (date: Date) => {
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-
-  return `${hours}-${minutes < 10 ? '0' + minutes : minutes}`;
-};
+const CHATS_SAVE_DIRECTORY = '~/ai-chats';
 
 const formatMessage = (message: string) => {
   const base = message.split(' ', 5).join(' ');
-  return base.replace(/\/.*\\/i, '');
+  return base.replace(/[/\\:*?"<>|]/g, '_');
 };
 
 export const getDefaultFileName = (context: CommandContext) => {
   const currentDate = new Date();
-  const today = formatDate(currentDate);
-  const time = formatTime(currentDate);
   const firstMessagePart = formatMessage(context.messages[0]?.content ?? '');
 
-  return `${today} ${time} ${firstMessagePart}`;
+  return `${format(currentDate, 'yyyy-MM-dd HH-mm')} ${firstMessagePart}`;
 };
 
-export const getUniqueFileName = (filePath: string, fileExtension: string = '') => {
-  const appendix = `${fileExtension ? '.' + fileExtension : ''}`;
-  if (fs.existsSync(`${filePath}.txt`)) {
+export const getUniqueFileName = (filePath: string) => {
+  const { name, ext, dir } = path.parse(filePath);
+  const extension = ext === '' ? '.txt' : ext;
+
+  if (fs.existsSync(`${dir}/${name}${extension}`)) {
     let numerator = 1;
     // Case when -1 exists, we increase as long as we find a free numerator
-    while (fs.existsSync(`${filePath}-${numerator}${appendix}`)) numerator++;
-    return `${filePath}-${numerator}${appendix}`;
+    while (fs.existsSync(`${dir}/${name}-${numerator}${extension}`)) {
+      numerator++;
+    }
+    return `${dir}/${name}-${numerator}${extension}`;
   } else {
-    return `${filePath}${appendix}`;
+    return `${dir}/${name}${extension}`;
   }
 };
+
+export function getConversationStoragePath() {
+  const chatsSaveDirectory = CHATS_SAVE_DIRECTORY.replace('~', os.homedir());
+
+  if (fs.existsSync(chatsSaveDirectory)) {
+    return chatsSaveDirectory;
+  } else {
+    fs.mkdirSync(chatsSaveDirectory);
+    return chatsSaveDirectory;
+  }
+}
