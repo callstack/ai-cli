@@ -25,9 +25,12 @@ beforeAll(() => {
   jest.setSystemTime(new Date(2020, 3, 1, 12, 0));
 });
 
+afterEach(() => {
+  mockFs.restore();
+});
+
 afterAll(() => {
   jest.useRealTimers();
-  mockFs.restore();
 });
 
 describe('getDefaultFileName', () => {
