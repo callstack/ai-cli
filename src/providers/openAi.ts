@@ -21,6 +21,8 @@ const OpenAi: Provider = {
     const response = await openai.chat.completions.create({
       messages: [systemMessage, ...messages],
       model: config.model,
+      temperature: config.temperature,
+      top_p: config.top_p,
     });
     const responseTime = performance.now() - startTime;
 

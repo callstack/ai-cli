@@ -12,7 +12,12 @@ import {
   resolveProviderFromOption,
 } from '../../providers/provider';
 import { init } from '../init/init';
-import { DEFAULT_FILE_PROMPT, FILE_TOKEN_COUNT_WARNING } from '../../default-config';
+import {
+  DEFAULT_FILE_PROMPT,
+  FILE_TOKEN_COUNT_WARNING,
+  RESPONSE_STYLE_CREATIVE,
+  RESPONSE_STYLE_PRECISE,
+} from '../../default-config';
 import { tokenizer } from '../../tokenizer';
 import { processCommand } from './commands';
 
@@ -31,6 +36,10 @@ export interface PromptOptions {
   color?: boolean;
   /** Add file to conversation */
   file?: string;
+  /** Creative response style */
+  creative?: boolean;
+  /** Precise response style */
+  precise?: boolean;
 }
 
 export const command: CommandModule<{}, PromptOptions> = {
@@ -60,6 +69,14 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         default: false,
         describe: 'Verbose output',
+      })
+      .option('creative', {
+        type: 'boolean',
+        describe: 'Response style: creative',
+      })
+      .option('precise', {
+        type: 'boolean',
+        describe: 'Response style: precise',
       })
       .option('stats', {
         type: 'boolean',
@@ -112,10 +129,26 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
+  let style = {};
+
+  if (options.creative && options.precise) {
+    output.outputWarning(
+      'You set both creative and precise response styles, falling back to default'
+    );
+  } else {
+    if (options.creative) {
+      style = RESPONSE_STYLE_CREATIVE;
+    }
+    if (options.precise) {
+      style = RESPONSE_STYLE_PRECISE;
+    }
+  }
+
   const config = {
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
     systemPrompt: initialConfig.systemPrompt,
+    ...style,
   };
 
   output.outputVerbose(`Using model: ${config.model}`);
