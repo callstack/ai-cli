@@ -1,11 +1,32 @@
 import * as fs from 'fs';
 import type { CommandContext } from './commands/prompt/commands';
 
+const formatDate = (date: Date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1; //Month from 0 to 11
+  const year = date.getFullYear();
+
+  return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+};
+
+const formatTime = (date: Date) => {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+
+  return `${hours}-${minutes < 10 ? '0' + minutes : minutes}`;
+};
+
+const formatMessage = (message: string) => {
+  const base = message.split(' ', 5).join(' ');
+  return base.replace(/\/.*\\/i, '');
+};
+
 export const getDefaultFileName = (context: CommandContext) => {
   const currentDate = new Date();
-  const today = currentDate.toISOString().split('T')[0];
-  const time = `${currentDate.getHours()}\u2236${currentDate.getMinutes()}`;
-  const firstMessagePart = context.messages[0]?.content.split(' ', 5).join(' ');
+  const today = formatDate(currentDate);
+  const time = formatTime(currentDate);
+  const firstMessagePart = formatMessage(context.messages[0]?.content ?? '');
+
   return `${today} ${time} ${firstMessagePart}`;
 };
 

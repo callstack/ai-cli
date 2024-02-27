@@ -89,7 +89,9 @@ function saveConversation(context: CommandContext, args: string[]) {
   }, '');
 
   const conversationStoragePath = getConversationStoragePath();
-  const fileName = args[0] ? path.parse(args[0]).name : getDefaultFileName(context);
+  const fileName = args[0]
+    ? path.parse(args[0]).name.replace(/\/.*\\/i, '')
+    : getDefaultFileName(context);
   let filePath = path.join(conversationStoragePath, fileName);
 
   if (fs.existsSync(`${filePath}.txt`)) {
@@ -98,7 +100,7 @@ function saveConversation(context: CommandContext, args: string[]) {
 
   filePath = getUniqueFileName(path.join(conversationStoragePath, fileName), 'txt');
 
-  fs.writeFileSync(path.normalize(filePath), conversation);
+  fs.writeFileSync(filePath, conversation);
 
   output.outputInfo(`Conversation saved to ${filePath.replace(os.homedir(), '~')}`);
 }
