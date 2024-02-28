@@ -1,6 +1,6 @@
 import type { CommandContext } from '../commands/prompt/commands';
 import { DEFAULT_SYSTEM_PROMPT } from '../default-config';
-import { getDefaultFileName, getUniqueFileName } from '../file-utils';
+import { getDefaultFilename, getUniqueFilename } from '../file-utils';
 const mockFs = require('mock-fs');
 
 const mockContext: CommandContext = {
@@ -41,34 +41,34 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-describe('getDefaultFileName', () => {
+describe('getDefaultFilename', () => {
   it('should return the default file name', () => {
     // Test case 1
     const context = mockContext;
     context.messages.push({ role: 'user', content: 'Hi How Are You Doing Today?' });
 
-    const defaultFileName = getDefaultFileName(context);
+    const defaultFilename = getDefaultFilename(context);
 
-    expect(defaultFileName).toBe('2020-04-01 12-00 Hi How Are You Doing');
+    expect(defaultFilename).toBe('2020-04-01 12-00 Hi How Are You Doing');
   });
 });
 
-describe('getUniqueFileName', () => {
+describe('getUniqueFilename', () => {
   it('should return a unique file name', () => {
     const filePath = '/path/to/file.txt';
-    const uniqueFileName = getUniqueFileName(filePath);
-    expect(uniqueFileName).toMatch(`/path/to/file-1.txt`);
+    const uniqueFilename = getUniqueFilename(filePath);
+    expect(uniqueFilename).toMatch(`/path/to/file-1.txt`);
   });
 
   it('should properly increment the name', () => {
     const filePath = '/path/to/incr.txt';
-    const uniqueFileName = getUniqueFileName(filePath);
-    expect(uniqueFileName).toMatch(`/path/to/incr-2.txt`);
+    const uniqueFilename = getUniqueFilename(filePath);
+    expect(uniqueFilename).toMatch(`/path/to/incr-2.txt`);
   });
 
   it('should not modify already unique name', () => {
     const filePath = '/path/to/another/file.txt';
-    const uniqueFileName = getUniqueFileName(filePath);
-    expect(uniqueFileName).toMatch(`/path/to/another/file.txt`);
+    const uniqueFilename = getUniqueFilename(filePath);
+    expect(uniqueFilename).toMatch(`/path/to/another/file.txt`);
   });
 });

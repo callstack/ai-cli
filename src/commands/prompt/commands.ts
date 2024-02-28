@@ -4,9 +4,10 @@ import * as os from 'os';
 import type { Message } from '../../inference';
 import * as output from '../../output';
 import {
+  CHATS_SAVE_DIRECTORY,
   getConversationStoragePath,
-  getDefaultFileName,
-  getUniqueFileName,
+  getDefaultFilename,
+  getUniqueFilename,
 } from '../../file-utils';
 
 export interface CommandContext {
@@ -36,7 +37,7 @@ export function processCommand(input: string, context: CommandContext): boolean 
     output.outputInfo('- /verbose [on|off]: Enable or disable verbose output');
     output.outputInfo('- /stats [on|off]: Enable or disable displaying of response stats');
     output.outputInfo('- /forget: AI will forget previous messages');
-    output.outputInfo('- /save: Conversation will be saved in a text file');
+    output.outputInfo(`- /save: Save in a text file in ${CHATS_SAVE_DIRECTORY}`);
 
     return true;
   }
@@ -89,11 +90,11 @@ function saveConversation(context: CommandContext) {
   let conversation = '';
   context.messages.forEach((message) => {
     conversation += `${message.role}: ${message.content}\n`;
-  }, '');
+  });
 
   const conversationStoragePath = getConversationStoragePath();
-  const filePath = getUniqueFileName(
-    path.join(conversationStoragePath, getDefaultFileName(context))
+  const filePath = getUniqueFilename(
+    path.join(conversationStoragePath, getDefaultFilename(context))
   );
 
   fs.writeFileSync(filePath, conversation);
