@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { format } from 'date-fns';
-import type { CommandContext } from './commands/prompt/commands';
+import type { SessionContext } from './commands/prompt/types';
 
 export const CHATS_SAVE_DIRECTORY = '~/ai-chats';
 
@@ -11,7 +11,7 @@ const escapeFilename = (filename: string) => {
   return base.replace(/[/\\:*?"<>|]/g, '_');
 };
 
-export const getDefaultFilename = (context: CommandContext) => {
+export const getDefaultFilename = (context: SessionContext) => {
   const currentDate = new Date();
   const firstMessagePart = escapeFilename(context.messages[0]?.content ?? '');
 
