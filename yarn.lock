@@ -1532,15 +1532,18 @@ __metadata:
     "@evilmartians/lefthook": ^1.5.0
     "@release-it/conventional-changelog": ^5.0.0
     "@types/jest": ^28.1.2
+    "@types/mock-fs": ^4.13.4
     "@types/prompts": ^2.4.9
     chalk: ^4.1.2
     commitlint: ^17.0.2
+    date-fns: ^3.3.1
     del-cli: ^5.0.0
     dotenv: ^16.3.1
     eslint: ^8.4.1
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.0.0
     jest: ^28.1.1
+    mock-fs: ^5.2.0
     openai: ^4.24.1
     prettier: ^2.0.5
     prompts: ^2.4.2
@@ -2634,6 +2637,15 @@ __metadata:
   version: 1.2.5
   resolution: "@types/minimist@npm:1.2.5"
   checksum: 477047b606005058ab0263c4f58097136268007f320003c348794f74adedc3166ffc47c80ec3e94687787f2ab7f4e72c468223946e79892cf0fd9e25e9970a90
+  languageName: node
+  linkType: hard
+
+"@types/mock-fs@npm:^4.13.4":
+  version: 4.13.4
+  resolution: "@types/mock-fs@npm:4.13.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: 9f886d67186da2e5cdabc32835c49ede9749146768e22c7f0f2548587e5201235d3726adef917fa6efbb9b73ad51278858a5d34e7cdc0a4b413c8396b37c350d
   languageName: node
   linkType: hard
 
@@ -4358,6 +4370,13 @@ __metadata:
   version: 6.0.1
   resolution: "data-uri-to-buffer@npm:6.0.1"
   checksum: 9140e68c585ae33d950f5943bd476751346c8b789ae80b01a578a33cb8f7f706d1ca7378aff2b1878b2a6d9a8c88c55cc286d88191c8b8ead8255c3c4d934530
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "date-fns@npm:3.3.1"
+  checksum: 6245e93a47de28ac96dffd4d62877f86e6b64854860ae1e00a4f83174d80bc8e59bd1259cf265223fb2ddce5c8e586dc9cc210f0d052faba2f7660e265877283
   languageName: node
   linkType: hard
 
@@ -8282,6 +8301,13 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: a96865108c6c3b1b8e1d5e9f11843de1e077e57737602de1b82030815f311be11f96f09cce59bd5b903d0b29834733e5313f9301e3ed6d6f6fba2eae0df4298f
+  languageName: node
+  linkType: hard
+
+"mock-fs@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "mock-fs@npm:5.2.0"
+  checksum: c25835247bd26fa4e0189addd61f98973f61a72741e4d2a5694b143a2069b84978443a7ac0fdb1a71aead99273ec22ff4e9c968de11bbd076db020264c5b8312
   languageName: node
   linkType: hard
 

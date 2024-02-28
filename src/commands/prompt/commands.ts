@@ -1,5 +1,14 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 import type { Message } from '../../inference';
 import * as output from '../../output';
+import {
+  CHATS_SAVE_DIRECTORY,
+  getConversationStoragePath,
+  getDefaultFilename,
+  getUniqueFilename,
+} from '../../file-utils';
 
 export interface CommandContext {
   messages: Message[];
@@ -28,6 +37,7 @@ export function processCommand(input: string, context: CommandContext): boolean 
     output.outputInfo('- /verbose [on|off]: Enable or disable verbose output');
     output.outputInfo('- /stats [on|off]: Enable or disable displaying of response stats');
     output.outputInfo('- /forget: AI will forget previous messages');
+    output.outputInfo(`- /save: Save in a text file in ${CHATS_SAVE_DIRECTORY}`);
 
     return true;
   }
@@ -58,6 +68,36 @@ export function processCommand(input: string, context: CommandContext): boolean 
     return true;
   }
 
+  if (command === '/save') {
+    if (context.messages.length === 0) {
+      output.outputInfo('There are no messages to save.');
+      return true;
+    }
+
+    try {
+      saveConversation(context);
+    } catch (error) {
+      output.outputError(error);
+    }
+    return true;
+  }
+
   output.outputError(`Unknown command: ${command} ${args.join(' ')}`);
   return true;
+}
+
+function saveConversation(context: CommandContext) {
+  let conversation = '';
+  context.messages.forEach((message) => {
+    conversation += `${message.role}: ${message.content}\n`;
+  });
+
+  const conversationStoragePath = getConversationStoragePath();
+  const filePath = getUniqueFilename(
+    path.join(conversationStoragePath, getDefaultFilename(context))
+  );
+
+  fs.writeFileSync(filePath, conversation);
+
+  output.outputInfo(`Conversation saved to ${filePath.replace(os.homedir(), '~')}`);
 }
