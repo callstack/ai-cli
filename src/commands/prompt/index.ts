@@ -217,10 +217,9 @@ function handleInputFile(context: SessionContext, inputFile: string) {
 
   const fileContent = fs.readFileSync(filePath).toString();
   const fileTokens = tokenizer.getTokensCount(fileContent);
-  const fileCost = calculateUsageCost(
-    { inputTokens: fileTokens, outputTokens: 0, requests: 0 },
-    context.provider.pricing[context.config.model]
-  );
+
+  const pricing = context.provider.pricing[context.config.model];
+  const fileCost = calculateUsageCost({ inputTokens: fileTokens }, pricing);
 
   const costOrTokens = fileCost
     ? formatCost(fileCost)
