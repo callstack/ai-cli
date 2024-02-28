@@ -1,15 +1,19 @@
-import type { CommandContext } from '../commands/prompt/commands';
+import type { SessionContext } from '../commands/prompt/types';
 import { DEFAULT_SYSTEM_PROMPT } from '../default-config';
 import { getDefaultFilename, getUniqueFilename } from '../file-utils';
+import openAi from '../providers/openAi';
+
 const mockFs = require('mock-fs');
 
-const mockContext: CommandContext = {
-  messages: [],
-  providerName: 'openai',
+const mockContext: SessionContext = {
   config: {
     model: 'gpt-4',
     systemPrompt: DEFAULT_SYSTEM_PROMPT,
+    apiKey: '***',
   },
+  provider: openAi,
+  messages: [],
+  totalUsage: { inputTokens: 0, outputTokens: 0, requests: 0 },
 };
 
 // Allows for mocking the time on CLI
