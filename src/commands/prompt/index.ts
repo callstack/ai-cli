@@ -153,18 +153,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   if (initialPrompt) {
     output.outputUser(initialPrompt);
-    output.outputAiProgress('Thinking...');
-
-    session.messages.push({ role: 'user', content: initialPrompt });
-    const response = await provider.getChatCompletion(config, session.messages);
-    session.totalUsage = combineUsage(session.totalUsage, response.usage);
-
-    output.clearLine();
-    output.outputVerbose(`Response: ${JSON.stringify(response.response, null, 2)}`);
-
-    const outputParams = getOutputParams(session, response);
-    output.outputAi(response.messageText ?? '(null)', outputParams);
-    session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
+    await handleMessage(session, initialPrompt);
   } else {
     output.outputAi('Hello, how can I help you?');
   }
@@ -185,27 +174,23 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
       continue;
     }
 
-    output.outputAiProgress('Thinking...');
-
-    session.messages.push({ role: 'user', content: userPrompt });
-    const response = await provider.getChatCompletion(config, session.messages);
-    session.totalUsage = combineUsage(session.totalUsage, response.usage);
-
-    output.clearLine();
-    output.outputVerbose(`Response Object: ${JSON.stringify(response.response, null, 2)}`);
-
-    const outputParams = getOutputParams(session, response);
-    output.outputAi(response.messageText ?? '(null)', outputParams);
-    session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
+    await handleMessage(session, userPrompt);
   }
 }
 
-function filterOutApiKey(key: string, value: unknown) {
-  if (key === 'apiKey' && typeof value === 'string') {
-    return value ? '***' : '';
-  }
+async function handleMessage(session: SessionContext, message: string) {
+  output.outputAiProgress('Thinking...');
 
-  return value;
+  session.messages.push({ role: 'user', content: message });
+  const response = await session.provider.getChatCompletion(session.config, session.messages);
+  session.totalUsage = combineUsage(session.totalUsage, response.usage);
+
+  output.clearLine();
+  output.outputVerbose(`Response Object: ${JSON.stringify(response.response, null, 2)}`);
+
+  const outputParams = getOutputParams(session, response);
+  output.outputAi(response.messageText ?? '(null)', outputParams);
+  session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
 }
 
 function handleInputFile(context: SessionContext, inputFile: string) {
@@ -238,6 +223,14 @@ function handleInputFile(context: SessionContext, inputFile: string) {
     role: 'system',
     content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
   });
+}
+
+function filterOutApiKey(key: string, value: unknown) {
+  if (key === 'apiKey' && typeof value === 'string') {
+    return value ? '***' : '';
+  }
+
+  return value;
 }
 
 function getOutputParams(session: SessionContext, response: ModelResponse): output.OutputAiOptions {
