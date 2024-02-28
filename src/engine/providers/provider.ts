@@ -1,4 +1,3 @@
-import type { ConfigFile } from '../config-file';
 import type { Message, ModelResponse } from '../inference';
 import type { ProviderConfig } from './config';
 import openAi from './openAi';
@@ -32,14 +31,6 @@ const providers: Record<ProviderName, Provider> = {
   perplexity,
 };
 
-const providerOptionMapping: Record<string, Provider> = {
-  openai: openAi,
-  perplexity: perplexity,
-  pplx: perplexity,
-};
-
-export const providerOptions = Object.keys(providerOptionMapping);
-
 export function getProvider(providerName: ProviderName): Provider {
   const provider = providers[providerName];
   if (!provider) {
@@ -47,24 +38,4 @@ export function getProvider(providerName: ProviderName): Provider {
   }
 
   return provider;
-}
-
-export function resolveProviderFromOption(providerOption: string): Provider {
-  const provider = providerOptionMapping[providerOption];
-  if (!provider) {
-    throw new Error(`Provider not found: ${providerOption}.`);
-  }
-
-  return provider;
-}
-
-export function getDefaultProvider(config: ConfigFile): Provider {
-  const providerNames = Object.keys(config.providers) as ProviderName[];
-  const providerName = providerNames ? providerNames[0] : undefined;
-
-  if (!providerName) {
-    throw new Error('No providers found in "~/.airc.json" file.');
-  }
-
-  return providers[providerName]!;
 }

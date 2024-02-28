@@ -1,7 +1,7 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
-import type { SessionCost, SessionUsage } from './providers/session';
-import { formatCost } from './format';
+import type { SessionCost, SessionUsage } from './engine/session';
+import { formatSessionCost, formatSessionStats } from './format';
 
 let verbose = false;
 let showStats = false;
@@ -39,8 +39,10 @@ export interface OutputAiOptions {
 
 export function outputAi(message: string, options?: OutputAiOptions) {
   if (options) {
-    const statsOutput = formatSessionStats(options.responseTime, options.usage);
-    const costsOutput = formatSessionCost(options.cost);
+    const statsOutput = showStats
+      ? formatSessionStats(options.responseTime, options.usage)
+      : undefined;
+    const costsOutput = showStats || showCosts ? formatSessionCost(options.cost) : undefined;
     const formatted = [statsOutput, costsOutput].filter((x) => x !== undefined).join(', ');
     console.log(chalk.cyan('ai:', message), chalk.dim(formatted));
   } else {
@@ -101,29 +103,4 @@ function extractErrorMessage(error: unknown) {
   }
 
   return 'Unknown error';
-}
-
-function formatSessionStats(responseTime?: number, usage?: SessionUsage) {
-  if (!showStats) {
-    return undefined;
-  }
-
-  const parts = [
-    responseTime ? `time: ${(responseTime / 1000).toFixed(1)} s` : undefined,
-    usage
-      ? `tokens: ${usage.current.inputTokens}+${usage.current.outputTokens} (total: ${usage.total.inputTokens}+${usage.total.outputTokens})`
-      : undefined,
-  ];
-
-  return parts.filter((x) => x !== undefined).join(', ');
-}
-
-function formatSessionCost(cost: SessionCost | undefined) {
-  const show = showStats || showCosts;
-
-  if (!show || cost === undefined) {
-    return undefined;
-  }
-
-  return `costs: ${formatCost(cost.current)} (total: ${formatCost(cost.total)})`;
 }

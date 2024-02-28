@@ -1,6 +1,6 @@
-import type { Message, ModelUsage } from '../../inference';
-import type { ProviderConfig } from '../../providers/config';
-import type { Provider } from '../../providers/provider';
+import type { Message, ModelUsage } from '../../engine/inference';
+import type { ProviderConfig } from '../../engine/providers/config';
+import type { Provider } from '../../engine/providers/provider';
 
 export interface PromptOptions {
   /** Interactive mode */

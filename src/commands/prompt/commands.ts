@@ -8,7 +8,7 @@ import {
   getUniqueFilename,
 } from '../../file-utils';
 import * as output from '../../output';
-import { calculateUsageCost } from '../../providers/session';
+import { calculateUsageCost } from '../../engine/session';
 import { formatCost } from '../../format';
 import type { SessionContext } from './types';
 
