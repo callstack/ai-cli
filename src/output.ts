@@ -1,6 +1,6 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
-import type { SessionCosts, SessionUsage } from './providers/session';
+import type { SessionCost, SessionUsage } from './providers/session';
 import { formatCost } from './format';
 
 let verbose = false;
@@ -34,13 +34,13 @@ export function outputUser(message: string) {
 export interface OutputAiOptions {
   responseTime?: number;
   usage?: SessionUsage;
-  costs?: SessionCosts;
+  cost?: SessionCost;
 }
 
 export function outputAi(message: string, options?: OutputAiOptions) {
   if (options) {
     const statsOutput = formatSessionStats(options.responseTime, options.usage);
-    const costsOutput = formatSessionCosts(options.costs);
+    const costsOutput = formatSessionCost(options.cost);
     const formatted = [statsOutput, costsOutput].filter((x) => x !== undefined).join(', ');
     console.log(chalk.cyan('ai:', message), chalk.dim(formatted));
   } else {
@@ -118,12 +118,12 @@ function formatSessionStats(responseTime?: number, usage?: SessionUsage) {
   return parts.filter((x) => x !== undefined).join(', ');
 }
 
-function formatSessionCosts(costs?: SessionCosts) {
+function formatSessionCost(cost: SessionCost | undefined) {
   const show = showStats || showCosts;
 
-  if (!show || costs === undefined) {
+  if (!show || cost === undefined) {
     return undefined;
   }
 
-  return `costs: ${formatCost(costs.current)} (total: ${formatCost(costs.total)})`;
+  return `costs: ${formatCost(cost.current)} (total: ${formatCost(cost.total)})`;
 }

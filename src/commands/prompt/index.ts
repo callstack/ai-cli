@@ -19,7 +19,7 @@ import {
   providerOptions,
   resolveProviderFromOption,
 } from '../../providers/provider';
-import { calculateSessionCosts, calculateUsageCost, combineUsage } from '../../providers/session';
+import { calculateSessionCost, calculateUsageCost, combineUsage } from '../../providers/session';
 import { tokenizer } from '../../tokenizer';
 import { init } from '../init/init';
 import { processCommand } from './commands';
@@ -242,11 +242,11 @@ function getOutputParams(session: SessionContext, response: ModelResponse): outp
   const pricing =
     session.provider.pricing[response.responseModel] ??
     session.provider.pricing[session.config.model];
-  const costs = calculateSessionCosts(usage, pricing);
+  const cost = calculateSessionCost(usage, pricing);
 
   return {
     responseTime: response.responseTime,
     usage,
-    costs,
+    cost,
   };
 }

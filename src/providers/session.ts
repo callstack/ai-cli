@@ -6,7 +6,7 @@ export interface SessionUsage {
   current: ModelUsage;
 }
 
-export interface SessionCosts {
+export interface SessionCost {
   total: number;
   current: number;
 }
@@ -30,7 +30,7 @@ export function calculateUsageCost(usage: Partial<ModelUsage>, pricing: ModelPri
   return inputCost + outputCost + requestsCost;
 }
 
-export function calculateSessionCosts(usage: SessionUsage, pricing: ModelPricing | undefined) {
+export function calculateSessionCost(usage: SessionUsage, pricing: ModelPricing | undefined) {
   if (pricing === undefined) {
     return undefined;
   }
