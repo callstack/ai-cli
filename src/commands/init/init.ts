@@ -1,7 +1,7 @@
 import prompts from 'prompts';
 import { checkIfConfigExists, createConfigFile } from '../../config-file';
 import * as output from '../../output';
-import { getProvider } from '../../providers/provider';
+import { getProvider } from '../../engine/providers/provider';
 
 export async function init() {
   try {

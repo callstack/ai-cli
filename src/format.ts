@@ -1,3 +1,5 @@
+import type { SessionCost, SessionUsage } from './engine/session';
+
 export function formatCost(value: number | undefined, precision = 4) {
   if (value == null) {
     return '?';
@@ -21,4 +23,23 @@ export function formatTokenCount(tokenCount: number, roundTo = 1) {
   );
   const scaledCount = roundedCount / Math.pow(10, suffixIndex * 3);
   return `${scaledCount.toFixed(0)}${suffixes[suffixIndex]}`;
+}
+
+export function formatSessionStats(responseTime?: number, usage?: SessionUsage) {
+  const parts = [
+    responseTime ? `time: ${(responseTime / 1000).toFixed(1)} s` : undefined,
+    usage
+      ? `tokens: ${usage.current.inputTokens}+${usage.current.outputTokens} (total: ${usage.total.inputTokens}+${usage.total.outputTokens})`
+      : undefined,
+  ];
+
+  return parts.filter((x) => x !== undefined).join(', ');
+}
+
+export function formatSessionCost(cost: SessionCost | undefined) {
+  if (cost === undefined) {
+    return undefined;
+  }
+
+  return `costs: ${formatCost(cost.current)} (total: ${formatCost(cost.total)})`;
 }
