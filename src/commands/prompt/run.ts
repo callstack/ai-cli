@@ -1,5 +1,6 @@
 import { checkIfConfigExists, parseConfigFile } from '../../config-file';
 import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config';
+import { combineUsage } from '../../engine/session';
 import { inputLine } from '../../input';
 import * as output from '../../output';
 import { init } from '../init/init';
@@ -8,8 +9,8 @@ import type { PromptOptions, SessionContext } from './types';
 import {
   filterOutApiKey,
   getDefaultProvider,
+  getOutputParams,
   handleInputFile,
-  handleMessage,
   resolveProviderFromOption,
 } from './utils';
 
@@ -32,6 +33,40 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
     return;
   }
 
+  const session = await createSession(options);
+
+  if (options.file) {
+    handleInputFile(session, options.file);
+  }
+
+  if (initialPrompt) {
+    output.outputUser(initialPrompt);
+    await handleMessage(session, initialPrompt);
+  } else {
+    output.outputAi('Hello, how can I help you?');
+  }
+
+  if (options.interactive || !initialPrompt) {
+    output.outputInfo(
+      'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.'
+    );
+  } else {
+    process.exit(0);
+  }
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const userPrompt = await inputLine('me: ');
+    const isCommand = processCommand(session, userPrompt);
+    if (isCommand) {
+      continue;
+    }
+
+    await handleMessage(session, userPrompt);
+  }
+}
+
+async function createSession(options: PromptOptions): Promise<SessionContext> {
   const configFile = await parseConfigFile();
   output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
   output.setShowStats(options.stats ?? configFile.showStats);
@@ -71,40 +106,25 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   output.outputVerbose(`Using model: ${config.model}`);
 
-  const session: SessionContext = {
+  return {
     config,
     provider,
     messages: [],
     totalUsage: { inputTokens: 0, outputTokens: 0, requests: 0 },
   };
+}
 
-  if (options.file) {
-    handleInputFile(session, options.file);
-  }
+async function handleMessage(session: SessionContext, message: string) {
+  output.outputAiProgress('Thinking...');
 
-  if (initialPrompt) {
-    output.outputUser(initialPrompt);
-    await handleMessage(session, initialPrompt);
-  } else {
-    output.outputAi('Hello, how can I help you?');
-  }
+  session.messages.push({ role: 'user', content: message });
+  const response = await session.provider.getChatCompletion(session.config, session.messages);
+  session.totalUsage = combineUsage(session.totalUsage, response.usage);
 
-  if (options.interactive || !initialPrompt) {
-    output.outputInfo(
-      'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.'
-    );
-  } else {
-    process.exit(0);
-  }
+  output.clearLine();
+  output.outputVerbose(`Response Object: ${JSON.stringify(response.response, null, 2)}`);
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const userPrompt = await inputLine('me: ');
-    const isCommand = processCommand(session, userPrompt);
-    if (isCommand) {
-      continue;
-    }
-
-    await handleMessage(session, userPrompt);
-  }
+  const outputParams = getOutputParams(session, response);
+  output.outputAi(response.messageText ?? '(null)', outputParams);
+  session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
 }

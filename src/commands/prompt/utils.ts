@@ -6,7 +6,7 @@ import {
   FILE_COST_WARNING,
   FILE_TOKEN_COUNT_WARNING,
 } from '../../default-config';
-import { calculateSessionCost, calculateUsageCost, combineUsage } from '../../engine/session';
+import { calculateSessionCost, calculateUsageCost } from '../../engine/session';
 import { tokenizer } from '../../engine/tokenizer';
 import * as output from '../../output';
 import { formatCost, formatTokenCount } from '../../format';
@@ -15,21 +15,6 @@ import { getProvider, type Provider, type ProviderName } from '../../engine/prov
 import type { ConfigFile } from '../../config-file';
 import type { SessionContext } from './types';
 import { providerOptionMapping } from '.';
-
-export async function handleMessage(session: SessionContext, message: string) {
-  output.outputAiProgress('Thinking...');
-
-  session.messages.push({ role: 'user', content: message });
-  const response = await session.provider.getChatCompletion(session.config, session.messages);
-  session.totalUsage = combineUsage(session.totalUsage, response.usage);
-
-  output.clearLine();
-  output.outputVerbose(`Response Object: ${JSON.stringify(response.response, null, 2)}`);
-
-  const outputParams = getOutputParams(session, response);
-  output.outputAi(response.messageText ?? '(null)', outputParams);
-  session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
-}
 
 export function handleInputFile(context: SessionContext, inputFile: string) {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
@@ -71,7 +56,10 @@ export function filterOutApiKey(key: string, value: unknown) {
   return value;
 }
 
-function getOutputParams(session: SessionContext, response: ModelResponse): output.OutputAiOptions {
+export function getOutputParams(
+  session: SessionContext,
+  response: ModelResponse
+): output.OutputAiOptions {
   const usage = {
     total: session.totalUsage,
     current: response.usage,
