@@ -8,7 +8,7 @@ export const CHATS_SAVE_DIRECTORY = '~/ai-chats';
 
 const escapeFilename = (filename: string) => {
   const base = filename.split(' ', 5).join(' ');
-  return base.replace(/[/\\:*?"<>|]/g, '_');
+  return base.replace(/[/\\:*?"<>|.]/g, '_');
 };
 
 export const getDefaultFilename = (context: SessionContext) => {

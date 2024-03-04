@@ -7,6 +7,7 @@ import {
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils';
+import type { Message } from '../../inference';
 import * as output from '../../output';
 import { calculateUsageCost } from '../../providers/session';
 import { formatCost } from '../../format';
@@ -79,7 +80,7 @@ export function processCommand(context: SessionContext, input: string): boolean 
 function saveConversation(context: SessionContext) {
   let conversation = '';
   context.messages.forEach((message) => {
-    conversation += `${message.role}: ${message.content}\n`;
+    conversation += `${roleToLabel(message.role)}: ${message.content}\n\n`;
   });
 
   const conversationStoragePath = getConversationStoragePath();
@@ -90,4 +91,17 @@ function saveConversation(context: SessionContext) {
   fs.writeFileSync(filePath, conversation);
 
   output.outputInfo(`Conversation saved to ${filePath.replace(os.homedir(), '~')}`);
+}
+
+function roleToLabel(role: Message['role']): string {
+  switch (role) {
+    case 'user':
+      return 'me';
+    case 'assistant':
+      return 'ai';
+    case 'system':
+      return 'system';
+    default:
+      return role;
+  }
 }
