@@ -1,7 +1,7 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
-import type { SessionCost, SessionUsage } from './engine/session';
-import { formatSessionCost, formatSessionStats } from './format';
+import type { SessionCost, SessionUsage } from './engine/session.js';
+import { formatSessionCost, formatSessionStats } from './format.js';
 
 let verbose = false;
 let showStats = false;

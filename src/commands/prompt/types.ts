@@ -1,6 +1,6 @@
-import type { Message, ModelUsage } from '../../engine/inference';
-import type { ProviderConfig } from '../../engine/providers/config';
-import type { Provider } from '../../engine/providers/provider';
+import type { Message, ModelUsage } from '../../engine/inference.js';
+import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { Provider } from '../../engine/providers/provider.js';
 
 export interface PromptOptions {
   /** Interactive mode */

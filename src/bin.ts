@@ -2,8 +2,8 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { command as prompt } from './commands/prompt';
-import { command as init } from './commands/init';
+import { command as prompt } from './commands/prompt/index.js';
+import { command as init } from './commands/init/index.js';
 
 void yargs(hideBin(process.argv))
   .command(prompt)

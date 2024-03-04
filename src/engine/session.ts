@@ -1,5 +1,5 @@
-import type { ModelUsage } from './inference';
-import type { ModelPricing } from './providers/provider';
+import type { ModelUsage } from './inference.js';
+import type { ModelPricing } from './providers/provider.js';
 
 export interface SessionUsage {
   total: ModelUsage;

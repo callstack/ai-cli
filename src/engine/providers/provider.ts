@@ -1,7 +1,7 @@
-import type { Message, ModelResponse } from '../inference';
-import type { ProviderConfig } from './config';
-import openAi from './openAi';
-import perplexity from './perplexity';
+import type { Message, ModelResponse } from '../inference.js';
+import type { ProviderConfig } from './config.js';
+import openAi from './openAi.js';
+import perplexity from './perplexity.js';
 
 export const providerNames = ['openAi', 'perplexity'] as const;
 export type ProviderName = (typeof providerNames)[number];

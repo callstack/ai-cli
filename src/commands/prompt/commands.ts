@@ -6,11 +6,11 @@ import {
   getConversationStoragePath,
   getDefaultFilename,
   getUniqueFilename,
-} from '../../file-utils';
-import * as output from '../../output';
-import { calculateUsageCost } from '../../engine/session';
-import { formatCost } from '../../format';
-import type { SessionContext } from './types';
+} from '../../file-utils.js';
+import * as output from '../../output.js';
+import { calculateUsageCost } from '../../engine/session.js';
+import { formatCost } from '../../format.js';
+import type { SessionContext } from './types.js';
 
 export function processCommand(context: SessionContext, input: string): boolean {
   if (!input.startsWith('/')) {

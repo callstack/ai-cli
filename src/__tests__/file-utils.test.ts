@@ -1,7 +1,7 @@
-import type { SessionContext } from '../commands/prompt/types';
-import { DEFAULT_SYSTEM_PROMPT } from '../default-config';
-import { getDefaultFilename, getUniqueFilename } from '../file-utils';
-import openAi from '../engine/providers/openAi';
+import type { SessionContext } from '../commands/prompt/types.js';
+import { DEFAULT_SYSTEM_PROMPT } from '../default-config.js';
+import { getDefaultFilename, getUniqueFilename } from '../file-utils.js';
+import openAi from '../engine/providers/openAi.js';
 
 const mockFs = require('mock-fs');
 

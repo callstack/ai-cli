@@ -2,43 +2,40 @@
   "name": "@callstack/ai-cli",
   "version": "0.6.0-beta.0",
   "description": "AI assistent in your terminal.",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
-  "source": "src/index",
-  "files": [
-    "src",
-    "lib",
-    "!**/__tests__",
-    "!**/__mocks__",
-    "!**/.*"
-  ],
-  "scripts": {
-    "test": "jest",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli lib",
-    "prepare": "bob build",
-    "release": "release-it",
-    "ai": "chmod +x ./lib/commonjs/bin.js && ./lib/commonjs/bin.js"
-  },
-  "bin": {
-    "ai": "lib/commonjs/bin.js"
-  },
+  "author": "Maciej Jastrzebski <mdjastrzebski@gmail.com> (https://github.com/mdjastrzebski)",
+  "homepage": "https://github.com/callstack/ai-cli#readme",
+  "license": "MIT",
   "keywords": [
     "ai",
     "cli"
   ],
+  "type": "module",
+  "main": "build/index.js",
+  "source": "src/index.js",
+  "bin": {
+    "ai": "build/bin.js"
+  },
+  "files": [
+    "build",
+    "!**/__tests__",
+    "!**/__mocks__"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "clean": "del-cli build",
+    "release": "release-it",
+    "ai": "chmod +x ./build/bin.js && ./build/bin.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/callstack/ai-cli.git"
   },
-  "author": "Maciej Jastrzebski <mdjastrzebski@gmail.com> (https://github.com/mdjastrzebski)",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/callstack/ai-cli/issues"
   },
-  "homepage": "https://github.com/callstack/ai-cli#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -63,18 +60,19 @@
     "commitlint": "^17.0.2",
     "del-cli": "^5.0.0",
     "eslint": "^8.4.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
     "jest": "^28.1.1",
     "mock-fs": "^5.2.0",
-    "prettier": "^2.0.5",
-    "react-native-builder-bob": "^0.20.0",
+    "prettier": "^3.2.5",
     "release-it": "^15.0.0",
     "typescript": "^5.0.2"
   },
   "packageManager": "yarn@3.6.1",
   "engines": {
-    "node": ">= 18.0.0"
+    "node": ">= 16.0.0"
   },
   "jest": {
     "modulePathIgnorePatterns": [
@@ -102,49 +100,5 @@
         "preset": "angular"
       }
     }
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@callstack/eslint-config/node",
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false
-  },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "project": "tsconfig.build.json"
-        }
-      ]
-    ]
   }
 }

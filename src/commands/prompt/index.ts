@@ -1,9 +1,9 @@
 import type { CommandModule } from 'yargs';
-import perplexity from '../../engine/providers/perplexity';
-import openAi from '../../engine/providers/openAi';
-import type { Provider } from '../../engine/providers/provider';
-import { run } from './run';
-import type { PromptOptions } from './types';
+import perplexity from '../../engine/providers/perplexity.js';
+import openAi from '../../engine/providers/openAi.js';
+import type { Provider } from '../../engine/providers/provider.js';
+import { run } from './run.js';
+import type { PromptOptions } from './types.js';
 
 export const providerOptionMapping: Record<string, Provider> = {
   openai: openAi,
