@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
-import { type Message } from '../inference';
-import type { ProviderConfig } from './config';
-import type { Provider } from './provider';
+import { type Message } from '../inference.js';
+import type { ProviderConfig } from './config.js';
+import type { Provider } from './provider.js';
 
 const OpenAi: Provider = {
   label: 'OpenAI',

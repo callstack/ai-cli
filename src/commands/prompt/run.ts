@@ -1,18 +1,18 @@
-import { checkIfConfigExists, parseConfigFile } from '../../config-file';
-import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config';
-import { combineUsage } from '../../engine/session';
-import { inputLine } from '../../input';
-import * as output from '../../output';
-import { init } from '../init/init';
-import { processCommand } from './commands';
-import type { PromptOptions, SessionContext } from './types';
+import { checkIfConfigExists, parseConfigFile } from '../../config-file.js';
+import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config.js';
+import { combineUsage } from '../../engine/session.js';
+import { inputLine } from '../../input.js';
+import * as output from '../../output.js';
+import { init } from '../init/init.js';
+import { processCommand } from './commands.js';
+import type { PromptOptions, SessionContext } from './types.js';
 import {
   filterOutApiKey,
   getDefaultProvider,
   getOutputParams,
   handleInputFile,
   resolveProviderFromOption,
-} from './utils';
+} from './utils.js';
 
 export async function run(initialPrompt: string, options: PromptOptions) {
   try {

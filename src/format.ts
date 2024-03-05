@@ -1,4 +1,4 @@
-import type { SessionCost, SessionUsage } from './engine/session';
+import type { SessionCost, SessionUsage } from './engine/session.js';
 
 export function formatCost(value: number | undefined, precision = 4) {
   if (value == null) {

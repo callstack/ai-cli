@@ -1,0 +1,21 @@
+{
+  "root": true,
+  "extends": ["@callstack/eslint-config/node", "prettier"],
+  "settings": {
+    "import/resolver": {
+      "typescript": true
+    }
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "quoteProps": "consistent",
+        "singleQuote": true,
+        "tabWidth": 2,
+        "trailingComma": "es5",
+        "useTabs": false
+      }
+    ]
+  }
+}

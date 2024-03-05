@@ -5,16 +5,16 @@ import {
   DEFAULT_FILE_PROMPT,
   FILE_COST_WARNING,
   FILE_TOKEN_COUNT_WARNING,
-} from '../../default-config';
-import { calculateSessionCost, calculateUsageCost } from '../../engine/session';
-import { tokenizer } from '../../engine/tokenizer';
-import * as output from '../../output';
-import { formatCost, formatTokenCount } from '../../format';
-import type { ModelResponse } from '../../engine/inference';
-import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider';
-import type { ConfigFile } from '../../config-file';
-import type { SessionContext } from './types';
-import { providerOptionMapping } from '.';
+} from '../../default-config.js';
+import { calculateSessionCost, calculateUsageCost } from '../../engine/session.js';
+import { tokenizer } from '../../engine/tokenizer.js';
+import * as output from '../../output.js';
+import { formatCost, formatTokenCount } from '../../format.js';
+import type { ModelResponse } from '../../engine/inference.js';
+import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
+import type { ConfigFile } from '../../config-file.js';
+import type { SessionContext } from './types.js';
+import { providerOptionMapping } from './index.js';
 
 export function handleInputFile(context: SessionContext, inputFile: string) {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));

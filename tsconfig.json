@@ -1,17 +1,23 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
     "paths": {
-      "ai-cli": ["./src/index"]
+      "ai-cli": ["./src/index.js"]
     },
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "outDir": "build",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "declaration": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
-    "lib": ["esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noImplicitUseStrict": false,
@@ -19,10 +25,7 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext",
     "verbatimModuleSyntax": true
-  }
+  },
+  "include": ["src/**/*.ts"]
 }

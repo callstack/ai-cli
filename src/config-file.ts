@@ -6,8 +6,8 @@ import {
   DEFAULT_OPEN_AI_MODEL,
   DEFAULT_PERPLEXITY_MODEL,
   DEFAULT_SYSTEM_PROMPT,
-} from './default-config';
-import * as output from './output';
+} from './default-config.js';
+import * as output from './output.js';
 
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';

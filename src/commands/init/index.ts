@@ -1,5 +1,5 @@
 import type { CommandModule } from 'yargs';
-import { init } from './init';
+import { init } from './init.js';
 
 export const command: CommandModule<{}> = {
   command: ['init'],
