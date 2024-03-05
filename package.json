@@ -72,11 +72,11 @@
   },
   "packageManager": "yarn@3.6.1",
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 18.0.0"
   },
   "jest": {
     "modulePathIgnorePatterns": [
-      "<rootDir>/lib/"
+      "<rootDir>/build/"
     ]
   },
   "commitlint": {
