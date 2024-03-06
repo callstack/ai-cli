@@ -9,7 +9,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'AI CLI',
-  tagline: 'Maintainable regular expressions for TypeScript and JavaScript.',
+  tagline: 'AI assistant in your terminal.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
