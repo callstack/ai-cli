@@ -27,15 +27,17 @@ export const SelectProviderStep = ({ label, onSelect }: SelectProviderStepProps)
 
   return (
     <Box flexDirection="column">
-      <Text color={colors.initPrompt}>{label}</Text>
-      {value ? (
-        <Text>{value.label}</Text>
-      ) : (
+      <Box flexDirection="row">
+        <Text color={colors.initPrompt}>{label}</Text>
+        {value ? <Text> {value.label}</Text> : null}
+      </Box>
+
+      {!value ? (
         <Select
           options={providerItems}
           onChange={(provider) => handleSelect(provider as ProviderName)}
         />
-      )}
+      ) : null}
     </Box>
   );
 };

@@ -508,8 +508,6 @@ __metadata:
     eslint-plugin-prettier: ^5.1.3
     ink: ^4.4.1
     ink-link: ^3.0.0
-    ink-select-input: ^5.0.0
-    ink-text-input: ^5.0.1
     jest: ^28.1.1
     mock-fs: ^5.2.0
     openai: ^4.24.1
@@ -2172,13 +2170,6 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 83644b56493e89a254bae05702abf3a1101b4fa4d0ca31df1c9985275a5a5bd47b3c27b7fa0b71098d41114d8ca000e6ed90cad764b306f8a503665e4d517ced
-  languageName: node
-  linkType: hard
-
-"arr-rotate@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "arr-rotate@npm:1.0.0"
-  checksum: f996e94a7b8325c23fe3d7bf95f4f1a5fd1baba34c6bcebb5a8bd0f9b955569293f4cc61f02b0a242380923fca235948e95f6dbf544a6f183207d80e8f2d442d
   languageName: node
   linkType: hard
 
@@ -5356,33 +5347,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ink-select-input@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ink-select-input@npm:5.0.0"
-  dependencies:
-    arr-rotate: ^1.0.0
-    figures: ^5.0.0
-    lodash.isequal: ^4.5.0
-  peerDependencies:
-    ink: ^4.0.0
-    react: ^18.0.0
-  checksum: 9e21351f7ae1ad1721eca04038e25afd4b6f85ea0abd51235db2ed6894e209198687924a2ae8aca972571cb0601d735810c462676b7ebfd68ae3cafd0d67613c
-  languageName: node
-  linkType: hard
-
-"ink-text-input@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "ink-text-input@npm:5.0.1"
-  dependencies:
-    chalk: ^5.2.0
-    type-fest: ^3.6.1
-  peerDependencies:
-    ink: ^4.0.0
-    react: ^18.0.0
-  checksum: 045ade486eb472e2de3d4fa2a195ca7a6af509789f350c3bb194b0f3349c554f5dd2daa720cd77518b3f2d52a4678e9894b4dc5d4470b103e6c142b22d61d161
-  languageName: node
-  linkType: hard
-
 "ink@npm:^4.4.1":
   version: 4.4.1
   resolution: "ink@npm:4.4.1"
@@ -6790,13 +6754,6 @@ __metadata:
   version: 4.1.2
   resolution: "lodash.escaperegexp@npm:4.1.2"
   checksum: 6d99452b1cfd6073175a9b741a9b09ece159eac463f86f02ea3bee2e2092923fce812c8d2bf446309cc52d1d61bf9af51c8118b0d7421388e6cead7bd3798f0f
-  languageName: node
-  linkType: hard
-
-"lodash.isequal@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.isequal@npm:4.5.0"
-  checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
   languageName: node
   linkType: hard
 
@@ -9608,7 +9565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^3.0.0, type-fest@npm:^3.6.1":
+"type-fest@npm:^3.0.0":
   version: 3.13.1
   resolution: "type-fest@npm:3.13.1"
   checksum: c06b0901d54391dc46de3802375f5579868949d71f93b425ce564e19a428a0d411ae8d8cb0e300d330071d86152c3ea86e744c3f2860a42a79585b6ec2fdae8e

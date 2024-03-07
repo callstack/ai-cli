@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text } from 'ink';
-import TextInput from 'ink-text-input';
+import { TextInput } from '@inkjs/ui';
 import { colors } from './colors.js';
 
 type KeyInputStateProps = {
@@ -40,13 +40,11 @@ export const KeyInputStep = ({
   return (
     <Text>
       <Text color={colors.initPrompt}>{label}</Text>{' '}
-      <TextInput
-        value={value}
-        focus={!submitted}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        showCursor
-      />
+      {submitted ? (
+        <Text>{value}</Text>
+      ) : (
+        <TextInput onChange={handleChange} onSubmit={handleSubmit} />
+      )}
       {error ? <Text color="red"> {error}</Text> : null}
     </Text>
   );
