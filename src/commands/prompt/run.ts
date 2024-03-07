@@ -48,7 +48,7 @@ async function runInternal(initialPrompt: string, options: PromptOptions) {
 
   if (options.interactive || !initialPrompt) {
     output.outputInfo(
-      'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.'
+      'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.',
     );
   } else {
     process.exit(0);
@@ -86,7 +86,7 @@ async function createSession(options: PromptOptions): Promise<SessionContext> {
 
   if (options.creative && options.precise) {
     output.outputWarning(
-      'You set both creative and precise response styles, falling back to default'
+      'You set both creative and precise response styles, falling back to default',
     );
   } else {
     if (options.creative) {

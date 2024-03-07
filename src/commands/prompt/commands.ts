@@ -38,12 +38,12 @@ export function processCommand(context: SessionContext, input: string): boolean 
     output.outputInfo(`Model: ${context.config?.model}`);
     output.outputInfo('System prompt:', context.config?.systemPrompt);
     output.outputInfo(
-      `Total tokens: ${context.totalUsage.inputTokens} in + ${context.totalUsage.outputTokens} out`
+      `Total tokens: ${context.totalUsage.inputTokens} in + ${context.totalUsage.outputTokens} out`,
     );
 
     const totalCost = calculateUsageCost(
       context.totalUsage,
-      context.provider.pricing[context.config?.model]
+      context.provider.pricing[context.config?.model],
     );
     output.outputInfo(`Total cost: ${formatCost(totalCost)}`);
 
@@ -84,7 +84,7 @@ function saveConversation(context: SessionContext) {
 
   const conversationStoragePath = getConversationStoragePath();
   const filePath = getUniqueFilename(
-    path.join(conversationStoragePath, getDefaultFilename(context))
+    path.join(conversationStoragePath, getDefaultFilename(context)),
   );
 
   fs.writeFileSync(filePath, conversation);

@@ -76,7 +76,7 @@ async function initInternal() {
   });
 
   output.outputDefault(
-    '\nI have written your settings into "~/.airc.json" file. You can now start using AI CLI.\n'
+    '\nI have written your settings into "~/.airc.json" file. You can now start using AI CLI.\n',
   );
   output.outputDefault('For a single question and answer just pass a prompt as a param:');
   output.outputBold('$ ai "Tell me a useful productivity hack"\n');
