@@ -34,11 +34,11 @@ export function handleInputFile(context: SessionContext, inputFile: string) {
     : `~${formatTokenCount(fileTokens, 100)} tokens`;
   if ((fileCost ?? 0) >= FILE_COST_WARNING || fileTokens >= FILE_TOKEN_COUNT_WARNING) {
     output.outputWarning(
-      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`
+      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`,
     );
   } else {
     output.outputInfo(
-      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`
+      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`,
     );
   }
 
@@ -58,7 +58,7 @@ export function filterOutApiKey(key: string, value: unknown) {
 
 export function getOutputParams(
   session: SessionContext,
-  response: ModelResponse
+  response: ModelResponse,
 ): output.OutputAiOptions {
   const usage = {
     total: session.totalUsage,

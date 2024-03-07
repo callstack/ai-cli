@@ -84,6 +84,12 @@
       "@commitlint/config-conventional"
     ]
   },
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "useTabs": false
+  },
   "release-it": {
     "git": {
       "commitMessage": "chore: release ${version}",

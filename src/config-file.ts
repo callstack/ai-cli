@@ -18,14 +18,14 @@ const ProvidersSchema = z.object({
       apiKey: z.string(),
       model: z.string().default(DEFAULT_OPEN_AI_MODEL),
       systemPrompt: z.string().default(DEFAULT_SYSTEM_PROMPT),
-    })
+    }),
   ),
   perplexity: z.optional(
     z.object({
       apiKey: z.string(),
       model: z.string().default(DEFAULT_PERPLEXITY_MODEL),
       systemPrompt: z.string().default(DEFAULT_SYSTEM_PROMPT),
-    })
+    }),
   ),
 });
 

@@ -19,7 +19,7 @@ export function formatTokenCount(tokenCount: number, roundTo = 1) {
   // Pick suffix based on the order of magnitude of the count.
   const suffixIndex = Math.min(
     Math.floor(Math.log10(Math.abs(roundedCount)) / 3),
-    suffixes.length - 1
+    suffixes.length - 1,
   );
   const scaledCount = roundedCount / Math.pow(10, suffixIndex * 3);
   return `${scaledCount.toFixed(0)}${suffixes[suffixIndex]}`;
