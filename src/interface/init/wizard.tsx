@@ -1,7 +1,7 @@
 import React from 'react';
 
 type WizardProps = {
-  steps: Array<React.JSX.Element>;
+  steps: React.JSX.Element[];
   currentStep: number;
 };
 

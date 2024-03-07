@@ -3,10 +3,11 @@ import { Box, Newline, Text } from 'ink';
 import Link from 'ink-link';
 import { type Provider } from '../../engine/providers/provider.js';
 import { createConfigFile } from '../../config-file.js';
-import { Confirm } from '../../interface/init/confirm.js';
 import { SecretTextInput } from '../../interface/init/secret-text-input.js';
 import { Wizard } from '../../interface/init/wizard.js';
 import { SelectProvider } from '../../interface/init/select-provider.js';
+import { Confirm } from '../../interface/init/confirm.js';
+import { ConfirmStep } from '../../ui/confirm-step.js';
 
 interface InitUiProps {
   hasConfig: boolean;
@@ -14,6 +15,7 @@ interface InitUiProps {
 
 export const InitUi = ({ hasConfig }: InitUiProps) => {
   const [currentStep, setCurrentStep] = useState(hasConfig ? 0 : 1);
+  const [overwriteConfig, setOverwriteConfig] = useState<boolean | undefined>();
 
   const [setupFinished, setSetupFinished] = useState(false);
 
@@ -47,15 +49,18 @@ export const InitUi = ({ hasConfig }: InitUiProps) => {
         currentStep={currentStep}
         steps={[
           hasConfig ? (
-            <Confirm
-              key={'config-exists'}
-              onSelect={(shouldInitialize) => {
-                if (shouldInitialize) {
-                  setCurrentStep(currentStep + 1);
-                }
+            <ConfirmStep
+              key="has-config"
+              label={`Existing "~/.airc.json" file found, do you want to re-initialize it?`}
+              value={overwriteConfig}
+              onConfirm={() => {
+                setOverwriteConfig(true);
+                setCurrentStep((step) => step + 1);
               }}
-              description={`Existing "~/.airc.json" file found, do you want to re-initialize it?`}
-              displayOnNo="Nothing to do. Exiting."
+              onCancel={() => {
+                setOverwriteConfig(false);
+                process.exit(0);
+              }}
             />
           ) : (
             <Text key="welcome" color="blue">

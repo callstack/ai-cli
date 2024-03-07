@@ -490,6 +490,7 @@ __metadata:
     "@callstack/eslint-config": ^14.1.0
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
+    "@inkjs/ui": ^1.0.0
     "@release-it/conventional-changelog": ^5.0.0
     "@types/jest": ^28.1.2
     "@types/mock-fs": ^4.13.4
@@ -847,6 +848,20 @@ __metadata:
   version: 2.2.5
   resolution: "@iarna/toml@npm:2.2.5"
   checksum: b63b2b2c4fd67969a6291543ada0303d45593801ee744b60f5390f183c03d9192bc67a217abb24be945158f1935f02840d9ffff40c0142aa171b5d3b6b6a3ea5
+  languageName: node
+  linkType: hard
+
+"@inkjs/ui@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@inkjs/ui@npm:1.0.0"
+  dependencies:
+    chalk: ^5.2.0
+    cli-spinners: ^2.9.0
+    deepmerge: ^4.3.1
+    figures: ^5.0.0
+  peerDependencies:
+    ink: ^4.2.0
+  checksum: 36b8cd666b7572c03ecf9abdaab42e0566b7cd655b5ed394bdf3420e5368851543e115b46e9cb0710afaa589544b03d081720bd24c60419795ea53dcb36af941
   languageName: node
   linkType: hard
 
@@ -2825,7 +2840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cli-spinners@npm:^2.5.0, cli-spinners@npm:^2.6.1":
+"cli-spinners@npm:^2.5.0, cli-spinners@npm:^2.6.1, cli-spinners@npm:^2.9.0":
   version: 2.9.2
   resolution: "cli-spinners@npm:2.9.2"
   checksum: 1bd588289b28432e4676cb5d40505cfe3e53f2e4e10fbe05c8a710a154d6fe0ce7836844b00d6858f740f2ffe67cdc36e0fce9c7b6a8430e80e6388d5aa4956c
@@ -3454,7 +3469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 2024c6a980a1b7128084170c4cf56b0fd58a63f2da1660dcfe977415f27b17dbe5888668b59d0b063753f3220719d5e400b7f113609489c90160bb9a5518d052
