@@ -11,7 +11,7 @@ export const command: CommandModule<{}> = {
   handler: () => {
     try {
       const configExists = checkIfConfigExists();
-      render(<InitUi configExists={configExists} />);
+      render(<InitUi hasConfig={configExists} />);
     } catch (error) {
       output.clearLine();
       output.outputError(error);

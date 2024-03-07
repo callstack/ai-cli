@@ -8,12 +8,12 @@ import { SecretTextInput } from '../../interface/init/secret-text-input.js';
 import { Wizard } from '../../interface/init/wizard.js';
 import { SelectProvider } from '../../interface/init/select-provider.js';
 
-type InitInterfaceProps = {
-  configExists: boolean;
-};
+interface InitUiProps {
+  hasConfig: boolean;
+}
 
-export const InitUi = ({ configExists }: InitInterfaceProps) => {
-  const [currentStep, setCurrentStep] = useState(configExists ? 0 : 1);
+export const InitUi = ({ hasConfig }: InitUiProps) => {
+  const [currentStep, setCurrentStep] = useState(hasConfig ? 0 : 1);
 
   const [setupFinished, setSetupFinished] = useState(false);
 
@@ -42,11 +42,11 @@ export const InitUi = ({ configExists }: InitInterfaceProps) => {
   }, [selectedProvider, apiKey]);
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box flexDirection="column">
       <Wizard
         currentStep={currentStep}
         steps={[
-          configExists ? (
+          hasConfig ? (
             <Confirm
               key={'config-exists'}
               onSelect={(shouldInitialize) => {
@@ -91,6 +91,7 @@ export const InitUi = ({ configExists }: InitInterfaceProps) => {
           ),
         ]}
       />
+
       {setupFinished ? (
         <>
           <Text>
