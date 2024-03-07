@@ -3,16 +3,16 @@ import { Box, Newline, Text } from 'ink';
 import Link from 'ink-link';
 import { type Provider } from '../../engine/providers/provider.js';
 import { createConfigFile } from '../../config-file.js';
-import { Confirm } from './confirm.js';
-import { SecretTextInput } from './secret-text-input.js';
-import { Wizard } from './wizard.js';
-import { SelectProvider } from './select-provider.js';
+import { Confirm } from '../../interface/init/confirm.js';
+import { SecretTextInput } from '../../interface/init/secret-text-input.js';
+import { Wizard } from '../../interface/init/wizard.js';
+import { SelectProvider } from '../../interface/init/select-provider.js';
 
 type InitInterfaceProps = {
   configExists: boolean;
 };
 
-export const InitInterface = ({ configExists }: InitInterfaceProps) => {
+export const InitUi = ({ configExists }: InitInterfaceProps) => {
   const [currentStep, setCurrentStep] = useState(configExists ? 0 : 1);
 
   const [setupFinished, setSetupFinished] = useState(false);
