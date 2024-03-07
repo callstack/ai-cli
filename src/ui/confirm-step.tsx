@@ -4,25 +4,30 @@ import { ConfirmInput } from '@inkjs/ui';
 
 interface ConfirmStepProps {
   label: string;
-  value: boolean | undefined;
-  defaultValue?: boolean;
-  onConfirm: () => void;
-  onCancel: () => void;
+  defaultChoice?: 'confirm' | 'cancel';
+  onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
-export function ConfirmStep({ label, value, defaultValue, onConfirm, onCancel }: ConfirmStepProps) {
-  const defaultChoice = defaultValue === true ? 'confirm' : 'cancel';
+export function ConfirmStep({ label, defaultChoice, onConfirm, onCancel }: ConfirmStepProps) {
+  const [value, setValue] = React.useState<boolean | undefined>(undefined);
 
   return (
     <Text>
-      <Text color="blue">{label}</Text>{' '}
+      <Text color="cyan">{label}</Text>{' '}
       <Text>
         {`[`}
         <ConfirmInput
           isDisabled={value !== undefined}
           defaultChoice={defaultChoice}
-          onConfirm={onConfirm}
-          onCancel={onCancel}
+          onConfirm={() => {
+            setValue(true);
+            onConfirm?.();
+          }}
+          onCancel={() => {
+            setValue(false);
+            onCancel?.();
+          }}
         />
         {`]`}
 

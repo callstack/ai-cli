@@ -13,8 +13,8 @@ export const command: CommandModule<{}> = {
 
 export function run() {
   try {
-    const configExists = checkIfConfigExists();
-    render(<InitUi hasConfig={configExists} />);
+    const hasConfig = checkIfConfigExists();
+    render(<InitUi hasConfig={hasConfig} />);
   } catch (error) {
     output.clearLine();
     output.outputError(error);

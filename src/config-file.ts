@@ -52,9 +52,9 @@ export async function parseConfigFile() {
   return typedConfig;
 }
 
-export async function createConfigFile(configContents: ConfigFile) {
+export function writeConfigFile(configContents: ConfigFile) {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
-  await fs.promises.writeFile(configPath, JSON.stringify(configContents, null, 2) + '\n');
+  fs.writeFileSync(configPath, JSON.stringify(configContents, null, 2) + '\n');
 }
 
 export function checkIfConfigExists() {
