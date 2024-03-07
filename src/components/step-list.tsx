@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box } from 'ink';
 
-type WizardProps = {
+type StepListProps = {
   children: React.ReactNode;
   step: number;
 };
 
-export const Wizard = ({ children, step }: WizardProps) => {
+export const StepList = ({ children, step }: StepListProps) => {
   const steps = React.Children.toArray(children);
 
   return (

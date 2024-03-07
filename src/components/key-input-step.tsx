@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text } from 'ink';
 import TextInput from 'ink-text-input';
+import { colors } from './colors.js';
 
 type KeyInputStateProps = {
   label: string;
@@ -38,7 +39,7 @@ export const KeyInputStep = ({
 
   return (
     <Text>
-      <Text color="cyan">{label}</Text>{' '}
+      <Text color={colors.initPrompt}>{label}</Text>{' '}
       <TextInput
         value={value}
         focus={!submitted}

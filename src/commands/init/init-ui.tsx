@@ -3,11 +3,12 @@ import { Box, Newline, Text } from 'ink';
 import Link from 'ink-link';
 import { type Provider } from '../../engine/providers/provider.js';
 import { writeConfigFile } from '../../config-file.js';
-import { Wizard } from '../../ui/wizard.js';
-import { SelectProviderStep } from '../../ui/select-provider-step.js';
-import { ConfirmStep } from '../../ui/confirm-step.js';
-import { KeyInputStep } from '../../ui/key-input-step.js';
-import { ExitApp } from '../../ui/exit-app.js';
+import { StepList } from '../../components/step-list.js';
+import { SelectProviderStep } from '../../components/select-provider-step.js';
+import { ConfirmStep } from '../../components/confirm-step.js';
+import { KeyInputStep } from '../../components/key-input-step.js';
+import { ExitApp } from '../../components/exit-app.js';
+import { colors } from '../../components/colors.js';
 
 interface InitUiProps {
   hasConfig: boolean;
@@ -38,13 +39,13 @@ export const InitUi = ({ hasConfig }: InitUiProps) => {
 
   return (
     <Box flexDirection="column">
-      <Text color="cyan" key="welcome">
+      <Text color={colors.initPrompt} key="welcome">
         Welcome to AI CLI.
         {!hasConfig ? " Let's set you up quickly." : null}
         <Newline />
       </Text>
 
-      <Wizard step={step}>
+      <StepList step={step}>
         {hasConfig ? (
           <ConfirmStep
             label='Existing \"~/.airc.json\" file found, do you want to overwrite it?'
@@ -104,19 +105,25 @@ export const InitUi = ({ hasConfig }: InitUiProps) => {
         )}
 
         <Text>
-          I have written your settings into "~/.airc.json" file. You can now use AI CLI.
+          <Text color={colors.initPrompt}>
+            I have written your settings into "~/.airc.json" file. You can now use AI CLI.
+          </Text>
           <Newline count={2} />
-          For a single question and answer just pass a prompt as a param:
+          <Text color={colors.initPrompt}>
+            For a single question and answer just pass a prompt as a param:
+          </Text>
           <Newline />
-          $ ai "Tell me a useful productivity hack
+          <Text>$ ai "Tell me a useful productivity hack"</Text>
           <Newline count={2} />
-          For interactive session use "-i" (or "--interactive") option:
+          <Text color={colors.initPrompt}>
+            For interactive session use "-i" (or "--interactive") option:
+          </Text>
           <Newline />
-          $ ai -i "Tell me an interesting fact about JavaScript
+          <Text>$ ai -i "Tell me an interesting fact about JavaScript"</Text>
           <Newline />
           <ExitApp />
         </Text>
-      </Wizard>
+      </StepList>
     </Box>
   );
 };

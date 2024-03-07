@@ -7,6 +7,7 @@ import {
   type Provider,
   type ProviderName,
 } from '../engine/providers/provider.js';
+import { colors } from './colors.js';
 
 type SelectProviderStepProps = {
   label: string;
@@ -26,7 +27,7 @@ export const SelectProviderStep = ({ label, onSelect }: SelectProviderStepProps)
 
   return (
     <Box flexDirection="column">
-      <Text color="cyan">{label}</Text>
+      <Text color={colors.initPrompt}>{label}</Text>
       {value ? (
         <Text>{value.label}</Text>
       ) : (
