@@ -3,6 +3,7 @@ import { Text } from 'ink';
 import type { Message } from '../../engine/inference.js';
 import { formatSessionCost, formatSessionStats } from '../../format.js';
 import type { OutputAiOptions } from '../../output.js';
+import { Thinking } from './thinking.js';
 
 export type DisplayMessage = Message & {
   stats?: OutputAiOptions;
@@ -23,7 +24,9 @@ const formatStats = (stats: OutputAiOptions, usage: boolean = false, cost: boole
 };
 
 export const ChatMessage = ({ message, usage, cost }: ChatMessageProps) => {
-  return (
+  return message.content === '' && message.role === 'assistant' ? (
+    <Thinking thinking={true} />
+  ) : (
     <Text color={message.role === 'assistant' ? 'cyanBright' : 'gray'}>
       <Text>{message.role === 'assistant' ? 'Ai: ' : 'Me: '}</Text>
       <Text>{message.content}</Text>

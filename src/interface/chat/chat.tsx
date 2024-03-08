@@ -5,7 +5,6 @@ import type { Message, ModelResponse } from '../../engine/inference.js';
 import { getOutputParams } from '../../commands/prompt/utils.js';
 import type { SessionContext } from '../../commands/prompt/types.js';
 import { ChatMessage, type DisplayMessage } from './chat-message.js';
-import { Thinking } from './thinking.js';
 import { UserInput } from './user-input.js';
 import { Help } from './help.js';
 
@@ -15,36 +14,62 @@ type ChatInterfaceProps = {
 
 export const ChatInterface = ({ session }: ChatInterfaceProps) => {
   const [verbose, setVerbose] = useState(false);
-  const [userInput, setUserInput] = useState('');
   const [showUsage, setShowUsage] = useState(false);
   const [showCost, setShowCost] = useState(false);
   const [messages, setMessages] = useState<DisplayMessage[]>(session.messages);
   const [thinking, setThinking] = useState(false);
   const [displayHelp, setDisplayHelp] = useState(false);
 
-  const addMessage = useCallback(
-    (message: string, role: 'assistant' | 'user') => {
-      const userMessage: Message = {
-        role: role,
-        content: message,
-      };
-      setMessages([...messages, userMessage]);
-    },
-    [messages]
-  );
+  const addUserMessage = useCallback((message: string) => {
+    const userMessage: Message = {
+      role: 'user',
+      content: message,
+    };
+    setMessages((messages) => [...messages, userMessage]);
+    return userMessage;
+  }, []);
 
-  const addAiMessage = useCallback(
-    (response: ModelResponse) => {
-      const aiMessage: DisplayMessage = {
-        role: 'assistant',
-        content: response.messageText ?? '',
-        stats: getOutputParams(session.provider, session.config, response),
-      };
-      setThinking(false);
-      setMessages([...messages, aiMessage]);
-    },
-    [messages]
-  );
+  const addAiMessage = useCallback((response: ModelResponse) => {
+    const aiMessage: DisplayMessage = {
+      role: 'assistant',
+      content: response.messageText ?? '',
+      stats: getOutputParams(session.provider, session.config, response),
+    };
+    setMessages((messages) => {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.content === '' && lastMessage.role === 'assistant') {
+        const messagesWithoutPlaceholder = messages.slice(0, messages.length - 1);
+        return [...messagesWithoutPlaceholder, aiMessage];
+      } else {
+        return [...messages, aiMessage];
+      }
+    });
+  }, []);
+
+  const addAiMessagePlaceholder = useCallback(() => {
+    const aiMessage: DisplayMessage = {
+      role: 'assistant',
+      content: '',
+    };
+
+    setMessages((messages) => [...messages, aiMessage]);
+  }, []);
+
+  const getAiResponse = useCallback(async (messages: Message[], message?: string) => {
+    setThinking(true);
+    const messagesToSend = message ? [...messages, addUserMessage(message)] : messages;
+    addAiMessagePlaceholder();
+    const aiResponse = await getChatCompletion(session.provider, session.config, messagesToSend);
+    addAiMessage(aiResponse);
+    setThinking(false);
+  }, []);
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === 'user') {
+      void getAiResponse(messages);
+    }
+  }, []);
 
   const onSubmitMessage = useCallback(
     (message: string) => {
@@ -56,32 +81,13 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         setShowUsage(!showUsage);
       } else if (message === '/cost') {
         setShowCost(!showCost);
-        setMessages(messages);
       } else {
         setDisplayHelp(false);
-        addMessage(message, 'user');
+        void getAiResponse(messages, message);
       }
-
-      setUserInput('');
     },
-    [addMessage, messages, verbose, displayHelp, showUsage]
+    [messages, verbose, displayHelp, showUsage],
   );
-
-  const getAiResponse = useCallback(
-    async (messages: Message[]) => {
-      const aiResponse = await getChatCompletion(session.provider, session.config, messages);
-      addAiMessage(aiResponse);
-    },
-    [addAiMessage]
-  );
-
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.role === 'user') {
-      setThinking(true);
-      void getAiResponse(messages);
-    }
-  }, [messages]);
 
   return (
     <Box display="flex" flexDirection="column">
@@ -93,26 +99,18 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         </Text>
       ) : null}
       <Box display="flex" flexDirection="column">
-        {messages.map((message, index) => {
-          return (
-            <ChatMessage
-              key={`${index}-${message.content}`}
-              message={message}
-              usage={showUsage}
-              cost={showCost}
-            />
-          );
-        })}
+        {messages.map((message, index) => (
+          <ChatMessage
+            key={`${index}-${message.content}`}
+            message={message}
+            usage={showUsage}
+            cost={showCost}
+          />
+        ))}
       </Box>
-      <Thinking thinking={thinking} />
       <Help show={displayHelp} />
-      <UserInput
-        visible={!thinking}
-        value={userInput}
-        onChange={setUserInput}
-        onSubmit={onSubmitMessage}
-      />
-      <Text color={'gray'}>Total usage: {messages.length}</Text>
+      <UserInput visible={!thinking} onSubmit={onSubmitMessage} />
+      {/* <Text color={'gray'}>Total usage: {messages.length}</Text> */}
     </Box>
   );
 };

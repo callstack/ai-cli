@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Box, Text } from 'ink';
-import TextInput from 'ink-text-input';
+import { TextInput } from '@inkjs/ui';
 
 type UserInputProps = {
-  value: string;
-  onChange: (value: string) => void;
   onSubmit: (value: string) => void;
   visible: boolean;
 };
 
-export const UserInput = ({ value, onChange, onSubmit, visible }: UserInputProps) => {
+export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
+  const handleInput = useCallback(
+    (text: string) => {
+      if (text.trim() === '') {
+        return;
+      } else {
+        onSubmit(text.trim());
+      }
+    },
+    [onSubmit],
+  );
+
   return (
     <Box>
       <Text>{visible ? 'Me: ' : 'Me: '}</Text>
-      <TextInput focus={visible} value={value} onChange={onChange} onSubmit={onSubmit} />
+      {visible ? <TextInput onSubmit={handleInput} /> : null}
     </Box>
   );
 };

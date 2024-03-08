@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text } from 'ink';
-import Spinner from 'ink-spinner';
+import { Box, Text } from 'ink';
+import { Spinner } from '@inkjs/ui';
 
 type ThinkingProps = {
   thinking: boolean;
@@ -8,10 +8,10 @@ type ThinkingProps = {
 
 export const Thinking = ({ thinking }: ThinkingProps) => {
   return thinking ? (
-    <Text color={'cyanBright'}>
-      <Text>Ai: </Text>
+    <Box>
+      <Text color={'cyanBright'}>Ai: </Text>
       <Spinner type="dots" />
-      <Text> Thinking...</Text>
-    </Text>
+      <Text color={'cyanBright'}> Thinking...</Text>
+    </Box>
   ) : null;
 };

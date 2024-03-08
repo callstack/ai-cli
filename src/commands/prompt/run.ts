@@ -3,6 +3,7 @@ import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-c
 import type { Message } from '../../engine/inference.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
+import type { DisplayMessage } from '../../interface/chat/chat-message.js';
 import { renderChatInterface } from '../../interface/chat/index.js';
 import * as output from '../../output.js';
 import type { PromptOptions, SessionContext, SessionFeedback } from './types.js';
@@ -91,8 +92,14 @@ async function createSession(
 export async function getChatCompletion(
   provider: Provider,
   config: ProviderConfig,
-  messages: Message[],
+  displayMessages: DisplayMessage[],
 ) {
+  const messages = displayMessages.map(
+    (message): Message => ({
+      role: message.role,
+      content: message.content,
+    }),
+  );
   const response = await provider.getChatCompletion(config, messages);
 
   return response;
