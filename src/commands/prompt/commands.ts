@@ -2,15 +2,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import {
-  CHATS_SAVE_DIRECTORY,
   getConversationStoragePath,
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils.js';
 import * as output from '../../output.js';
 import type { Message } from '../../engine/inference.js';
-import { calculateUsageCost } from '../../engine/session.js';
-import { formatCost } from '../../format.js';
 import type { SessionContext } from './types.js';
 
 export function processCommand(context: SessionContext, input: string): boolean {
@@ -25,30 +22,30 @@ export function processCommand(context: SessionContext, input: string): boolean 
   }
 
   if (command === '/help') {
-    output.outputInfo('Available commands:');
-    output.outputInfo('- /exit: Exit the CLI');
-    output.outputInfo('- /info: Show current provider, model, and system prompt');
-    output.outputInfo('- /forget: AI will forget previous messages');
-    output.outputInfo(`- /save: Save in a text file in ${CHATS_SAVE_DIRECTORY}`);
+    // output.outputInfo('Available commands:');
+    // output.outputInfo('- /exit: Exit the CLI');
+    // output.outputInfo('- /info: Show current provider, model, and system prompt');
+    // output.outputInfo('- /forget: AI will forget previous messages');
+    // output.outputInfo(`- /save: Save in a text file in ${CHATS_SAVE_DIRECTORY}`);
 
     return true;
   }
 
   if (command === '/info') {
-    output.outputInfo(`Provider: ${context.provider.label}`);
-    output.outputInfo(`Model: ${context.config?.model}`);
-    output.outputInfo('System prompt:', context.config?.systemPrompt);
-    output.outputInfo(
-      `Total tokens: ${context.totalUsage.inputTokens} in + ${context.totalUsage.outputTokens} out`,
-    );
+    // output.outputInfo(`Provider: ${context.provider.label}`);
+    // output.outputInfo(`Model: ${context.config?.model}`);
+    // output.outputInfo('System prompt:', context.config?.systemPrompt);
+    // output.outputInfo(
+    //   `Total tokens: ${context.totalUsage.inputTokens} in + ${context.totalUsage.outputTokens} out`
+    // );
 
-    const totalCost = calculateUsageCost(
-      context.totalUsage,
-      context.provider.pricing[context.config?.model],
-    );
-    output.outputInfo(`Total cost: ${formatCost(totalCost)}`);
+    // const totalCost = calculateUsageCost(
+    //   context.totalUsage,
+    //   context.provider.pricing[context.config?.model]
+    // );
+    // output.outputInfo(`Total cost: ${formatCost(totalCost)}`);
 
-    output.outputVerbose('Current context:', JSON.stringify(context.messages, null, 2));
+    // output.outputVerbose('Current context:', JSON.stringify(context.messages, null, 2));
     return true;
   }
 

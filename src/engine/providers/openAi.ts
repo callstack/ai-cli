@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+// import OpenAI from 'openai';
 import { type Message } from '../inference.js';
 import type { ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
@@ -22,35 +22,37 @@ const OpenAi: Provider = {
     'gpt-3.5-turbo-0125': { inputTokensCost: 0.0005, outputTokensCost: 0.0015 },
   },
 
-  getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
-    const openai = new OpenAI({
-      apiKey: config.apiKey,
-    });
+  getChatCompletion: async (_config: ProviderConfig, _messages: Message[]) => {
+    // const openai = new OpenAI({
+    //   apiKey: config.apiKey,
+    // });
 
-    const systemMessage: Message = {
-      role: 'system',
-      content: config.systemPrompt,
-    };
+    // const systemMessage: Message = {
+    //   role: 'system',
+    //   content: config.systemPrompt,
+    // };
 
     const startTime = performance.now();
-    const response = await openai.chat.completions.create({
-      messages: [systemMessage, ...messages],
-      model: config.model,
-      temperature: config.temperature,
-      top_p: config.top_p,
-    });
+    // const response = await openai.chat.completions.create({
+    //   messages: [systemMessage, ...messages],
+    //   model: config.model,
+    //   temperature: config.temperature,
+    //   top_p: config.top_p,
+    // });
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const responseTime = performance.now() - startTime;
 
     return {
-      messageText: response.choices[0]?.message.content ?? null,
+      messageText: 'Test', //response.choices[0]?.message.content ?? null,
       usage: {
-        inputTokens: response.usage?.prompt_tokens ?? 0,
-        outputTokens: response.usage?.completion_tokens ?? 0,
+        inputTokens: 12, //response.usage?.prompt_tokens ?? 0,
+        outputTokens: 13, //response.usage?.completion_tokens ?? 0,
         requests: 1,
       },
       responseTime,
-      responseModel: response.model,
-      response,
+      responseModel: 'GPT-4', //response.model,
+      response: {},
     };
   },
 };

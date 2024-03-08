@@ -1,22 +1,17 @@
-import { checkIfConfigExists, parseConfigFile } from '../../config-file.js';
+import { parseConfigFile } from '../../config-file.js';
 import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config.js';
-import { combineUsage } from '../../engine/session.js';
-import { inputLine } from '../../input.js';
+import type { Message } from '../../engine/inference.js';
+import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { Provider } from '../../engine/providers/provider.js';
+import { renderChatInterface } from '../../interface/chat/index.js';
 import * as output from '../../output.js';
-import { run as init } from '../init/index.js';
-import { processCommand } from './commands.js';
-import type { PromptOptions, SessionContext } from './types.js';
-import {
-  filterOutApiKey,
-  getDefaultProvider,
-  getOutputParams,
-  handleInputFile,
-  resolveProviderFromOption,
-} from './utils.js';
+import type { PromptOptions, SessionContext, SessionFeedback } from './types.js';
+import { getDefaultProvider, handleInputFile, resolveProviderFromOption } from './utils.js';
 
 export async function run(initialPrompt: string, options: PromptOptions) {
   try {
-    await runInternal(initialPrompt.trim(), options);
+    const session = await createSession(options, initialPrompt);
+    renderChatInterface(session);
   } catch (error) {
     output.clearLine();
     output.outputError(error);
@@ -24,58 +19,15 @@ export async function run(initialPrompt: string, options: PromptOptions) {
   }
 }
 
-async function runInternal(initialPrompt: string, options: PromptOptions) {
-  output.setVerbose(options.verbose);
-
-  const configExists = await checkIfConfigExists();
-  if (!configExists) {
-    await init();
-    return;
-  }
-
-  const session = await createSession(options);
-
-  if (options.file) {
-    handleInputFile(session, options.file);
-  }
-
-  if (initialPrompt) {
-    output.outputUser(initialPrompt);
-    await handleMessage(session, initialPrompt);
-  } else {
-    output.outputAi('Hello, how can I help you?');
-  }
-
-  if (options.interactive || !initialPrompt) {
-    output.outputInfo(
-      'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.',
-    );
-  } else {
-    process.exit(0);
-  }
-
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const userPrompt = await inputLine('me: ');
-    const isCommand = processCommand(session, userPrompt);
-    if (isCommand) {
-      continue;
-    }
-
-    await handleMessage(session, userPrompt);
-  }
-}
-
-async function createSession(options: PromptOptions): Promise<SessionContext> {
+async function createSession(
+  options: PromptOptions,
+  initialPrompt?: string,
+): Promise<SessionContext> {
   const configFile = await parseConfigFile();
-  output.outputVerbose(`Config: ${JSON.stringify(configFile, filterOutApiKey, 2)}`);
-  output.setShowStats(options.stats ?? configFile.showStats);
-  output.setShowCosts(options.costs ?? configFile.showCosts);
 
   const provider = options.provider
     ? resolveProviderFromOption(options.provider)
     : getDefaultProvider(configFile);
-  output.outputVerbose(`Using provider: ${provider.label}`);
 
   const initialConfig = configFile.providers[provider.name];
   if (!initialConfig) {
@@ -83,11 +35,11 @@ async function createSession(options: PromptOptions): Promise<SessionContext> {
   }
 
   let style = {};
+  const sessionFeedback: SessionFeedback = {};
 
   if (options.creative && options.precise) {
-    output.outputWarning(
-      'You set both creative and precise response styles, falling back to default',
-    );
+    sessionFeedback.stylesWarning =
+      'You set both creative and precise response styles, falling back to default';
   } else {
     if (options.creative) {
       style = RESPONSE_STYLE_CREATIVE;
@@ -97,6 +49,15 @@ async function createSession(options: PromptOptions): Promise<SessionContext> {
     }
   }
 
+  const messages: Message[] = [];
+
+  if (initialPrompt) {
+    messages.push({
+      role: 'user',
+      content: initialPrompt,
+    });
+  }
+
   const config = {
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
@@ -104,27 +65,35 @@ async function createSession(options: PromptOptions): Promise<SessionContext> {
     ...style,
   };
 
-  output.outputVerbose(`Using model: ${config.model}`);
+  if (options.file) {
+    const { fileContextPrompt, costWarning, costInfo } = handleInputFile(
+      options.file,
+      config,
+      provider,
+    );
+    messages.push(fileContextPrompt);
+    if (costWarning) {
+      sessionFeedback.fileCostWarning = costWarning;
+    }
+    if (costInfo) {
+      sessionFeedback.fileCostInfo = costInfo;
+    }
+  }
 
   return {
     config,
     provider,
-    messages: [],
-    totalUsage: { inputTokens: 0, outputTokens: 0, requests: 0 },
+    messages,
+    sessionFeedback,
   };
 }
 
-async function handleMessage(session: SessionContext, message: string) {
-  output.outputAiProgress('Thinking...');
+export async function getChatCompletion(
+  provider: Provider,
+  config: ProviderConfig,
+  messages: Message[],
+) {
+  const response = await provider.getChatCompletion(config, messages);
 
-  session.messages.push({ role: 'user', content: message });
-  const response = await session.provider.getChatCompletion(session.config, session.messages);
-  session.totalUsage = combineUsage(session.totalUsage, response.usage);
-
-  output.clearLine();
-  output.outputVerbose(`Response Object: ${JSON.stringify(response.response, null, 2)}`);
-
-  const outputParams = getOutputParams(session, response);
-  output.outputAi(response.messageText ?? '(null)', outputParams);
-  session.messages.push({ role: 'assistant', content: response.messageText ?? '' });
+  return response;
 }

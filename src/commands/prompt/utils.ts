@@ -9,14 +9,14 @@ import {
 import { calculateSessionCost, calculateUsageCost } from '../../engine/session.js';
 import { tokenizer } from '../../engine/tokenizer.js';
 import * as output from '../../output.js';
-import { formatCost, formatTokenCount } from '../../format.js';
-import type { ModelResponse } from '../../engine/inference.js';
+import type { ModelResponse, SystemMessage } from '../../engine/inference.js';
 import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
 import type { ConfigFile } from '../../config-file.js';
-import type { SessionContext } from './types.js';
+import type { ProviderConfig } from '../../engine/providers/config.js';
+import { formatCost, formatTokenCount } from '../../format.js';
 import { providerOptionMapping } from './index.js';
 
-export function handleInputFile(context: SessionContext, inputFile: string) {
+export function handleInputFile(inputFile: string, config: ProviderConfig, provider: Provider) {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
 
   if (!fs.existsSync(filePath)) {
@@ -26,26 +26,29 @@ export function handleInputFile(context: SessionContext, inputFile: string) {
   const fileContent = fs.readFileSync(filePath).toString();
   const fileTokens = tokenizer.getTokensCount(fileContent);
 
-  const pricing = context.provider.pricing[context.config.model];
+  const pricing = provider.pricing[config.model];
   const fileCost = calculateUsageCost({ inputTokens: fileTokens }, pricing);
+
+  let costWarning = null;
+  let costInfo = null;
 
   const costOrTokens = fileCost
     ? formatCost(fileCost)
     : `~${formatTokenCount(fileTokens, 100)} tokens`;
   if ((fileCost ?? 0) >= FILE_COST_WARNING || fileTokens >= FILE_TOKEN_COUNT_WARNING) {
-    output.outputWarning(
-      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`,
-    );
+    costWarning = `Using the provided file will increase conversation costs by ${costOrTokens} per message.`;
   } else {
-    output.outputInfo(
-      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`,
-    );
+    costInfo = `Using the provided file will increase conversation costs by ${costOrTokens} per message.`;
   }
 
-  context.messages.push({
-    role: 'system',
-    content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
-  });
+  return {
+    fileContextPrompt: {
+      role: 'system',
+      content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
+    } as SystemMessage,
+    costWarning,
+    costInfo,
+  };
 }
 
 export function filterOutApiKey(key: string, value: unknown) {
@@ -57,17 +60,16 @@ export function filterOutApiKey(key: string, value: unknown) {
 }
 
 export function getOutputParams(
-  session: SessionContext,
+  provider: Provider,
+  config: ProviderConfig,
   response: ModelResponse,
 ): output.OutputAiOptions {
   const usage = {
-    total: session.totalUsage,
+    total: { inputTokens: 0, outputTokens: 0, requests: 0 },
     current: response.usage,
   };
 
-  const pricing =
-    session.provider.pricing[response.responseModel] ??
-    session.provider.pricing[session.config.model];
+  const pricing = provider.pricing[response.responseModel] ?? provider.pricing[config.model];
   const cost = calculateSessionCost(usage, pricing);
 
   return {
