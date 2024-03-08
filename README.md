@@ -4,10 +4,13 @@ AI assistant in your terminal.
 
 ```shell-session
 $ ai "Tell me an interesting fact about the Roman Empire"
+me: Tell me an interesting fact about the Roman Empire
 ai: The Roman Empire had a vast network of roads extending over 250,000 miles at its peak...
 ```
 
 ## Installation
+
+Install `@callstack/ai-cli` npm package globally:
 
 ```sh
 npm install -g @callstack/ai-cli
