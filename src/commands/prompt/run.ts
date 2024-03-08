@@ -3,7 +3,7 @@ import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-c
 import { combineUsage } from '../../engine/session.js';
 import { inputLine } from '../../input.js';
 import * as output from '../../output.js';
-import { init } from '../init/init.js';
+import { run as init } from '../init/index.js';
 import { processCommand } from './commands.js';
 import type { PromptOptions, SessionContext } from './types.js';
 import {
