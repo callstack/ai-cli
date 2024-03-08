@@ -2,8 +2,9 @@
 
 AI assistant in your terminal.
 
-```
+```shell-session
 $ ai "Tell me an interesting fact about the Roman Empire"
+ai: The Roman Empire had a vast network of roads extending over 250,000 miles at its peak...
 ```
 
 ## Installation
@@ -20,9 +21,9 @@ You will need a valid API key from one of supported AI inference providers: Open
 
 ### Quick config
 
-Run `ai init` to create a basic `~/.airc.json` config file with your OpenAI or Perplexity API keys.
+Run `ai init` to create a basic `~/.airc.json` config file with your OpenAI or Perplexity API key.
 
-Read more about our configuration file in a [dedicated document](./docs/ConfigFile.md).
+Learn about AI CLI config file [here](https://callstack.github.io/ai-cli/config-file).
 
 ## Usage
 
