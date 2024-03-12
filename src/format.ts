@@ -1,4 +1,5 @@
 import type { SessionCost, SessionUsage } from './engine/session.js';
+import type { OutputAiOptions } from './output.js';
 
 export function formatCost(value: number | undefined, precision = 4) {
   if (value == null) {
@@ -43,3 +44,15 @@ export function formatSessionCost(cost: SessionCost | undefined) {
 
   return `costs: ${formatCost(cost.current)} (total: ${formatCost(cost.total)})`;
 }
+
+export const formatStats = (
+  stats: OutputAiOptions,
+  usage: boolean = false,
+  cost: boolean = false,
+) => {
+  const statsOutput = usage ? formatSessionStats(stats.responseTime, stats.usage) : undefined;
+  const costsOutput = cost ? formatSessionCost(stats.cost) : undefined;
+
+  const formatted = [statsOutput, costsOutput].filter((x) => x !== undefined).join(', ');
+  return formatted;
+};

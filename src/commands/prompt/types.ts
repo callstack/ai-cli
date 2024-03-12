@@ -1,6 +1,6 @@
-import type { Message } from '../../engine/inference.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
+import type { ChatSession } from '../../interface/chat/chat.js';
 
 export interface PromptOptions {
   /** Interactive mode */
@@ -14,7 +14,7 @@ export interface PromptOptions {
   /** Display usage costs. */
   costs?: boolean;
   /** Display usage stats. */
-  stats?: boolean;
+  usage?: boolean;
   /** Display colorized output. Default == autodetect */
   color?: boolean;
   /** Add file to conversation */
@@ -34,6 +34,6 @@ export type SessionFeedback = {
 export interface SessionContext {
   provider: Provider;
   config: ProviderConfig;
-  messages: Message[];
-  sessionFeedback: SessionFeedback;
+  chatSession: ChatSession;
+  options: PromptOptions;
 }

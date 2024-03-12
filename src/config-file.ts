@@ -37,10 +37,10 @@ const ConfigFileSchema = z.object({
 
 export type ConfigFile = z.infer<typeof ConfigFileSchema>;
 
-export async function parseConfigFile() {
+export function parseConfigFile() {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
 
-  const content = await fs.promises.readFile(configPath);
+  const content = fs.readFileSync(configPath);
   const json = JSON.parse(content.toString());
 
   const typedConfig = ConfigFileSchema.parse(json);

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { format } from 'date-fns';
-import type { SessionContext } from './commands/prompt/types.js';
+import type { Message } from './engine/inference.js';
 
 export const CHATS_SAVE_DIRECTORY = '~/ai-chats';
 
@@ -11,9 +11,9 @@ const escapeFilename = (filename: string) => {
   return base.replace(/[/\\:*?"<>|.]/g, '_');
 };
 
-export const getDefaultFilename = (context: SessionContext) => {
+export const getDefaultFilename = (messages: Message[]) => {
   const currentDate = new Date();
-  const firstMessagePart = escapeFilename(context.messages[0]?.content ?? '');
+  const firstMessagePart = escapeFilename(messages[0]?.content ?? '');
 
   return `${format(currentDate, 'yyyy-MM-dd HH-mm')} ${firstMessagePart}`;
 };

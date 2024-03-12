@@ -1,37 +1,48 @@
 import React from 'react';
 import { Text } from 'ink';
-import type { Message } from '../../engine/inference.js';
-import { formatSessionCost, formatSessionStats } from '../../format.js';
-import type { OutputAiOptions } from '../../output.js';
-import { Thinking } from './thinking.js';
-
-export type DisplayMessage = Message & {
-  stats?: OutputAiOptions;
-};
+import { formatCost } from '../../format.js';
+import { colors } from '../../components/colors.js';
+import type { DisplayMessageItem } from './chat.js';
 
 type ChatMessageProps = {
-  message: DisplayMessage;
-  usage?: boolean;
-  cost?: boolean;
+  displayMessage: DisplayMessageItem;
+  showUsage?: boolean;
+  showCost?: boolean;
 };
 
-const formatStats = (stats: OutputAiOptions, usage: boolean = false, cost: boolean = false) => {
-  const statsOutput = usage ? formatSessionStats(stats.responseTime, stats.usage) : undefined;
-  const costsOutput = cost ? formatSessionCost(stats.cost) : undefined;
+const formatMessageStats = (
+  stats: DisplayMessageItem,
+  showUsage: boolean = false,
+  showCost: boolean = false,
+) => {
+  const { usage, responseTime, cost } = stats;
+  const output = [];
 
-  const formatted = [statsOutput, costsOutput].filter((x) => x !== undefined).join(', ');
-  return formatted;
+  if (showUsage && usage) {
+    if (responseTime) {
+      output.push(`time: ${(responseTime / 1000).toFixed(1)} s`);
+    }
+    if (usage) {
+      output.push(`tokens: ${usage.inputTokens}in + ${usage.outputTokens}out`);
+    }
+  }
+
+  if (showCost && cost) {
+    output.push(`costs: ${formatCost(cost)}`);
+  }
+
+  return output.join(', ');
 };
 
-export const ChatMessage = ({ message, usage, cost }: ChatMessageProps) => {
-  return message.content === '' && message.role === 'assistant' ? (
-    <Thinking thinking={true} />
-  ) : (
-    <Text color={message.role === 'assistant' ? 'cyanBright' : 'gray'}>
-      <Text>{message.role === 'assistant' ? 'Ai: ' : 'Me: '}</Text>
+export const ChatMessage = ({ displayMessage, showUsage, showCost }: ChatMessageProps) => {
+  const { message, usage } = displayMessage;
+
+  return (
+    <Text color={message.role === 'assistant' ? colors.assistant : colors.user}>
+      <Text>{message.role === 'assistant' ? 'ai: ' : 'me: '}</Text>
       <Text>{message.content}</Text>
-      {(usage || cost) && message.stats ? (
-        <Text color={'gray'}> {formatStats(message.stats, usage, cost)}</Text>
+      {(showUsage || showCost) && usage ? (
+        <Text color={colors.info}> {formatMessageStats(displayMessage, showUsage, showCost)}</Text>
       ) : null}
     </Text>
   );

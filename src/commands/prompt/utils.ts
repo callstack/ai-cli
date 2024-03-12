@@ -9,11 +9,16 @@ import {
 import { calculateSessionCost, calculateUsageCost } from '../../engine/session.js';
 import { tokenizer } from '../../engine/tokenizer.js';
 import * as output from '../../output.js';
-import type { ModelResponse, SystemMessage } from '../../engine/inference.js';
+import type { Message, ModelResponse, SystemMessage } from '../../engine/inference.js';
 import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
 import type { ConfigFile } from '../../config-file.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import { formatCost, formatTokenCount } from '../../format.js';
+import {
+  getConversationStoragePath,
+  getDefaultFilename,
+  getUniqueFilename,
+} from '../../file-utils.js';
 import { providerOptionMapping } from './index.js';
 
 export function handleInputFile(inputFile: string, config: ProviderConfig, provider: Provider) {
@@ -97,4 +102,33 @@ export function getDefaultProvider(config: ConfigFile): Provider {
   }
 
   return getProvider(providerName)!;
+}
+
+export function saveConversation(messages: Message[]) {
+  let conversation = '';
+  messages.forEach((message) => {
+    conversation += `${roleToLabel(message.role)}: ${message.content}\n\n`;
+  });
+
+  const conversationStoragePath = getConversationStoragePath();
+  const filePath = getUniqueFilename(
+    path.join(conversationStoragePath, getDefaultFilename(messages)),
+  );
+
+  fs.writeFileSync(filePath, conversation);
+
+  return `Conversation saved to ${filePath.replace(os.homedir(), '~')}`;
+}
+
+function roleToLabel(role: Message['role']): string {
+  switch (role) {
+    case 'user':
+      return 'me';
+    case 'assistant':
+      return 'ai';
+    case 'system':
+      return 'system';
+    default:
+      return role;
+  }
 }

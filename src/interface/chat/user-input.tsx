@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Box, Text } from 'ink';
-import { TextInput } from '@inkjs/ui';
+import TextInput from 'ink-text-input';
 
 type UserInputProps = {
   onSubmit: (value: string) => void;
@@ -8,12 +8,15 @@ type UserInputProps = {
 };
 
 export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
+  const [userInput, setUserInput] = useState('');
+
   const handleInput = useCallback(
     (text: string) => {
       if (text.trim() === '') {
         return;
       } else {
         onSubmit(text.trim());
+        setUserInput('');
       }
     },
     [onSubmit],
@@ -21,8 +24,8 @@ export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
 
   return (
     <Box>
-      <Text>{visible ? 'Me: ' : 'Me: '}</Text>
-      {visible ? <TextInput onSubmit={handleInput} /> : null}
+      <Text>{'me: '}</Text>
+      {visible && <TextInput value={userInput} onChange={setUserInput} onSubmit={handleInput} />}
     </Box>
   );
 };

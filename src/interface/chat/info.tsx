@@ -2,25 +2,29 @@ import React from 'react';
 import { Newline, Text } from 'ink';
 import type { Provider } from '../../engine/providers/provider.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { Message } from '../../engine/inference.js';
 
 type InfoProps = {
-  show: boolean;
   provider: Provider;
   config: ProviderConfig;
+  messages: Message[];
 };
 
-export const Info = ({ show, provider, config }: InfoProps) => {
-  return show ? (
+export const Info = ({ provider, config, messages }: InfoProps) => {
+  return (
     <Text>
       Provider: {provider.label}
       <Newline />
       Model: {config.model}
       <Newline />
       System prompt: {config.systemPrompt}
-      {/* <Newline /> */}
-      {/* Total tokens: ${context.totalUsage.inputTokens} in + ${context.totalUsage.outputTokens} out */}
-      {/* Total cost: ${formatCost(totalCost)} */}
-      {/* Current context:', JSON.stringify(context.messages, null, 2) */}
+      <Newline />
+      Current context:{' '}
+      {JSON.stringify(
+        messages.map((message) => `${message.role}: ${message.content}`),
+        null,
+        1,
+      )}
     </Text>
-  ) : null;
+  );
 };

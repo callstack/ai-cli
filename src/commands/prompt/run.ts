@@ -1,12 +1,10 @@
 import { parseConfigFile } from '../../config-file.js';
 import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config.js';
 import type { Message } from '../../engine/inference.js';
-import type { ProviderConfig } from '../../engine/providers/config.js';
-import type { Provider } from '../../engine/providers/provider.js';
-import type { DisplayMessage } from '../../interface/chat/chat-message.js';
+import type { ChatSession } from '../../interface/chat/chat.js';
 import { renderChatInterface } from '../../interface/chat/index.js';
 import * as output from '../../output.js';
-import type { PromptOptions, SessionContext, SessionFeedback } from './types.js';
+import type { PromptOptions, SessionContext } from './types.js';
 import { getDefaultProvider, handleInputFile, resolveProviderFromOption } from './utils.js';
 
 export async function run(initialPrompt: string, options: PromptOptions) {
@@ -20,11 +18,8 @@ export async function run(initialPrompt: string, options: PromptOptions) {
   }
 }
 
-async function createSession(
-  options: PromptOptions,
-  initialPrompt?: string,
-): Promise<SessionContext> {
-  const configFile = await parseConfigFile();
+function createSession(options: PromptOptions, initialPrompt?: string): SessionContext {
+  const configFile = parseConfigFile();
 
   const provider = options.provider
     ? resolveProviderFromOption(options.provider)
@@ -36,11 +31,16 @@ async function createSession(
   }
 
   let style = {};
-  const sessionFeedback: SessionFeedback = {};
+  const chatSession: ChatSession = {
+    messages: [],
+    displayItems: [],
+  };
 
   if (options.creative && options.precise) {
-    sessionFeedback.stylesWarning =
-      'You set both creative and precise response styles, falling back to default';
+    chatSession.displayItems.push({
+      type: 'warning',
+      text: 'You set both creative and precise response styles, falling back to default',
+    });
   } else {
     if (options.creative) {
       style = RESPONSE_STYLE_CREATIVE;
@@ -51,13 +51,6 @@ async function createSession(
   }
 
   const messages: Message[] = [];
-
-  if (initialPrompt) {
-    messages.push({
-      role: 'user',
-      content: initialPrompt,
-    });
-  }
 
   const config = {
     model: options.model ?? initialConfig.model,
@@ -74,33 +67,37 @@ async function createSession(
     );
     messages.push(fileContextPrompt);
     if (costWarning) {
-      sessionFeedback.fileCostWarning = costWarning;
+      chatSession.displayItems.push({
+        type: 'warning',
+        text: costWarning,
+      });
     }
     if (costInfo) {
-      sessionFeedback.fileCostInfo = costInfo;
+      chatSession.displayItems.push({
+        type: 'info',
+        text: costInfo,
+      });
     }
+  }
+
+  if (initialPrompt) {
+    chatSession.messages.push({
+      role: 'user',
+      content: initialPrompt,
+    });
+    chatSession.displayItems.push({
+      type: 'message',
+      message: {
+        role: 'user',
+        content: initialPrompt,
+      },
+    });
   }
 
   return {
     config,
     provider,
-    messages,
-    sessionFeedback,
+    options,
+    chatSession,
   };
-}
-
-export async function getChatCompletion(
-  provider: Provider,
-  config: ProviderConfig,
-  displayMessages: DisplayMessage[],
-) {
-  const messages = displayMessages.map(
-    (message): Message => ({
-      role: message.role,
-      content: message.content,
-    }),
-  );
-  const response = await provider.getChatCompletion(config, messages);
-
-  return response;
 }

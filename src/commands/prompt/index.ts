@@ -53,9 +53,9 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         describe: 'Display usage costs',
       })
-      .option('stats', {
+      .option('usage', {
         type: 'boolean',
-        describe: 'Display usage stats',
+        describe: 'Display usage usage',
       })
       // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
       .option('color', {

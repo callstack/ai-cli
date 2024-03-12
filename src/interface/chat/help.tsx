@@ -2,12 +2,8 @@ import React from 'react';
 import { Newline, Text } from 'ink';
 import { CHATS_SAVE_DIRECTORY } from '../../file-utils.js';
 
-type HelpProps = {
-  show?: boolean;
-};
-
-export const Help = ({ show }: HelpProps) => {
-  return show ? (
+export const Help = () => {
+  return (
     <Text>
       Available commands:
       <Newline />
@@ -17,6 +13,9 @@ export const Help = ({ show }: HelpProps) => {
       <Newline />
       - /forget: AI will forget previous messages
       <Newline />- /save: Save in a text file in {CHATS_SAVE_DIRECTORY}
+      <Newline />
+      - /cost: Display information about approximate cost of message
+      <Newline />- /usage: Display information about used tokens
     </Text>
-  ) : null;
+  );
 };

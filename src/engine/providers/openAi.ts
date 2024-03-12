@@ -40,7 +40,6 @@ const OpenAi: Provider = {
       top_p: config.top_p,
     });
 
-    // await new Promise((resolve) => setTimeout(resolve, 0));
     const responseTime = performance.now() - startTime;
 
     return {
