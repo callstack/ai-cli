@@ -2,21 +2,20 @@ import type { Message, ModelUsage } from '../../../engine/inference.js';
 
 export interface ChatState {
   contextMessages: Message[];
-  items: DisplayItem[];
-  showLoader: boolean;
+  items: ChatItem[];
 }
 
-export type DisplayItem = DisplayMessageItem | DisplayOutputItem;
+export type ChatItem = MessageItem | ProgramOutputItem;
 
-export interface DisplayMessageItem {
+export interface MessageItem {
   type: 'message';
   message: Message;
+  responseTime?: number;
   usage?: ModelUsage;
   cost?: number;
-  responseTime?: number;
 }
 
-export interface DisplayOutputItem {
+export interface ProgramOutputItem {
   type: 'warning' | 'info';
   text?: string;
 }

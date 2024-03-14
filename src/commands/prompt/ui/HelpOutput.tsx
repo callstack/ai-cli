@@ -2,7 +2,7 @@ import React from 'react';
 import { Newline, Text } from 'ink';
 import { CHATS_SAVE_DIRECTORY } from '../../../file-utils.js';
 
-export const Help = () => {
+export function HelpOutput() {
   return (
     <Text>
       Available commands:
@@ -18,4 +18,4 @@ export const Help = () => {
       <Newline />- /usage: Display information about used tokens
     </Text>
   );
-};
+}

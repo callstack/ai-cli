@@ -1,35 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Newline, Text } from 'ink';
+import { Box } from 'ink';
 import type { Message, ModelResponse } from '../../../engine/inference.js';
 import type { Session } from '../session.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import { saveConversation } from '../utils.js';
 import { UserInput } from './user-input.js';
-import { Help } from './help.js';
-import { TotalStats } from './total-stats.js';
-import { InfoOutput } from './info-output.js';
-import { ItemList } from './list/item-list.js';
-import type { ChatState, DisplayMessageItem } from './types.js';
-import { ResponseLoader } from './response-loader.js';
+import { HelpOutput } from './HelpOutput.js';
+import { StatusBar } from './StatusBar.js';
+import { InfoOutput } from './InfoOutput.js';
+import { ChatList } from './list/ChatList.js';
+import type { ChatState, MessageItem } from './types.js';
+import { ResponseLoader } from './ResponseLoader.js';
 
-type ChatInterfaceProps = {
+type ChatUiProps = {
   session: Session;
 };
 
-export const ChatInterface = ({ session }: ChatInterfaceProps) => {
+export const ChatUi = ({ session }: ChatUiProps) => {
   const [state, setState] = useState<ChatState>(session.state);
 
-  const [showInfo, setShowInfo] = useState(false);
-  const [showUsage, setShowUsage] = useState(
-    Boolean(session.options.verbose || session.options.usage),
-  );
-  const [showCost, setShowCost] = useState(
-    Boolean(session.options.verbose || session.options.costs),
-  );
-  const [showHelp, setShowHelp] = useState(false);
+  const [showUsage, setShowUsage] = useState(Boolean(session.options.usage));
   const [verbose, setVerbose] = useState(Boolean(session.options.verbose));
+  const [showInfo, setShowInfo] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
-  const [thinking, setThinking] = useState(false);
+  const [loadingResponse, setLoadingResponse] = useState(false);
 
   const addUserMessage = useCallback((message: string) => {
     const userMessage: Message = {
@@ -39,13 +34,12 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
     setState(({ contextMessages, items }) => ({
       contextMessages: [...contextMessages, userMessage],
       items: [...items, { type: 'message', message: userMessage }],
-      showLoader: false,
     }));
     return userMessage;
   }, []);
 
   const addAiMessage = useCallback((response: ModelResponse) => {
-    const aiMessage: DisplayMessageItem = {
+    const aiMessage: MessageItem = {
       type: 'message',
       message: {
         role: 'assistant',
@@ -60,25 +54,16 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         ...prevState,
         contextMessages: [...prevState.contextMessages, aiMessage.message],
         items: [...prevState.items, aiMessage],
-        showLoader: false,
       };
     });
   }, []);
 
-  const addAiMessagePlaceholder = useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
-      showLoader: true,
-    }));
-  }, []);
-
   const getAiResponse = useCallback(async (messages: Message[], message?: string) => {
-    setThinking(true);
+    setLoadingResponse(true);
     const messagesToSend = message ? [...messages, addUserMessage(message)] : messages;
-    addAiMessagePlaceholder();
     const aiResponse = await session.provider.getChatCompletion(session.config, messagesToSend);
     addAiMessage(aiResponse);
-    setThinking(false);
+    setLoadingResponse(false);
   }, []);
 
   useEffect(() => {
@@ -100,15 +85,11 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         setShowHelp(false);
       } else if (message === '/usage') {
         setShowUsage(!showUsage);
-      } else if (message === '/cost') {
-        setShowCost(!showCost);
       } else if (message === '/verbose') {
         if (verbose) {
-          setShowCost(false);
           setShowUsage(false);
           setVerbose(false);
         } else {
-          setShowCost(true);
           setShowUsage(true);
           setVerbose(true);
         }
@@ -130,37 +111,28 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         void getAiResponse(state.contextMessages, message);
       }
     },
-    [state, verbose, showInfo, showHelp, showCost, showUsage],
+    [state, verbose, showInfo, showHelp, showUsage],
   );
 
   return (
     <Box display="flex" flexDirection="column">
-      {verbose ? (
-        <Text>
-          Using provider: {session.provider.label}
-          <Newline />
-          Using model: {session.config.model}
-        </Text>
-      ) : null}
-      <ItemList items={state.items} />
+      <ChatList items={state.items} />
 
-      {showHelp && <Help />}
+      {showHelp && <HelpOutput />}
+
       {showInfo && (
         <InfoOutput
           config={session.config}
           messages={state.contextMessages}
           provider={session.provider}
+          verbose={verbose}
         />
       )}
 
-      {state.showLoader ? (
-        <ResponseLoader />
-      ) : (
-        <UserInput visible={!thinking} onSubmit={onSubmitMessage} />
-      )}
+      {loadingResponse ? <ResponseLoader /> : <UserInput onSubmit={onSubmitMessage} />}
 
-      <TotalStats
-        showCost={showCost}
+      <StatusBar
+        session={session}
         showUsage={showUsage}
         items={state.items}
         pricing={session.provider.pricing[session.config.model]}

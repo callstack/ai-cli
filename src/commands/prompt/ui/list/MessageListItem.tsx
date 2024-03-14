@@ -2,16 +2,16 @@ import React from 'react';
 import { Text } from 'ink';
 import { formatCost } from '../../../../format.js';
 import { colors } from '../../../../components/colors.js';
-import type { DisplayMessageItem } from '../types.js';
+import type { MessageItem } from '../types.js';
 
-type ChatMessageProps = {
-  message: DisplayMessageItem;
+type MessageListItemProps = {
+  item: MessageItem;
   showUsage?: boolean;
   showCost?: boolean;
 };
 
-export const MessageItem = ({ message: displayMessage, showUsage, showCost }: ChatMessageProps) => {
-  const { message, usage } = displayMessage;
+export const MessageListItem = ({ item, showUsage, showCost }: MessageListItemProps) => {
+  const { message, usage } = item;
 
   return (
     <Text color={message.role === 'assistant' ? colors.assistant : colors.user}>
@@ -19,18 +19,18 @@ export const MessageItem = ({ message: displayMessage, showUsage, showCost }: Ch
       <Text>{message.content}</Text>
 
       {(showUsage || showCost) && usage ? (
-        <Text color={colors.info}> {formatMessageStats(displayMessage, showUsage, showCost)}</Text>
+        <Text color={colors.info}> {formatMessageStats(item, showUsage, showCost)}</Text>
       ) : null}
     </Text>
   );
 };
 
 const formatMessageStats = (
-  stats: DisplayMessageItem,
+  item: MessageItem,
   showUsage: boolean = false,
   showCost: boolean = false,
 ) => {
-  const { usage, responseTime, cost } = stats;
+  const { usage, responseTime, cost } = item;
   const output = [];
 
   if (showUsage && usage) {

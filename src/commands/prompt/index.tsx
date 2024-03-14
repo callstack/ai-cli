@@ -4,7 +4,7 @@ import { render } from 'ink';
 import * as output from '../../output.js';
 import { createSession } from './session.js';
 import type { PromptOptions } from './types.js';
-import { ChatInterface } from './ui/prompt-ui.js';
+import { ChatUi } from './ui/ChatUi.js';
 import { providerOptions } from './providers.js';
 
 export const command: CommandModule<{}, PromptOptions> = {
@@ -67,7 +67,7 @@ export const command: CommandModule<{}, PromptOptions> = {
 function run(initialPrompt: string, options: PromptOptions) {
   try {
     const session = createSession(options, initialPrompt);
-    render(<ChatInterface session={session} />);
+    render(<ChatUi session={session} />);
   } catch (error) {
     output.clearLine();
     output.outputError(error);

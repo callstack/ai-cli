@@ -1,13 +1,13 @@
 import React from 'react';
 import { Text } from 'ink';
 import { colors } from '../../../../components/colors.js';
-import type { DisplayOutputItem } from '../types.js';
+import type { ProgramOutputItem } from '../types.js';
 
-type OutputItemProps = {
-  output: DisplayOutputItem;
+type ProgramOutputListItemProps = {
+  output: ProgramOutputItem;
 };
 
-export function OutputItem({ output }: OutputItemProps) {
+export function ProgramOutputListItem({ output }: ProgramOutputListItemProps) {
   return (
     <Text color={output.type === 'warning' ? colors.warning : colors.info}>{output.text}</Text>
   );

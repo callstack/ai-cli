@@ -36,7 +36,6 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
   const chatState: ChatState = {
     contextMessages: [],
     items: [],
-    showLoader: false,
   };
 
   if (options.creative && options.precise) {

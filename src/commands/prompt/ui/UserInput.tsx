@@ -4,10 +4,9 @@ import TextInput from 'ink-text-input';
 
 type UserInputProps = {
   onSubmit: (value: string) => void;
-  visible: boolean;
 };
 
-export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
+export const UserInput = ({ onSubmit }: UserInputProps) => {
   const [value, setUserInput] = useState('');
 
   const handleInput = useCallback(
@@ -25,7 +24,7 @@ export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
   return (
     <Box>
       <Text>{'me: '}</Text>
-      {visible && <TextInput value={value} onChange={setUserInput} onSubmit={handleInput} />}
+      <TextInput value={value} onChange={setUserInput} onSubmit={handleInput} />
     </Box>
   );
 };

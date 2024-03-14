@@ -4,37 +4,17 @@ import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import type { ModelPricing } from '../../../engine/providers/provider.js';
-import type { DisplayItem } from './types.js';
+import type { Session } from '../session.js';
+import type { ChatItem } from './types.js';
 
 type TotalStatsProps = {
-  showCost: boolean;
+  session: Session;
   showUsage: boolean;
-  items: DisplayItem[];
+  items: ChatItem[];
   pricing: ModelPricing | undefined;
 };
 
-const formatTotalStats = (
-  usage: ModelUsage,
-  cost: number,
-  showUsage: boolean = false,
-  showCost: boolean = false,
-) => {
-  const output = [];
-
-  if (showUsage && usage) {
-    if (usage) {
-      output.push(`tokens: ${usage.inputTokens}in + ${usage.outputTokens}out`);
-    }
-  }
-
-  if (showCost && cost) {
-    output.push(`costs: ${formatCost(cost)}`);
-  }
-
-  return output.join(', ');
-};
-
-export const TotalStats = ({ showCost, showUsage, items, pricing }: TotalStatsProps) => {
+export const StatusBar = ({ session, showUsage, items, pricing }: TotalStatsProps) => {
   const [totalUsage, setTotalUsage] = useState<ModelUsage>({
     inputTokens: 0,
     outputTokens: 0,
@@ -57,9 +37,18 @@ export const TotalStats = ({ showCost, showUsage, items, pricing }: TotalStatsPr
     setTotalCost(cost);
   }, [items]);
 
-  return showCost || showUsage ? (
+  return (
     <Text color={'gray'}>
-      Total usage: {formatTotalStats(totalUsage, totalCost, showUsage, showCost)}
+      LLM: {session.provider.label}/{session.config.model} - Total Cost:{' '}
+      {formatStats(totalCost, showUsage ? totalUsage : undefined)}
     </Text>
-  ) : null;
+  );
+};
+
+const formatStats = (cost: number, usage?: ModelUsage) => {
+  const usageOutput = usage
+    ? ` (tokens: ${usage.inputTokens} in + ${usage.outputTokens} out, requests: ${usage.requests})`
+    : '';
+
+  return `${formatCost(cost)}${usageOutput}`;
 };

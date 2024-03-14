@@ -4,13 +4,14 @@ import type { Provider } from '../../../engine/providers/provider.js';
 import type { ProviderConfig } from '../../../engine/providers/config.js';
 import type { Message } from '../../../engine/inference.js';
 
-type InfoProps = {
+type InfoOutputProps = {
   provider: Provider;
   config: ProviderConfig;
   messages: Message[];
+  verbose?: boolean;
 };
 
-export const InfoOutput = ({ provider, config, messages }: InfoProps) => {
+export function InfoOutput({ provider, config, messages }: InfoOutputProps) {
   return (
     <Text>
       Provider: {provider.label}
@@ -27,4 +28,4 @@ export const InfoOutput = ({ provider, config, messages }: InfoProps) => {
       )}
     </Text>
   );
-};
+}
