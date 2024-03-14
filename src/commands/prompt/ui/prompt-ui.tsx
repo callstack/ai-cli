@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Newline, Text } from 'ink';
 import type { Message, ModelResponse, ModelUsage } from '../../../engine/inference.js';
-import type { SessionContext } from '../types.js';
+import type { Session } from '../session.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import { saveConversation } from '../utils.js';
-import { colors } from '../../../components/colors.js';
 import { ChatMessage } from './chat-message.js';
 import { UserInput } from './user-input.js';
 import { Help } from './help.js';
 import { TotalStats } from './total-stats.js';
-import { Info } from './info.js';
+import { InfoOutput } from './info-output.js';
 import { MessagePlaceholder } from './message-placeholder.js';
+import { Output } from './output.js';
 
 type ChatInterfaceProps = {
-  session: SessionContext;
+  session: Session;
 };
 
 export interface ChatSession {
@@ -31,7 +31,7 @@ export interface DisplayMessageItem {
   responseTime?: number;
 }
 
-interface DisplayOutputItem {
+export interface DisplayOutputItem {
   type: 'warning' | 'info' | 'placeholder';
   text?: string;
 }
@@ -169,41 +169,30 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         </Text>
       ) : null}
       <Box display="flex" flexDirection="column">
-        {!showInfo &&
-          chatSession.displayItems.map((displayItem, index) => {
-            if (displayItem.type === 'message') {
-              return (
-                <ChatMessage
-                  key={`${index}-${displayItem.message.role}`}
-                  message={displayItem}
-                  showUsage={showUsage}
-                  showCost={showCost}
-                />
-              );
-            }
-            if (displayItem.type === 'placeholder') {
-              return <MessagePlaceholder key={index + 'thinking'} />;
-            }
-            if (displayItem.type === 'info') {
-              return (
-                <Text key={index + 'info'} color={colors.info}>
-                  {displayItem.text}
-                </Text>
-              );
-            }
-            if (displayItem.type === 'warning') {
-              return (
-                <Text key={index + 'warning'} color={colors.warning}>
-                  {displayItem.text}
-                </Text>
-              );
-            }
+        {chatSession.displayItems.map((displayItem, index) => {
+          if (displayItem.type === 'message') {
+            return (
+              <ChatMessage
+                key={`message-${index}`}
+                message={displayItem}
+                showUsage={showUsage}
+                showCost={showCost}
+              />
+            );
+          }
+          if (displayItem.type === 'placeholder') {
+            return <MessagePlaceholder key={`placeholder-${index}`} />;
+          }
+          if (displayItem.type === 'info' || displayItem.type === 'warning') {
+            return <Output key={`output-${index}`} output={displayItem} />;
+          }
 
-            return null;
-          })}
+          return null;
+        })}
+
         {showHelp && <Help />}
         {showInfo && (
-          <Info
+          <InfoOutput
             config={session.config}
             messages={chatSession.messages}
             provider={session.provider}

@@ -1,25 +1,25 @@
-import * as React from 'react';
-import { render } from 'ink';
 import { parseConfigFile } from '../../config-file.js';
-import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config.js';
+import {
+  RESPONSE_STYLE_CREATIVE,
+  RESPONSE_STYLE_DEFAULT,
+  RESPONSE_STYLE_PRECISE,
+} from '../../default-config.js';
 import type { Message } from '../../engine/inference.js';
-import * as output from '../../output.js';
-import { ChatInterface, type ChatSession } from './ui/prompt-ui.js';
-import type { PromptOptions, SessionContext } from './types.js';
-import { getDefaultProvider, handleInputFile, resolveProviderFromOption } from './utils.js';
+import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { Provider } from '../../engine/providers/provider.js';
+import { getDefaultProvider, resolveProviderFromOption } from './providers.js';
+import type { PromptOptions } from './types.js';
+import type { ChatSession } from './ui/prompt-ui.js';
+import { handleInputFile } from './utils.js';
 
-export async function run(initialPrompt: string, options: PromptOptions) {
-  try {
-    const session = await createSession(options, initialPrompt);
-    render(<ChatInterface session={session} />);
-  } catch (error) {
-    output.clearLine();
-    output.outputError(error);
-    process.exit(1);
-  }
+export interface Session {
+  provider: Provider;
+  config: ProviderConfig;
+  chatSession: ChatSession;
+  options: PromptOptions;
 }
 
-function createSession(options: PromptOptions, initialPrompt?: string): SessionContext {
+export function createSession(options: PromptOptions, initialPrompt?: string): Session {
   const configFile = parseConfigFile();
 
   const provider = options.provider
@@ -31,7 +31,8 @@ function createSession(options: PromptOptions, initialPrompt?: string): SessionC
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
-  let style = {};
+  let responseStyle = RESPONSE_STYLE_DEFAULT;
+
   const chatSession: ChatSession = {
     messages: [],
     displayItems: [],
@@ -44,10 +45,10 @@ function createSession(options: PromptOptions, initialPrompt?: string): SessionC
     });
   } else {
     if (options.creative) {
-      style = RESPONSE_STYLE_CREATIVE;
+      responseStyle = RESPONSE_STYLE_CREATIVE;
     }
     if (options.precise) {
-      style = RESPONSE_STYLE_PRECISE;
+      responseStyle = RESPONSE_STYLE_PRECISE;
     }
   }
 
@@ -57,7 +58,7 @@ function createSession(options: PromptOptions, initialPrompt?: string): SessionC
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
     systemPrompt: initialConfig.systemPrompt,
-    ...style,
+    ...responseStyle,
   };
 
   if (options.file) {
@@ -66,6 +67,7 @@ function createSession(options: PromptOptions, initialPrompt?: string): SessionC
       config,
       provider,
     );
+
     messages.push(fileContextPrompt);
     if (costWarning) {
       chatSession.displayItems.push({

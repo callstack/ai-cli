@@ -10,16 +10,14 @@ import { calculateSessionCost, calculateUsageCost } from '../../engine/session.j
 import { tokenizer } from '../../engine/tokenizer.js';
 import * as output from '../../output.js';
 import type { Message, ModelResponse, SystemMessage } from '../../engine/inference.js';
-import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
-import type { ConfigFile } from '../../config-file.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { Provider } from '../../engine/providers/provider.js';
 import { formatCost, formatTokenCount } from '../../format.js';
 import {
   getConversationStoragePath,
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils.js';
-import { providerOptionMapping } from './index.js';
 
 export function handleInputFile(inputFile: string, config: ProviderConfig, provider: Provider) {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
@@ -82,26 +80,6 @@ export function getOutputParams(
     usage,
     cost,
   };
-}
-
-export function resolveProviderFromOption(providerOption: string): Provider {
-  const provider = providerOptionMapping[providerOption];
-  if (!provider) {
-    throw new Error(`Provider not found: ${providerOption}.`);
-  }
-
-  return provider;
-}
-
-export function getDefaultProvider(config: ConfigFile): Provider {
-  const providerNames = Object.keys(config.providers) as ProviderName[];
-  const providerName = providerNames ? providerNames[0] : undefined;
-
-  if (!providerName) {
-    throw new Error('No providers found in "~/.airc.json" file.');
-  }
-
-  return getProvider(providerName)!;
 }
 
 export function saveConversation(messages: Message[]) {

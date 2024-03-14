@@ -16,6 +16,8 @@ Use three sentences maximum and keep the answer as concise as possible.
 
 {fileContent}`;
 
+export const RESPONSE_STYLE_DEFAULT = {};
+
 export const RESPONSE_STYLE_CREATIVE = {
   temperature: 0.7,
   top_p: 0.9,

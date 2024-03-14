@@ -10,7 +10,7 @@ type InfoProps = {
   messages: Message[];
 };
 
-export const Info = ({ provider, config, messages }: InfoProps) => {
+export const InfoOutput = ({ provider, config, messages }: InfoProps) => {
   return (
     <Text>
       Provider: {provider.label}

@@ -1,17 +1,11 @@
 import type { CommandModule } from 'yargs';
-import perplexity from '../../engine/providers/perplexity.js';
-import openAi from '../../engine/providers/openAi.js';
-import type { Provider } from '../../engine/providers/provider.js';
-import { run } from './run.js';
+import * as React from 'react';
+import { render } from 'ink';
+import * as output from '../../output.js';
+import { createSession } from './session.js';
 import type { PromptOptions } from './types.js';
-
-export const providerOptionMapping: Record<string, Provider> = {
-  openai: openAi,
-  perplexity: perplexity,
-  pplx: perplexity,
-};
-
-export const providerOptions = Object.keys(providerOptionMapping);
+import { ChatInterface } from './ui/prompt-ui.js';
+import { providerOptions } from './providers.js';
 
 export const command: CommandModule<{}, PromptOptions> = {
   command: ['prompt', '$0'],
@@ -69,3 +63,14 @@ export const command: CommandModule<{}, PromptOptions> = {
       }),
   handler: (args) => run(args._.join(' '), args),
 };
+
+function run(initialPrompt: string, options: PromptOptions) {
+  try {
+    const session = createSession(options, initialPrompt);
+    render(<ChatInterface session={session} />);
+  } catch (error) {
+    output.clearLine();
+    output.outputError(error);
+    process.exit(1);
+  }
+}
