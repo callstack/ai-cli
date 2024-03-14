@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import type { Message, ModelResponse } from '../../../engine/inference.js';
 import type { Session } from '../session.js';
@@ -9,23 +9,29 @@ import { HelpOutput } from './HelpOutput.js';
 import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
 import { ChatList } from './list/ChatList.js';
-import type { ChatState, MessageItem } from './types.js';
+import type { ChatState, MessageItem, ProgramOutputItem } from './types.js';
 import { ResponseLoader } from './ResponseLoader.js';
 
 type ChatUiProps = {
   session: Session;
 };
 
+type ActiveView = 'info' | 'help' | null;
+
 export const ChatUi = ({ session }: ChatUiProps) => {
   const [state, setState] = useState<ChatState>(session.state);
-
+  const [activeView, setActiveView] = useState<ActiveView>(null);
   const [verbose, setVerbose] = useState(Boolean(session.options.verbose));
-  const [showInfo, setShowInfo] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-
   const [loadingResponse, setLoadingResponse] = useState(false);
 
-  const addUserMessage = useCallback((message: string) => {
+  const addProgramOutput = (item: ProgramOutputItem) => {
+    setState((prevState) => ({
+      ...prevState,
+      items: [...prevState.items, item],
+    }));
+  };
+
+  const addUserMessage = (message: string) => {
     const userMessage: Message = {
       role: 'user',
       content: message,
@@ -35,9 +41,9 @@ export const ChatUi = ({ session }: ChatUiProps) => {
       items: [...items, { type: 'message', message: userMessage }],
     }));
     return userMessage;
-  }, []);
+  };
 
-  const addAiMessage = useCallback((response: ModelResponse) => {
+  const addAiMessage = (response: ModelResponse) => {
     const aiMessage: MessageItem = {
       type: 'message',
       message: {
@@ -55,63 +61,88 @@ export const ChatUi = ({ session }: ChatUiProps) => {
         items: [...prevState.items, aiMessage],
       };
     });
-  }, []);
+  };
 
-  const getAiResponse = useCallback(async (messages: Message[], message?: string) => {
+  const fetchAiResponse = async (messages: Message[], message?: string) => {
     setLoadingResponse(true);
     const messagesToSend = message ? [...messages, addUserMessage(message)] : messages;
     const aiResponse = await session.provider.getChatCompletion(session.config, messagesToSend);
     addAiMessage(aiResponse);
     setLoadingResponse(false);
-  }, []);
+  };
 
+  // Trigger initial AI response
   useEffect(() => {
     const lastMessage = state.contextMessages[state.contextMessages.length - 1];
     if (lastMessage?.role === 'user') {
-      void getAiResponse(state.contextMessages);
+      void fetchAiResponse(state.contextMessages);
     }
   }, []);
 
-  const onSubmitMessage = useCallback(
-    (message: string) => {
-      if (message === '/exit') {
-        process.exit(0);
-      } else if (message === '/help') {
-        setShowHelp(!showHelp);
-        setShowInfo(false);
-      } else if (message === '/info') {
-        setShowInfo(!showInfo);
-        setShowHelp(false);
-      } else if (message === '/verbose') {
-        setVerbose(!verbose);
-      } else if (message === '/forget') {
-        setState((prevState) => ({
-          ...prevState,
-          items: [...prevState.items, { type: 'info', text: 'AI will forget previous messages.' }],
-          contextMessages: [],
-        }));
-      } else if (message === '/save') {
-        const saveConversationMessage = saveConversation(state.contextMessages);
-        setState((prevState) => ({
-          ...prevState,
-          items: [...prevState.items, { type: 'info', text: saveConversationMessage }],
-        }));
-      } else {
-        setShowHelp(false);
-        setShowInfo(false);
-        void getAiResponse(state.contextMessages, message);
-      }
-    },
-    [state, verbose, showInfo, showHelp],
-  );
+  const handleSubmit = (message: string) => {
+    const isCommand = processCommand(message);
+    if (isCommand) {
+      return;
+    }
+
+    setActiveView(null);
+    void fetchAiResponse(state.contextMessages, message);
+  };
+
+  const processCommand = (input: string) => {
+    if (!input.startsWith('/')) {
+      return false;
+    }
+
+    const command = input.split(' ')[0];
+
+    if (command === '/exit') {
+      process.exit(0);
+    }
+
+    if (command === '/help') {
+      setActiveView('help');
+      return true;
+    }
+
+    if (command === '/info') {
+      setActiveView('info');
+      return true;
+    }
+
+    setActiveView(null);
+    if (command === '/verbose') {
+      setVerbose(!verbose);
+      addProgramOutput({ type: 'info', text: `Verbose mode: ${verbose ? 'off' : 'on'}` });
+      return true;
+    }
+
+    if (command === '/forget') {
+      setState((prevState) => ({
+        ...prevState,
+        items: [...prevState.items, { type: 'info', text: 'AI will forget previous messages.' }],
+        contextMessages: [],
+      }));
+      return true;
+    }
+
+    if (input === '/save') {
+      const saveConversationMessage = saveConversation(state.contextMessages);
+      addProgramOutput({ type: 'info', text: saveConversationMessage });
+      return true;
+    }
+
+    addProgramOutput({ type: 'warning', text: `Unknown command ${command}` });
+    return true;
+  };
 
   return (
     <Box display="flex" flexDirection="column">
       <ChatList items={state.items} verbose={verbose} />
 
-      {showHelp && <HelpOutput />}
+      {activeView === 'help' && <HelpOutput />}
 
-      {showInfo && (
+      {activeView === 'info' && (
         <InfoOutput
           config={session.config}
           messages={state.contextMessages}
@@ -120,7 +151,7 @@ export const ChatUi = ({ session }: ChatUiProps) => {
         />
       )}
 
-      {loadingResponse ? <ResponseLoader /> : <UserInput onSubmit={onSubmitMessage} />}
+      {loadingResponse ? <ResponseLoader /> : <UserInput onSubmit={handleSubmit} />}
 
       <StatusBar
         session={session}
