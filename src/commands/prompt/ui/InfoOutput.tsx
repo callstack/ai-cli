@@ -1,33 +1,32 @@
 import React from 'react';
 import { Newline, Text } from 'ink';
-import type { Provider } from '../../../engine/providers/provider.js';
-import type { ProviderConfig } from '../../../engine/providers/config.js';
-import type { Message } from '../../../engine/inference.js';
+import { useChatState } from '../state.js';
 
-type InfoOutputProps = {
-  provider: Provider;
-  config: ProviderConfig;
-  messages: Message[];
-  verbose?: boolean;
-};
+export function InfoOutput() {
+  const provider = useChatState((state) => state.provider);
+  const providerConfig = useChatState((state) => state.providerConfig);
+  const verbose = useChatState((state) => state.verbose);
+  const contextMessages = useChatState((state) => state.contextMessages);
 
-export function InfoOutput({ provider, config, messages, verbose }: InfoOutputProps) {
+  const contextMessagesOutput = verbose
+    ? JSON.stringify(
+        contextMessages.map((m) => `${m.role}: ${m.content}`),
+        null,
+        2,
+      )
+    : null;
+
   return (
     <Text>
       Provider: {provider.label}
       <Newline />
-      Model: {config.model}
+      Model: {providerConfig.model}
       <Newline />
-      System prompt: {config.systemPrompt}
-      {verbose ? (
+      System prompt: {providerConfig.systemPrompt}
+      {contextMessagesOutput ? (
         <>
           <Newline />
-          Current context:{' '}
-          {JSON.stringify(
-            messages.map((message) => `${message.role}: ${message.content}`),
-            null,
-            2,
-          )}
+          Context Messages: {contextMessagesOutput}
         </>
       ) : null}
     </Text>

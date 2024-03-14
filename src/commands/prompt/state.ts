@@ -12,23 +12,17 @@ export interface ChatState {
   providerConfig: ProviderConfig;
   contextMessages: Message[];
   outputMessages: ChatItem[];
+  activeView: ActiveView;
   verbose: boolean;
+  shouldExit: boolean;
 }
 
-export const uninitializedState: ChatState = {
-  // @ts-expect-error: lazy initialization
-  provider: undefined,
-  // @ts-expect-error: lazy initialization
-  providerConfig: undefined,
-  // @ts-expect-error: lazy initialization
-  contextMessages: undefined,
-  // @ts-expect-error: lazy initialization
-  outputMessages: undefined,
-  // @ts-expect-error: lazy initialization
-  verbose: undefined,
-};
+type ActiveView = 'info' | 'help' | null;
 
-export const useChatState = create<ChatState>(() => uninitializedState);
+// @ts-expect-error lazy init
+const initialState: ChatState = {};
+
+export const useChatState = create<ChatState>(() => initialState);
 
 export function initChatState(
   options: PromptOptions,
@@ -109,10 +103,26 @@ export function forgetContextMessages() {
   });
 }
 
+export function setActiveView(activeView: 'info' | 'help' | null) {
+  useChatState.setState(() => {
+    return {
+      activeView,
+    };
+  });
+}
+
 export function setVerbose(verbose: boolean) {
   useChatState.setState(() => {
     return {
       verbose,
+    };
+  });
+}
+
+export function setShouldExit(shouldExit: boolean) {
+  useChatState.setState(() => {
+    return {
+      shouldExit,
     };
   });
 }

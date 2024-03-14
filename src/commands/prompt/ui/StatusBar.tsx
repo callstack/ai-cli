@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost, formatTokenCount } from '../../../format.js';
@@ -11,15 +11,7 @@ export const StatusBar = () => {
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
 
-  const [totalUsage, setTotalUsage] = useState<ModelUsage>({
-    inputTokens: 0,
-    outputTokens: 0,
-    requests: 0,
-  });
-  const [totalCost, setTotalCost] = useState(0);
-
-  // TODO: migrate to useMemos
-  useEffect(() => {
+  const totalUsage = useMemo(() => {
     const usage: ModelUsage = { inputTokens: 0, outputTokens: 0, requests: 0 };
     items.forEach((item) => {
       if (item.type === 'message' && item.message.role === 'assistant') {
@@ -28,11 +20,11 @@ export const StatusBar = () => {
         usage.requests += item.usage?.requests ?? 0;
       }
     });
-    const cost = calculateUsageCost(usage, provider.pricing) ?? 0;
-
-    setTotalUsage(usage);
-    setTotalCost(cost);
+    return usage;
   }, [items]);
+
+  const modelPricing = provider.pricing[providerConfig.model];
+  const totalCost = calculateUsageCost(totalUsage, modelPricing) ?? 0;
 
   return (
     <Text color={'gray'}>
