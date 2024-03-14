@@ -4,7 +4,7 @@ import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import type { ModelPricing } from '../../../engine/providers/provider.js';
-import type { DisplayItem } from './prompt-ui.js';
+import type { DisplayItem } from './types.js';
 
 type TotalStatsProps = {
   showCost: boolean;

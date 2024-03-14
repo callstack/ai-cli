@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from 'ink';
-import { formatCost } from '../../../format.js';
-import { colors } from '../../../components/colors.js';
-import type { DisplayMessageItem } from './prompt-ui.js';
+import { formatCost } from '../../../../format.js';
+import { colors } from '../../../../components/colors.js';
+import type { DisplayMessageItem } from '../types.js';
 
 type ChatMessageProps = {
   message: DisplayMessageItem;
@@ -10,7 +10,7 @@ type ChatMessageProps = {
   showCost?: boolean;
 };
 
-export const ChatMessage = ({ message: displayMessage, showUsage, showCost }: ChatMessageProps) => {
+export const MessageItem = ({ message: displayMessage, showUsage, showCost }: ChatMessageProps) => {
   const { message, usage } = displayMessage;
 
   return (

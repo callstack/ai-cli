@@ -9,13 +9,13 @@ import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
 import { getDefaultProvider, resolveProviderFromOption } from './providers.js';
 import type { PromptOptions } from './types.js';
-import type { ChatSession } from './ui/prompt-ui.js';
+import type { ChatState } from './ui/types.js';
 import { handleInputFile } from './utils.js';
 
 export interface Session {
   provider: Provider;
   config: ProviderConfig;
-  chatSession: ChatSession;
+  chatSession: ChatState;
   options: PromptOptions;
 }
 
@@ -33,13 +33,13 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
 
   let responseStyle = RESPONSE_STYLE_DEFAULT;
 
-  const chatSession: ChatSession = {
-    messages: [],
-    displayItems: [],
+  const chatSession: ChatState = {
+    contextMessages: [],
+    items: [],
   };
 
   if (options.creative && options.precise) {
-    chatSession.displayItems.push({
+    chatSession.items.push({
       type: 'warning',
       text: 'You set both creative and precise response styles, falling back to default',
     });
@@ -70,13 +70,13 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
 
     messages.push(fileContextPrompt);
     if (costWarning) {
-      chatSession.displayItems.push({
+      chatSession.items.push({
         type: 'warning',
         text: costWarning,
       });
     }
     if (costInfo) {
-      chatSession.displayItems.push({
+      chatSession.items.push({
         type: 'info',
         text: costInfo,
       });
@@ -84,11 +84,11 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
   }
 
   if (initialPrompt) {
-    chatSession.messages.push({
+    chatSession.contextMessages.push({
       role: 'user',
       content: initialPrompt,
     });
-    chatSession.displayItems.push({
+    chatSession.items.push({
       type: 'message',
       message: {
         role: 'user',

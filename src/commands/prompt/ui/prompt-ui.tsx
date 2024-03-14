@@ -1,43 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Newline, Text } from 'ink';
-import type { Message, ModelResponse, ModelUsage } from '../../../engine/inference.js';
+import type { Message, ModelResponse } from '../../../engine/inference.js';
 import type { Session } from '../session.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import { saveConversation } from '../utils.js';
-import { ChatMessage } from './chat-message.js';
 import { UserInput } from './user-input.js';
 import { Help } from './help.js';
 import { TotalStats } from './total-stats.js';
 import { InfoOutput } from './info-output.js';
-import { MessagePlaceholder } from './message-placeholder.js';
-import { Output } from './output.js';
+import { ItemList } from './list/item-list.js';
+import type { ChatState, DisplayMessageItem } from './types.js';
 
 type ChatInterfaceProps = {
   session: Session;
 };
 
-export interface ChatSession {
-  messages: Message[];
-  displayItems: DisplayItem[];
-}
-
-export type DisplayItem = DisplayMessageItem | DisplayOutputItem;
-
-export interface DisplayMessageItem {
-  type: 'message';
-  message: Message;
-  usage?: ModelUsage;
-  cost?: number;
-  responseTime?: number;
-}
-
-export interface DisplayOutputItem {
-  type: 'warning' | 'info' | 'placeholder';
-  text?: string;
-}
-
 export const ChatInterface = ({ session }: ChatInterfaceProps) => {
-  const [chatSession, setChatSession] = useState<ChatSession>(session.chatSession);
+  const [chatSession, setChatSession] = useState<ChatState>(session.chatSession);
 
   const [showInfo, setShowInfo] = useState(false);
   const [showUsage, setShowUsage] = useState(
@@ -56,9 +35,9 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
       role: 'user',
       content: message,
     };
-    setChatSession(({ messages, displayItems }) => ({
-      messages: [...messages, userMessage],
-      displayItems: [...displayItems, { type: 'message', message: userMessage }],
+    setChatSession(({ contextMessages: messages, items: displayItems }) => ({
+      contextMessages: [...messages, userMessage],
+      items: [...displayItems, { type: 'message', message: userMessage }],
     }));
     return userMessage;
   }, []);
@@ -74,27 +53,27 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
       cost: calculateUsageCost(response.usage, session.provider.pricing[session.config.model]),
       responseTime: response.responseTime,
     };
-    setChatSession(({ messages, displayItems }) => {
+    setChatSession(({ contextMessages: messages, items: displayItems }) => {
       const hasPlaceholder = displayItems[displayItems.length - 1]?.type === 'placeholder';
       if (hasPlaceholder) {
         const displayItemsWithoutPlaceholder = displayItems.slice(0, displayItems.length - 1);
         return {
-          messages: [...messages, aiMessage.message],
-          displayItems: [...displayItemsWithoutPlaceholder, aiMessage],
+          contextMessages: [...messages, aiMessage.message],
+          items: [...displayItemsWithoutPlaceholder, aiMessage],
         };
       } else {
         return {
-          messages: [...messages, aiMessage.message],
-          displayItems: [...displayItems, aiMessage],
+          contextMessages: [...messages, aiMessage.message],
+          items: [...displayItems, aiMessage],
         };
       }
     });
   }, []);
 
   const addAiMessagePlaceholder = useCallback(() => {
-    setChatSession(({ messages, displayItems }) => ({
-      messages,
-      displayItems: [...displayItems, { type: 'placeholder' }],
+    setChatSession(({ contextMessages: messages, items: displayItems }) => ({
+      contextMessages: messages,
+      items: [...displayItems, { type: 'placeholder' }],
     }));
   }, []);
 
@@ -108,9 +87,9 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
   }, []);
 
   useEffect(() => {
-    const lastMessage = chatSession.messages[chatSession.messages.length - 1];
+    const lastMessage = chatSession.contextMessages[chatSession.contextMessages.length - 1];
     if (lastMessage?.role === 'user') {
-      void getAiResponse(chatSession.messages);
+      void getAiResponse(chatSession.contextMessages);
     }
   }, []);
 
@@ -137,23 +116,20 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
           setVerbose(true);
         }
       } else if (message === '/forget') {
-        setChatSession(({ displayItems }) => ({
-          displayItems: [
-            ...displayItems,
-            { type: 'info', text: 'AI will forget previous messages.' },
-          ],
-          messages: [],
+        setChatSession(({ items: displayItems }) => ({
+          items: [...displayItems, { type: 'info', text: 'AI will forget previous messages.' }],
+          contextMessages: [],
         }));
       } else if (message === '/save') {
-        const saveConversationMessage = saveConversation(chatSession.messages);
-        setChatSession(({ messages, displayItems }) => ({
-          messages,
-          displayItems: [...displayItems, { type: 'info', text: saveConversationMessage }],
+        const saveConversationMessage = saveConversation(chatSession.contextMessages);
+        setChatSession(({ contextMessages: messages, items: displayItems }) => ({
+          contextMessages: messages,
+          items: [...displayItems, { type: 'info', text: saveConversationMessage }],
         }));
       } else {
         setShowHelp(false);
         setShowInfo(false);
-        void getAiResponse(chatSession.messages, message);
+        void getAiResponse(chatSession.contextMessages, message);
       }
     },
     [chatSession, verbose, showInfo, showHelp, showCost, showUsage],
@@ -169,32 +145,13 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         </Text>
       ) : null}
       <Box display="flex" flexDirection="column">
-        {chatSession.displayItems.map((displayItem, index) => {
-          if (displayItem.type === 'message') {
-            return (
-              <ChatMessage
-                key={`message-${index}`}
-                message={displayItem}
-                showUsage={showUsage}
-                showCost={showCost}
-              />
-            );
-          }
-          if (displayItem.type === 'placeholder') {
-            return <MessagePlaceholder key={`placeholder-${index}`} />;
-          }
-          if (displayItem.type === 'info' || displayItem.type === 'warning') {
-            return <Output key={`output-${index}`} output={displayItem} />;
-          }
-
-          return null;
-        })}
+        <ItemList items={chatSession.items} />
 
         {showHelp && <Help />}
         {showInfo && (
           <InfoOutput
             config={session.config}
-            messages={chatSession.messages}
+            messages={chatSession.contextMessages}
             provider={session.provider}
           />
         )}
@@ -203,7 +160,7 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
       <TotalStats
         showCost={showCost}
         showUsage={showUsage}
-        items={chatSession.displayItems}
+        items={chatSession.items}
         pricing={session.provider.pricing[session.config.model]}
       />
     </Box>
