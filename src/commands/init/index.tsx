@@ -1,5 +1,5 @@
 import type { CommandModule } from 'yargs';
-import React from 'react';
+import * as React from 'react';
 import { render } from 'ink';
 import { ThemeProvider } from '@inkjs/ui';
 import { theme } from '../../components/theme.js';

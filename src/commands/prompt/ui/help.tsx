@@ -1,6 +1,6 @@
 import React from 'react';
 import { Newline, Text } from 'ink';
-import { CHATS_SAVE_DIRECTORY } from '../../file-utils.js';
+import { CHATS_SAVE_DIRECTORY } from '../../../file-utils.js';
 
 export const Help = () => {
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
-import { colors } from '../../components/colors.js';
+import { colors } from '../../../components/colors.js';
 
 export const MessagePlaceholder = () => {
   return (

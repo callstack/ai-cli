@@ -8,7 +8,7 @@ type UserInputProps = {
 };
 
 export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
-  const [userInput, setUserInput] = useState('');
+  const [value, setUserInput] = useState('');
 
   const handleInput = useCallback(
     (text: string) => {
@@ -25,7 +25,7 @@ export const UserInput = ({ onSubmit, visible }: UserInputProps) => {
   return (
     <Box>
       <Text>{'me: '}</Text>
-      {visible && <TextInput value={userInput} onChange={setUserInput} onSubmit={handleInput} />}
+      {visible && <TextInput value={value} onChange={setUserInput} onSubmit={handleInput} />}
     </Box>
   );
 };

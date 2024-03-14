@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from 'ink';
-import type { ModelUsage } from '../../engine/inference.js';
-import { formatCost } from '../../format.js';
-import { calculateUsageCost } from '../../engine/session.js';
-import type { ModelPricing } from '../../engine/providers/provider.js';
-import type { DisplayItem } from './chat.js';
+import type { ModelUsage } from '../../../engine/inference.js';
+import { formatCost } from '../../../format.js';
+import { calculateUsageCost } from '../../../engine/session.js';
+import type { ModelPricing } from '../../../engine/providers/provider.js';
+import type { DisplayItem } from './prompt-ui.js';
 
 type TotalStatsProps = {
   showCost: boolean;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Newline, Text } from 'ink';
-import type { Provider } from '../../engine/providers/provider.js';
-import type { ProviderConfig } from '../../engine/providers/config.js';
-import type { Message } from '../../engine/inference.js';
+import type { Provider } from '../../../engine/providers/provider.js';
+import type { ProviderConfig } from '../../../engine/providers/config.js';
+import type { Message } from '../../../engine/inference.js';
 
 type InfoProps = {
   provider: Provider;

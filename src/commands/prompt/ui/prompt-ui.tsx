@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Newline, Text } from 'ink';
-import type { Message, ModelResponse, ModelUsage } from '../../engine/inference.js';
-import type { SessionContext } from '../../commands/prompt/types.js';
-import { calculateUsageCost } from '../../engine/session.js';
-import { saveConversation } from '../../commands/prompt/utils.js';
-import { colors } from '../../components/colors.js';
+import type { Message, ModelResponse, ModelUsage } from '../../../engine/inference.js';
+import type { SessionContext } from '../types.js';
+import { calculateUsageCost } from '../../../engine/session.js';
+import { saveConversation } from '../utils.js';
+import { colors } from '../../../components/colors.js';
 import { ChatMessage } from './chat-message.js';
 import { UserInput } from './user-input.js';
 import { Help } from './help.js';
@@ -175,7 +175,7 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
               return (
                 <ChatMessage
                   key={`${index}-${displayItem.message.role}`}
-                  displayMessage={displayItem}
+                  message={displayItem}
                   showUsage={showUsage}
                   showCost={showCost}
                 />

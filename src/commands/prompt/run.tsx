@@ -1,16 +1,17 @@
+import * as React from 'react';
+import { render } from 'ink';
 import { parseConfigFile } from '../../config-file.js';
 import { RESPONSE_STYLE_CREATIVE, RESPONSE_STYLE_PRECISE } from '../../default-config.js';
 import type { Message } from '../../engine/inference.js';
-import type { ChatSession } from '../../interface/chat/chat.js';
-import { renderChatInterface } from '../../interface/chat/index.js';
 import * as output from '../../output.js';
+import { ChatInterface, type ChatSession } from './ui/prompt-ui.js';
 import type { PromptOptions, SessionContext } from './types.js';
 import { getDefaultProvider, handleInputFile, resolveProviderFromOption } from './utils.js';
 
 export async function run(initialPrompt: string, options: PromptOptions) {
   try {
     const session = await createSession(options, initialPrompt);
-    renderChatInterface(session);
+    render(<ChatInterface session={session} />);
   } catch (error) {
     output.clearLine();
     output.outputError(error);

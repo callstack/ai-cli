@@ -1,6 +1,6 @@
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
-import type { ChatSession } from '../../interface/chat/chat.js';
+import type { ChatSession } from './ui/prompt-ui.js';
 
 export interface PromptOptions {
   /** Interactive mode */
