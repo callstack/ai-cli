@@ -7,14 +7,14 @@ import type { ModelPricing } from '../../../engine/providers/provider.js';
 import type { Session } from '../session.js';
 import type { ChatItem } from './types.js';
 
-type TotalStatsProps = {
+type StatusBarProps = {
   session: Session;
-  showUsage: boolean;
+  verbose: boolean;
   items: ChatItem[];
   pricing: ModelPricing | undefined;
 };
 
-export const StatusBar = ({ session, showUsage, items, pricing }: TotalStatsProps) => {
+export const StatusBar = ({ session, verbose, items, pricing }: StatusBarProps) => {
   const [totalUsage, setTotalUsage] = useState<ModelUsage>({
     inputTokens: 0,
     outputTokens: 0,
@@ -22,6 +22,7 @@ export const StatusBar = ({ session, showUsage, items, pricing }: TotalStatsProp
   });
   const [totalCost, setTotalCost] = useState(0);
 
+  // TODO: migrate to useMemos
   useEffect(() => {
     const usage: ModelUsage = { inputTokens: 0, outputTokens: 0, requests: 0 };
     items.forEach((item) => {
@@ -40,7 +41,7 @@ export const StatusBar = ({ session, showUsage, items, pricing }: TotalStatsProp
   return (
     <Text color={'gray'}>
       LLM: {session.provider.label}/{session.config.model} - Total Cost:{' '}
-      {formatStats(totalCost, showUsage ? totalUsage : undefined)}
+      {formatStats(totalCost, verbose ? totalUsage : undefined)}
     </Text>
   );
 };

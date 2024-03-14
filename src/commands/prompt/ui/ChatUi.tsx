@@ -4,7 +4,7 @@ import type { Message, ModelResponse } from '../../../engine/inference.js';
 import type { Session } from '../session.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import { saveConversation } from '../utils.js';
-import { UserInput } from './user-input.js';
+import { UserInput } from './UserInput.js';
 import { HelpOutput } from './HelpOutput.js';
 import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
@@ -19,7 +19,6 @@ type ChatUiProps = {
 export const ChatUi = ({ session }: ChatUiProps) => {
   const [state, setState] = useState<ChatState>(session.state);
 
-  const [showUsage, setShowUsage] = useState(Boolean(session.options.usage));
   const [verbose, setVerbose] = useState(Boolean(session.options.verbose));
   const [showInfo, setShowInfo] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -83,16 +82,8 @@ export const ChatUi = ({ session }: ChatUiProps) => {
       } else if (message === '/info') {
         setShowInfo(!showInfo);
         setShowHelp(false);
-      } else if (message === '/usage') {
-        setShowUsage(!showUsage);
       } else if (message === '/verbose') {
-        if (verbose) {
-          setShowUsage(false);
-          setVerbose(false);
-        } else {
-          setShowUsage(true);
-          setVerbose(true);
-        }
+        setVerbose(!verbose);
       } else if (message === '/forget') {
         setState((prevState) => ({
           ...prevState,
@@ -111,12 +102,12 @@ export const ChatUi = ({ session }: ChatUiProps) => {
         void getAiResponse(state.contextMessages, message);
       }
     },
-    [state, verbose, showInfo, showHelp, showUsage],
+    [state, verbose, showInfo, showHelp],
   );
 
   return (
     <Box display="flex" flexDirection="column">
-      <ChatList items={state.items} />
+      <ChatList items={state.items} verbose={verbose} />
 
       {showHelp && <HelpOutput />}
 
@@ -133,7 +124,7 @@ export const ChatUi = ({ session }: ChatUiProps) => {
 
       <StatusBar
         session={session}
-        showUsage={showUsage}
+        verbose={verbose}
         items={state.items}
         pricing={session.provider.pricing[session.config.model]}
       />

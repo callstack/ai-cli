@@ -13,9 +13,7 @@ export function HelpOutput() {
       <Newline />
       - /forget: AI will forget previous messages
       <Newline />- /save: Save in a text file in {CHATS_SAVE_DIRECTORY}
-      <Newline />
-      - /cost: Display information about approximate cost of message
-      <Newline />- /usage: Display information about used tokens
+      <Newline />- /verbose: Show verbose-level output
     </Text>
   );
 }

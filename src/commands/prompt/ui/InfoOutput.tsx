@@ -11,7 +11,7 @@ type InfoOutputProps = {
   verbose?: boolean;
 };
 
-export function InfoOutput({ provider, config, messages }: InfoOutputProps) {
+export function InfoOutput({ provider, config, messages, verbose }: InfoOutputProps) {
   return (
     <Text>
       Provider: {provider.label}
@@ -19,13 +19,17 @@ export function InfoOutput({ provider, config, messages }: InfoOutputProps) {
       Model: {config.model}
       <Newline />
       System prompt: {config.systemPrompt}
-      <Newline />
-      Current context:{' '}
-      {JSON.stringify(
-        messages.map((message) => `${message.role}: ${message.content}`),
-        null,
-        1,
-      )}
+      {verbose ? (
+        <>
+          <Newline />
+          Current context:{' '}
+          {JSON.stringify(
+            messages.map((message) => `${message.role}: ${message.content}`),
+            null,
+            2,
+          )}
+        </>
+      ) : null}
     </Text>
   );
 }

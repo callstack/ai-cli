@@ -6,14 +6,15 @@ import { ProgramOutputListItem } from './ProgramOutputListItem.js';
 
 interface ChatListProps {
   items: ChatItem[];
+  verbose?: boolean;
 }
 
-export function ChatList({ items }: ChatListProps) {
+export function ChatList({ items, verbose }: ChatListProps) {
   return (
     <Box display="flex" flexDirection="column">
       {items.map((item, index) => {
         if (item.type === 'message') {
-          return <MessageListItem key={`message-${index}`} item={item} />;
+          return <MessageListItem key={`message-${index}`} item={item} verbose={verbose} />;
         }
 
         if (item.type === 'info' || item.type === 'warning') {
