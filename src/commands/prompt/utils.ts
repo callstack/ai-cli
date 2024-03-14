@@ -6,10 +6,9 @@ import {
   FILE_COST_WARNING,
   FILE_TOKEN_COUNT_WARNING,
 } from '../../default-config.js';
-import { calculateSessionCost, calculateUsageCost } from '../../engine/session.js';
+import { calculateUsageCost } from '../../engine/session.js';
 import { tokenizer } from '../../engine/tokenizer.js';
-import * as output from '../../output.js';
-import type { Message, ModelResponse, SystemMessage } from '../../engine/inference.js';
+import type { Message, SystemMessage } from '../../engine/inference.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
 import { formatCost, formatTokenCount } from '../../format.js';
@@ -60,26 +59,6 @@ export function filterOutApiKey(key: string, value: unknown) {
   }
 
   return value;
-}
-
-export function getOutputParams(
-  provider: Provider,
-  config: ProviderConfig,
-  response: ModelResponse,
-): output.OutputAiOptions {
-  const usage = {
-    total: { inputTokens: 0, outputTokens: 0, requests: 0 },
-    current: response.usage,
-  };
-
-  const pricing = provider.pricing[response.responseModel] ?? provider.pricing[config.model];
-  const cost = calculateSessionCost(usage, pricing);
-
-  return {
-    responseTime: response.responseTime,
-    usage,
-    cost,
-  };
 }
 
 export function saveConversation(messages: Message[]) {

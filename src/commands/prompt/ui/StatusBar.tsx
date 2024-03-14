@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
-import { formatCost } from '../../../format.js';
+import { formatCost, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import type { ModelPricing } from '../../../engine/providers/provider.js';
 import type { Session } from '../session.js';
@@ -48,7 +48,7 @@ export const StatusBar = ({ session, verbose, items, pricing }: StatusBarProps) 
 
 const formatStats = (cost: number, usage?: ModelUsage) => {
   const usageOutput = usage
-    ? ` (tokens: ${usage.inputTokens} in + ${usage.outputTokens} out, requests: ${usage.requests})`
+    ? ` (tokens: ${formatTokenCount(usage.inputTokens)} in + ${formatTokenCount(usage.outputTokens)} out, requests: ${usage.requests})`
     : '';
 
   return `${formatCost(cost)}${usageOutput}`;
