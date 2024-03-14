@@ -7,7 +7,6 @@ import {
   DEFAULT_PERPLEXITY_MODEL,
   DEFAULT_SYSTEM_PROMPT,
 } from './default-config.js';
-import * as output from './output.js';
 
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';
@@ -37,14 +36,13 @@ const ConfigFileSchema = z.object({
 
 export type ConfigFile = z.infer<typeof ConfigFileSchema>;
 
-export async function parseConfigFile() {
+export function parseConfigFile() {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
 
-  const content = await fs.promises.readFile(configPath);
+  const content = fs.readFileSync(configPath);
   const json = JSON.parse(content.toString());
 
   const typedConfig = ConfigFileSchema.parse(json);
-  output.outputVerbose(`Config with defaults: ${JSON.stringify(typedConfig, null, 2)}`);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
     throw new Error('Add your OpenAI or Perplexity API key to "~/.airc.json" and try again.');
   }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text } from 'ink';
 import { TextInput } from '@inkjs/ui';
-import { colors } from './colors.js';
+import { colors } from '../../../theme/colors.js';
 
 type KeyInputStateProps = {
   label: string;

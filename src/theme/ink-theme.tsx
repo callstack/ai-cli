@@ -1,7 +1,7 @@
 import { extendTheme, defaultTheme } from '@inkjs/ui';
 import { colors } from './colors.js';
 
-export const theme = extendTheme(defaultTheme, {
+export const inkTheme = extendTheme(defaultTheme, {
   components: {
     Select: {
       styles: {

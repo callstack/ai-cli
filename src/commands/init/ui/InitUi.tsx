@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Newline, Text } from 'ink';
 import Link from 'ink-link';
-import { type Provider } from '../../engine/providers/provider.js';
-import { writeConfigFile } from '../../config-file.js';
-import { StepList } from '../../components/step-list.js';
-import { SelectProviderStep } from '../../components/select-provider-step.js';
-import { ConfirmStep } from '../../components/confirm-step.js';
-import { KeyInputStep } from '../../components/key-input-step.js';
-import { ExitApp } from '../../components/exit-app.js';
-import { colors } from '../../components/colors.js';
+import { type Provider } from '../../../engine/providers/provider.js';
+import { writeConfigFile } from '../../../config-file.js';
+import { StepList } from './StepList.js';
+import { SelectProviderStep } from './SelectProviderStep.js';
+import { ConfirmStep } from './ConfirmStep.js';
+import { KeyInputStep } from './KeyInputStep.js';
+import { ExitApp } from '../../../components/ExitApp.js';
+import { colors } from '../../../theme/colors.js';
 
 interface InitUiProps {
   hasConfig: boolean;

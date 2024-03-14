@@ -1,17 +1,11 @@
 import type { CommandModule } from 'yargs';
-import perplexity from '../../engine/providers/perplexity.js';
-import openAi from '../../engine/providers/openAi.js';
-import type { Provider } from '../../engine/providers/provider.js';
-import { run } from './run.js';
+import * as React from 'react';
+import { render } from 'ink';
+import * as output from '../../output.js';
+import { createSession } from './session.js';
 import type { PromptOptions } from './types.js';
-
-export const providerOptionMapping: Record<string, Provider> = {
-  openai: openAi,
-  perplexity: perplexity,
-  pplx: perplexity,
-};
-
-export const providerOptions = Object.keys(providerOptionMapping);
+import { ChatUi } from './ui/ChatUi.js';
+import { providerOptions } from './providers.js';
 
 export const command: CommandModule<{}, PromptOptions> = {
   command: ['prompt', '$0'],
@@ -53,9 +47,9 @@ export const command: CommandModule<{}, PromptOptions> = {
         type: 'boolean',
         describe: 'Display usage costs',
       })
-      .option('stats', {
+      .option('usage', {
         type: 'boolean',
-        describe: 'Display usage stats',
+        describe: 'Display usage usage',
       })
       // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
       .option('color', {
@@ -69,3 +63,14 @@ export const command: CommandModule<{}, PromptOptions> = {
       }),
   handler: (args) => run(args._.join(' '), args),
 };
+
+function run(initialPrompt: string, options: PromptOptions) {
+  try {
+    const session = createSession(options, initialPrompt);
+    render(<ChatUi session={session} />);
+  } catch (error) {
+    output.clearLine();
+    output.outputError(error);
+    process.exit(1);
+  }
+}

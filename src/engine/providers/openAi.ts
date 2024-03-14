@@ -39,6 +39,7 @@ const OpenAi: Provider = {
       temperature: config.temperature,
       top_p: config.top_p,
     });
+
     const responseTime = performance.now() - startTime;
 
     return {
@@ -50,7 +51,7 @@ const OpenAi: Provider = {
       },
       responseTime,
       responseModel: response.model,
-      response,
+      response: {},
     };
   },
 };

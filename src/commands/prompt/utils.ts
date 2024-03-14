@@ -6,17 +6,19 @@ import {
   FILE_COST_WARNING,
   FILE_TOKEN_COUNT_WARNING,
 } from '../../default-config.js';
-import { calculateSessionCost, calculateUsageCost } from '../../engine/session.js';
+import { calculateUsageCost } from '../../engine/session.js';
 import { tokenizer } from '../../engine/tokenizer.js';
-import * as output from '../../output.js';
+import type { Message, SystemMessage } from '../../engine/inference.js';
+import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { Provider } from '../../engine/providers/provider.js';
 import { formatCost, formatTokenCount } from '../../format.js';
-import type { ModelResponse } from '../../engine/inference.js';
-import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
-import type { ConfigFile } from '../../config-file.js';
-import type { SessionContext } from './types.js';
-import { providerOptionMapping } from './index.js';
+import {
+  getConversationStoragePath,
+  getDefaultFilename,
+  getUniqueFilename,
+} from '../../file-utils.js';
 
-export function handleInputFile(context: SessionContext, inputFile: string) {
+export function handleInputFile(inputFile: string, config: ProviderConfig, provider: Provider) {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
 
   if (!fs.existsSync(filePath)) {
@@ -26,26 +28,29 @@ export function handleInputFile(context: SessionContext, inputFile: string) {
   const fileContent = fs.readFileSync(filePath).toString();
   const fileTokens = tokenizer.getTokensCount(fileContent);
 
-  const pricing = context.provider.pricing[context.config.model];
+  const pricing = provider.pricing[config.model];
   const fileCost = calculateUsageCost({ inputTokens: fileTokens }, pricing);
+
+  let costWarning = null;
+  let costInfo = null;
 
   const costOrTokens = fileCost
     ? formatCost(fileCost)
     : `~${formatTokenCount(fileTokens, 100)} tokens`;
   if ((fileCost ?? 0) >= FILE_COST_WARNING || fileTokens >= FILE_TOKEN_COUNT_WARNING) {
-    output.outputWarning(
-      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`,
-    );
+    costWarning = `Using the provided file will increase conversation costs by ${costOrTokens} per message.`;
   } else {
-    output.outputInfo(
-      `Using the provided file will increase conversation costs by ${costOrTokens} per message.`,
-    );
+    costInfo = `Using the provided file will increase conversation costs by ${costOrTokens} per message.`;
   }
 
-  context.messages.push({
-    role: 'system',
-    content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
-  });
+  return {
+    fileContextPrompt: {
+      role: 'system',
+      content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
+    } as SystemMessage,
+    costWarning,
+    costInfo,
+  };
 }
 
 export function filterOutApiKey(key: string, value: unknown) {
@@ -56,43 +61,31 @@ export function filterOutApiKey(key: string, value: unknown) {
   return value;
 }
 
-export function getOutputParams(
-  session: SessionContext,
-  response: ModelResponse,
-): output.OutputAiOptions {
-  const usage = {
-    total: session.totalUsage,
-    current: response.usage,
-  };
+export function saveConversation(messages: Message[]) {
+  let conversation = '';
+  messages.forEach((message) => {
+    conversation += `${roleToLabel(message.role)}: ${message.content}\n\n`;
+  });
 
-  const pricing =
-    session.provider.pricing[response.responseModel] ??
-    session.provider.pricing[session.config.model];
-  const cost = calculateSessionCost(usage, pricing);
+  const conversationStoragePath = getConversationStoragePath();
+  const filePath = getUniqueFilename(
+    path.join(conversationStoragePath, getDefaultFilename(messages)),
+  );
 
-  return {
-    responseTime: response.responseTime,
-    usage,
-    cost,
-  };
+  fs.writeFileSync(filePath, conversation);
+
+  return `Conversation saved to ${filePath.replace(os.homedir(), '~')}`;
 }
 
-export function resolveProviderFromOption(providerOption: string): Provider {
-  const provider = providerOptionMapping[providerOption];
-  if (!provider) {
-    throw new Error(`Provider not found: ${providerOption}.`);
+function roleToLabel(role: Message['role']): string {
+  switch (role) {
+    case 'user':
+      return 'me';
+    case 'assistant':
+      return 'ai';
+    case 'system':
+      return 'system';
+    default:
+      return role;
   }
-
-  return provider;
-}
-
-export function getDefaultProvider(config: ConfigFile): Provider {
-  const providerNames = Object.keys(config.providers) as ProviderName[];
-  const providerName = providerNames ? providerNames[0] : undefined;
-
-  if (!providerName) {
-    throw new Error('No providers found in "~/.airc.json" file.');
-  }
-
-  return getProvider(providerName)!;
 }

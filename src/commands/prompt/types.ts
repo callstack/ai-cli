@@ -1,7 +1,3 @@
-import type { Message, ModelUsage } from '../../engine/inference.js';
-import type { ProviderConfig } from '../../engine/providers/config.js';
-import type { Provider } from '../../engine/providers/provider.js';
-
 export interface PromptOptions {
   /** Interactive mode */
   interactive: boolean;
@@ -14,7 +10,7 @@ export interface PromptOptions {
   /** Display usage costs. */
   costs?: boolean;
   /** Display usage stats. */
-  stats?: boolean;
+  usage?: boolean;
   /** Display colorized output. Default == autodetect */
   color?: boolean;
   /** Add file to conversation */
@@ -23,11 +19,4 @@ export interface PromptOptions {
   creative?: boolean;
   /** Precise response style */
   precise?: boolean;
-}
-
-export interface SessionContext {
-  provider: Provider;
-  config: ProviderConfig;
-  totalUsage: ModelUsage;
-  messages: Message[];
 }

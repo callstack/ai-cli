@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'ink';
 import { ConfirmInput } from '@inkjs/ui';
-import { colors } from './colors.js';
+import { colors } from '../../../theme/colors.js';
 
 interface ConfirmStepProps {
   label: string;
