@@ -3,18 +3,14 @@ import { Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
-import type { ModelPricing } from '../../../engine/providers/provider.js';
-import type { Session } from '../session.js';
-import type { ChatItem } from './types.js';
+import { useChatState } from '../state.js';
 
-type StatusBarProps = {
-  session: Session;
-  verbose: boolean;
-  items: ChatItem[];
-  pricing: ModelPricing | undefined;
-};
+export const StatusBar = () => {
+  const verbose = useChatState((state) => state.verbose);
+  const items = useChatState((state) => state.outputMessages);
+  const provider = useChatState((state) => state.provider);
+  const providerConfig = useChatState((state) => state.providerConfig);
 
-export const StatusBar = ({ session, verbose, items, pricing }: StatusBarProps) => {
   const [totalUsage, setTotalUsage] = useState<ModelUsage>({
     inputTokens: 0,
     outputTokens: 0,
@@ -32,7 +28,7 @@ export const StatusBar = ({ session, verbose, items, pricing }: StatusBarProps) 
         usage.requests += item.usage?.requests ?? 0;
       }
     });
-    const cost = calculateUsageCost(usage, pricing) ?? 0;
+    const cost = calculateUsageCost(usage, provider.pricing) ?? 0;
 
     setTotalUsage(usage);
     setTotalCost(cost);
@@ -40,7 +36,7 @@ export const StatusBar = ({ session, verbose, items, pricing }: StatusBarProps) 
 
   return (
     <Text color={'gray'}>
-      LLM: {session.provider.label}/{session.config.model} - Total Cost:{' '}
+      LLM: {provider.label}/{providerConfig.model} - Total Cost:{' '}
       {formatStats(totalCost, verbose ? totalUsage : undefined)}
     </Text>
   );

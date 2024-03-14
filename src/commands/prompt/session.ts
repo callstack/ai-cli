@@ -1,11 +1,6 @@
 import { parseConfigFile } from '../../config-file.js';
-import {
-  RESPONSE_STYLE_CREATIVE,
-  RESPONSE_STYLE_DEFAULT,
-  RESPONSE_STYLE_PRECISE,
-} from '../../default-config.js';
 import type { Message } from '../../engine/inference.js';
-import type { ProviderConfig } from '../../engine/providers/config.js';
+import type { ProviderConfig, ResponseStyle } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
 import { getDefaultProvider, resolveProviderFromOption } from './providers.js';
 import type { PromptOptions } from './types.js';
@@ -31,7 +26,7 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
-  let responseStyle = RESPONSE_STYLE_DEFAULT;
+  let responseStyle: ResponseStyle = 'default';
 
   const chatState: ChatState = {
     contextMessages: [],
@@ -45,10 +40,10 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
     });
   } else {
     if (options.creative) {
-      responseStyle = RESPONSE_STYLE_CREATIVE;
+      responseStyle = 'creative';
     }
     if (options.precise) {
-      responseStyle = RESPONSE_STYLE_PRECISE;
+      responseStyle = 'precise';
     }
   }
 
@@ -58,7 +53,7 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
     model: options.model ?? initialConfig.model,
     apiKey: initialConfig.apiKey,
     systemPrompt: initialConfig.systemPrompt,
-    ...responseStyle,
+    responseStyle,
   };
 
   if (options.file) {

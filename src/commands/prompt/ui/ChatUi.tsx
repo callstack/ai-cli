@@ -1,83 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
-import type { Message, ModelResponse } from '../../../engine/inference.js';
-import type { Session } from '../session.js';
-import { calculateUsageCost } from '../../../engine/session.js';
+import type { UserMessage } from '../../../engine/inference.js';
+import {
+  addAiResponse,
+  addProgramMessage,
+  addUserMessage,
+  forgetContextMessages,
+  setVerbose,
+  useChatState,
+} from '../state.js';
 import { saveConversation } from '../utils.js';
 import { UserInput } from './UserInput.js';
 import { HelpOutput } from './HelpOutput.js';
 import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
 import { ChatList } from './list/ChatList.js';
-import type { ChatState, MessageItem, ProgramOutputItem } from './types.js';
 import { ResponseLoader } from './ResponseLoader.js';
-
-type ChatUiProps = {
-  session: Session;
-};
 
 type ActiveView = 'info' | 'help' | null;
 
-export const ChatUi = ({ session }: ChatUiProps) => {
-  const [state, setState] = useState<ChatState>(session.state);
+export const ChatUi = () => {
+  const contextMessages = useChatState((state) => state.contextMessages);
+  const outputMessages = useChatState((state) => state.outputMessages);
+  const verbose = useChatState((state) => state.verbose);
+  const provider = useChatState((state) => state.provider);
+  const providerConfig = useChatState((state) => state.providerConfig);
+
   const [activeView, setActiveView] = useState<ActiveView>(null);
-  const [verbose, setVerbose] = useState(Boolean(session.options.verbose));
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [shouldExit, setShouldExit] = useState(false);
 
-  const addProgramOutput = (item: ProgramOutputItem) => {
-    setState((prevState) => ({
-      ...prevState,
-      items: [...prevState.items, item],
-    }));
-  };
-
-  const addUserMessage = (message: string) => {
-    const userMessage: Message = {
-      role: 'user',
-      content: message,
-    };
-    setState(({ contextMessages, items }) => ({
-      contextMessages: [...contextMessages, userMessage],
-      items: [...items, { type: 'message', message: userMessage }],
-    }));
-    return userMessage;
-  };
-
-  const addAiMessage = (response: ModelResponse) => {
-    const aiMessage: MessageItem = {
-      type: 'message',
-      message: {
-        role: 'assistant',
-        content: response.messageText ?? '',
-      },
-      usage: response.usage,
-      cost: calculateUsageCost(response.usage, session.provider.pricing[session.config.model]),
-      responseTime: response.responseTime,
-    };
-    setState((prevState) => {
-      return {
-        ...prevState,
-        contextMessages: [...prevState.contextMessages, aiMessage.message],
-        items: [...prevState.items, aiMessage],
-      };
-    });
-  };
-
-  const fetchAiResponse = async (messages: Message[], message?: string) => {
+  const fetchAiResponse = async () => {
     setLoadingResponse(true);
-    const messagesToSend = message ? [...messages, addUserMessage(message)] : messages;
-    const aiResponse = await session.provider.getChatCompletion(session.config, messagesToSend);
-    addAiMessage(aiResponse);
+    const messages = useChatState.getState().contextMessages;
+    const response = await provider.getChatCompletion(providerConfig, messages);
+    addAiResponse(response);
     setLoadingResponse(false);
   };
 
   // Trigger initial AI response
   useEffect(() => {
-    const lastMessage = state.contextMessages[state.contextMessages.length - 1];
+    const lastMessage = contextMessages[contextMessages.length - 1];
     if (lastMessage?.role === 'user') {
-      void fetchAiResponse(state.contextMessages);
+      void fetchAiResponse();
     }
   }, []);
 
@@ -87,8 +53,10 @@ export const ChatUi = ({ session }: ChatUiProps) => {
       return;
     }
 
+    const userMessage: UserMessage = { role: 'user', content: message ?? '' };
+    addUserMessage(userMessage);
     setActiveView(null);
-    void fetchAiResponse(state.contextMessages, message);
+    void fetchAiResponse();
   };
 
   const processCommand = (input: string) => {
@@ -99,7 +67,7 @@ export const ChatUi = ({ session }: ChatUiProps) => {
     const command = input.split(' ')[0];
 
     if (command === '/exit') {
-      addProgramOutput({ type: 'info', text: 'Bye!' });
+      addProgramMessage({ type: 'info', text: 'Bye!' });
       setShouldExit(true);
       return true;
     }
@@ -117,50 +85,42 @@ export const ChatUi = ({ session }: ChatUiProps) => {
     setActiveView(null);
     if (command === '/verbose') {
       setVerbose(!verbose);
-      addProgramOutput({ type: 'info', text: `Verbose mode: ${verbose ? 'off' : 'on'}` });
+      addProgramMessage({ type: 'info', text: `Verbose mode: ${verbose ? 'off' : 'on'}` });
       return true;
     }
 
     if (command === '/forget') {
-      setState((prevState) => ({
-        ...prevState,
-        items: [...prevState.items, { type: 'info', text: 'AI will forget previous messages.' }],
-        contextMessages: [],
-      }));
+      forgetContextMessages();
+      addProgramMessage({ type: 'info', text: 'AI will forget previous messages.' });
       return true;
     }
 
     if (input === '/save') {
-      const saveConversationMessage = saveConversation(state.contextMessages);
-      addProgramOutput({ type: 'info', text: saveConversationMessage });
+      const saveConversationMessage = saveConversation(contextMessages);
+      addProgramMessage({ type: 'info', text: saveConversationMessage });
       return true;
     }
 
-    addProgramOutput({ type: 'warning', text: `Unknown command ${command}` });
+    addProgramMessage({ type: 'warning', text: `Unknown command ${command}` });
     return true;
   };
 
   return (
     <Box display="flex" flexDirection="column">
-      <ChatList items={state.items} verbose={verbose} />
+      <ChatList items={outputMessages} verbose={verbose} />
       {activeView === 'help' && <HelpOutput />}
       {activeView === 'info' && (
         <InfoOutput
-          config={session.config}
-          messages={state.contextMessages}
-          provider={session.provider}
+          config={providerConfig}
+          messages={contextMessages}
+          provider={provider}
           verbose={verbose}
         />
       )}
       {loadingResponse ? <ResponseLoader /> : null}
       {!loadingResponse && !shouldExit && <UserInput onSubmit={handleSubmit} />}
 
-      <StatusBar
-        session={session}
-        verbose={verbose}
-        items={state.items}
-        pricing={session.provider.pricing[session.config.model]}
-      />
+      <StatusBar />
 
       {shouldExit && <ExitApp />}
     </Box>

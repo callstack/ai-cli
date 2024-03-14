@@ -1,11 +1,12 @@
 import type { CommandModule } from 'yargs';
 import * as React from 'react';
 import { render } from 'ink';
+import { parseConfigFile } from '../../config-file.js';
 import * as output from '../../output.js';
-import { createSession } from './session.js';
+import { providerOptions } from './providers.js';
+import { initChatState } from './state.js';
 import type { PromptOptions } from './types.js';
 import { ChatUi } from './ui/ChatUi.js';
-import { providerOptions } from './providers.js';
 
 export const command: CommandModule<{}, PromptOptions> = {
   command: ['prompt', '$0'],
@@ -66,8 +67,9 @@ export const command: CommandModule<{}, PromptOptions> = {
 
 function run(initialPrompt: string, options: PromptOptions) {
   try {
-    const session = createSession(options, initialPrompt);
-    render(<ChatUi session={session} />);
+    const configFile = parseConfigFile();
+    initChatState(options, configFile, initialPrompt);
+    render(<ChatUi />);
   } catch (error) {
     output.clearLine();
     output.outputError(error);
