@@ -6,8 +6,8 @@ import {
   providers,
   type Provider,
   type ProviderName,
-} from '../engine/providers/provider.js';
-import { colors } from './colors.js';
+} from '../../../engine/providers/provider.js';
+import { colors } from '../../../theme/colors.js';
 
 type SelectProviderStepProps = {
   label: string;

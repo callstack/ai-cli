@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
+import { ExitApp } from '../../../components/ExitApp.js';
 import type { Message, ModelResponse } from '../../../engine/inference.js';
 import type { Session } from '../session.js';
 import { calculateUsageCost } from '../../../engine/session.js';
@@ -23,6 +24,7 @@ export const ChatUi = ({ session }: ChatUiProps) => {
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [verbose, setVerbose] = useState(Boolean(session.options.verbose));
   const [loadingResponse, setLoadingResponse] = useState(false);
+  const [shouldExit, setShouldExit] = useState(false);
 
   const addProgramOutput = (item: ProgramOutputItem) => {
     setState((prevState) => ({
@@ -97,7 +99,9 @@ export const ChatUi = ({ session }: ChatUiProps) => {
     const command = input.split(' ')[0];
 
     if (command === '/exit') {
-      process.exit(0);
+      addProgramOutput({ type: 'info', text: 'Bye!' });
+      setShouldExit(true);
+      return true;
     }
 
     if (command === '/help') {
@@ -139,9 +143,7 @@ export const ChatUi = ({ session }: ChatUiProps) => {
   return (
     <Box display="flex" flexDirection="column">
       <ChatList items={state.items} verbose={verbose} />
-
       {activeView === 'help' && <HelpOutput />}
-
       {activeView === 'info' && (
         <InfoOutput
           config={session.config}
@@ -150,8 +152,8 @@ export const ChatUi = ({ session }: ChatUiProps) => {
           verbose={verbose}
         />
       )}
-
-      {loadingResponse ? <ResponseLoader /> : <UserInput onSubmit={handleSubmit} />}
+      {loadingResponse ? <ResponseLoader /> : null}
+      {!loadingResponse && !shouldExit && <UserInput onSubmit={handleSubmit} />}
 
       <StatusBar
         session={session}
@@ -159,6 +161,8 @@ export const ChatUi = ({ session }: ChatUiProps) => {
         items={state.items}
         pricing={session.provider.pricing[session.config.model]}
       />
+
+      {shouldExit && <ExitApp />}
     </Box>
   );
 };

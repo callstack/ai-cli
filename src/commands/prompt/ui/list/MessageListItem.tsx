@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'ink';
 import { formatTime } from '../../../../format.js';
-import { colors } from '../../../../components/colors.js';
+import { colors } from '../../../../theme/colors.js';
 import type { MessageItem } from '../types.js';
 
 type MessageListItemProps = {
