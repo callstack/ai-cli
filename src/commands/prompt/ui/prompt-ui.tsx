@@ -10,13 +10,14 @@ import { TotalStats } from './total-stats.js';
 import { InfoOutput } from './info-output.js';
 import { ItemList } from './list/item-list.js';
 import type { ChatState, DisplayMessageItem } from './types.js';
+import { ResponseLoader } from './response-loader.js';
 
 type ChatInterfaceProps = {
   session: Session;
 };
 
 export const ChatInterface = ({ session }: ChatInterfaceProps) => {
-  const [chatSession, setChatSession] = useState<ChatState>(session.chatSession);
+  const [state, setState] = useState<ChatState>(session.state);
 
   const [showInfo, setShowInfo] = useState(false);
   const [showUsage, setShowUsage] = useState(
@@ -35,9 +36,10 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
       role: 'user',
       content: message,
     };
-    setChatSession(({ contextMessages: messages, items: displayItems }) => ({
-      contextMessages: [...messages, userMessage],
-      items: [...displayItems, { type: 'message', message: userMessage }],
+    setState(({ contextMessages, items }) => ({
+      contextMessages: [...contextMessages, userMessage],
+      items: [...items, { type: 'message', message: userMessage }],
+      showLoader: false,
     }));
     return userMessage;
   }, []);
@@ -53,27 +55,20 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
       cost: calculateUsageCost(response.usage, session.provider.pricing[session.config.model]),
       responseTime: response.responseTime,
     };
-    setChatSession(({ contextMessages: messages, items: displayItems }) => {
-      const hasPlaceholder = displayItems[displayItems.length - 1]?.type === 'placeholder';
-      if (hasPlaceholder) {
-        const displayItemsWithoutPlaceholder = displayItems.slice(0, displayItems.length - 1);
-        return {
-          contextMessages: [...messages, aiMessage.message],
-          items: [...displayItemsWithoutPlaceholder, aiMessage],
-        };
-      } else {
-        return {
-          contextMessages: [...messages, aiMessage.message],
-          items: [...displayItems, aiMessage],
-        };
-      }
+    setState((prevState) => {
+      return {
+        ...prevState,
+        contextMessages: [...prevState.contextMessages, aiMessage.message],
+        items: [...prevState.items, aiMessage],
+        showLoader: false,
+      };
     });
   }, []);
 
   const addAiMessagePlaceholder = useCallback(() => {
-    setChatSession(({ contextMessages: messages, items: displayItems }) => ({
-      contextMessages: messages,
-      items: [...displayItems, { type: 'placeholder' }],
+    setState((prevState) => ({
+      ...prevState,
+      showLoader: true,
     }));
   }, []);
 
@@ -87,9 +82,9 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
   }, []);
 
   useEffect(() => {
-    const lastMessage = chatSession.contextMessages[chatSession.contextMessages.length - 1];
+    const lastMessage = state.contextMessages[state.contextMessages.length - 1];
     if (lastMessage?.role === 'user') {
-      void getAiResponse(chatSession.contextMessages);
+      void getAiResponse(state.contextMessages);
     }
   }, []);
 
@@ -99,8 +94,10 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
         process.exit(0);
       } else if (message === '/help') {
         setShowHelp(!showHelp);
+        setShowInfo(false);
       } else if (message === '/info') {
         setShowInfo(!showInfo);
+        setShowHelp(false);
       } else if (message === '/usage') {
         setShowUsage(!showUsage);
       } else if (message === '/cost') {
@@ -116,23 +113,24 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
           setVerbose(true);
         }
       } else if (message === '/forget') {
-        setChatSession(({ items: displayItems }) => ({
-          items: [...displayItems, { type: 'info', text: 'AI will forget previous messages.' }],
+        setState((prevState) => ({
+          ...prevState,
+          items: [...prevState.items, { type: 'info', text: 'AI will forget previous messages.' }],
           contextMessages: [],
         }));
       } else if (message === '/save') {
-        const saveConversationMessage = saveConversation(chatSession.contextMessages);
-        setChatSession(({ contextMessages: messages, items: displayItems }) => ({
-          contextMessages: messages,
-          items: [...displayItems, { type: 'info', text: saveConversationMessage }],
+        const saveConversationMessage = saveConversation(state.contextMessages);
+        setState((prevState) => ({
+          ...prevState,
+          items: [...prevState.items, { type: 'info', text: saveConversationMessage }],
         }));
       } else {
         setShowHelp(false);
         setShowInfo(false);
-        void getAiResponse(chatSession.contextMessages, message);
+        void getAiResponse(state.contextMessages, message);
       }
     },
-    [chatSession, verbose, showInfo, showHelp, showCost, showUsage],
+    [state, verbose, showInfo, showHelp, showCost, showUsage],
   );
 
   return (
@@ -144,23 +142,27 @@ export const ChatInterface = ({ session }: ChatInterfaceProps) => {
           Using model: {session.config.model}
         </Text>
       ) : null}
-      <Box display="flex" flexDirection="column">
-        <ItemList items={chatSession.items} />
+      <ItemList items={state.items} />
 
-        {showHelp && <Help />}
-        {showInfo && (
-          <InfoOutput
-            config={session.config}
-            messages={chatSession.contextMessages}
-            provider={session.provider}
-          />
-        )}
-      </Box>
-      <UserInput visible={!thinking} onSubmit={onSubmitMessage} />
+      {showHelp && <Help />}
+      {showInfo && (
+        <InfoOutput
+          config={session.config}
+          messages={state.contextMessages}
+          provider={session.provider}
+        />
+      )}
+
+      {state.showLoader ? (
+        <ResponseLoader />
+      ) : (
+        <UserInput visible={!thinking} onSubmit={onSubmitMessage} />
+      )}
+
       <TotalStats
         showCost={showCost}
         showUsage={showUsage}
-        items={chatSession.items}
+        items={state.items}
         pricing={session.provider.pricing[session.config.model]}
       />
     </Box>

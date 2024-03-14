@@ -3,6 +3,7 @@ import type { Message, ModelUsage } from '../../../engine/inference.js';
 export interface ChatState {
   contextMessages: Message[];
   items: DisplayItem[];
+  showLoader: boolean;
 }
 
 export type DisplayItem = DisplayMessageItem | DisplayOutputItem;
@@ -16,6 +17,6 @@ export interface DisplayMessageItem {
 }
 
 export interface DisplayOutputItem {
-  type: 'warning' | 'info' | 'placeholder';
+  type: 'warning' | 'info';
   text?: string;
 }

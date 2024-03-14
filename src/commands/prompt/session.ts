@@ -15,7 +15,7 @@ import { handleInputFile } from './utils.js';
 export interface Session {
   provider: Provider;
   config: ProviderConfig;
-  chatSession: ChatState;
+  state: ChatState;
   options: PromptOptions;
 }
 
@@ -33,13 +33,14 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
 
   let responseStyle = RESPONSE_STYLE_DEFAULT;
 
-  const chatSession: ChatState = {
+  const chatState: ChatState = {
     contextMessages: [],
     items: [],
+    showLoader: false,
   };
 
   if (options.creative && options.precise) {
-    chatSession.items.push({
+    chatState.items.push({
       type: 'warning',
       text: 'You set both creative and precise response styles, falling back to default',
     });
@@ -70,13 +71,13 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
 
     messages.push(fileContextPrompt);
     if (costWarning) {
-      chatSession.items.push({
+      chatState.items.push({
         type: 'warning',
         text: costWarning,
       });
     }
     if (costInfo) {
-      chatSession.items.push({
+      chatState.items.push({
         type: 'info',
         text: costInfo,
       });
@@ -84,11 +85,11 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
   }
 
   if (initialPrompt) {
-    chatSession.contextMessages.push({
+    chatState.contextMessages.push({
       role: 'user',
       content: initialPrompt,
     });
-    chatSession.items.push({
+    chatState.items.push({
       type: 'message',
       message: {
         role: 'user',
@@ -101,6 +102,6 @@ export function createSession(options: PromptOptions, initialPrompt?: string): S
     config,
     provider,
     options,
-    chatSession,
+    state: chatState,
   };
 }
