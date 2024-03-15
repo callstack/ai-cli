@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
-import { processCommand } from '../commands.js';
-import {
-  addAiResponse,
-  addProgramMessage,
-  addUserMessage,
-  setActiveView,
-  useChatState,
-} from '../state.js';
+import { processChatCommand } from '../chat-commands.js';
+import { addAiResponse, addProgramMessage, addUserMessage } from '../state/actions.js';
+import { useChatState } from '../state/state.js';
 import { texts } from '../texts.js';
 import { UserMessageInput } from './UserMessageInput.js';
 import { HelpOutput } from './HelpOutput.js';
@@ -48,13 +43,12 @@ export const ChatUi = () => {
   }, []);
 
   const handleSubmit = (message: string) => {
-    const isCommand = processCommand(message);
+    const isCommand = processChatCommand(message);
     if (isCommand) {
       return;
     }
 
     addUserMessage(message);
-    setActiveView(null);
     void fetchAiResponse();
   };
 

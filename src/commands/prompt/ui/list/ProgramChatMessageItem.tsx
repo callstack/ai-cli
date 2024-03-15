@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'ink';
 import { colors } from '../../../../theme/colors.js';
-import type { ProgramChatMessage } from '../../state.js';
+import type { ProgramChatMessage } from '../../state/state.js';
 
 type ProgramChatMessageItemProps = {
   output: ProgramChatMessage;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Newline, Text } from 'ink';
 import redent from 'redent';
-import { useChatState } from '../state.js';
+import { useChatState } from '../state/state.js';
 
 export function InfoOutput() {
   const provider = useChatState((state) => state.provider);

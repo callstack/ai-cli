@@ -3,7 +3,7 @@ import { Box, Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
-import { useChatState } from '../state.js';
+import { useChatState } from '../state/state.js';
 
 export const StatusBar = () => {
   const verbose = useChatState((state) => state.verbose);

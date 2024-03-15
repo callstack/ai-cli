@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'ink';
 import { formatTime } from '../../../../format.js';
 import { colors } from '../../../../theme/colors.js';
-import { useChatState, type AiChatMessage } from '../../state.js';
+import { useChatState, type AiChatMessage } from '../../state/state.js';
 import { texts } from '../../texts.js';
 
 type AiChatMessageItemProps = {

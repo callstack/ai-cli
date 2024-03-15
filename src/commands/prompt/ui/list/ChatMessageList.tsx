@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box } from 'ink';
-import { useChatState } from '../../state.js';
+import { useChatState } from '../../state/state.js';
 import { ProgramChatMessageItem } from './ProgramChatMessageItem.js';
 import { UserChatMessageItem } from './UserChatMessageItem.js';
 import { AiChatMessageItem } from './AiChatMessageItem.js';
