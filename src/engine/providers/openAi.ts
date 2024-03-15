@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { type Message } from '../inference.js';
-import type { ProviderConfig } from './config.js';
+import { responseStyles, type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
 
 const OpenAi: Provider = {
@@ -36,8 +36,7 @@ const OpenAi: Provider = {
     const response = await openai.chat.completions.create({
       messages: [systemMessage, ...messages],
       model: config.model,
-      temperature: config.temperature,
-      top_p: config.top_p,
+      ...responseStyles[config.responseStyle],
     });
 
     const responseTime = performance.now() - startTime;
