@@ -46,16 +46,26 @@ export function initChatState(
       responseStyle: getResponseStyle(options),
     };
 
-    const contextMessages: Message[] = initialPrompt
-      ? [{ role: 'user', content: initialPrompt }]
-      : [];
+    const initialMessage: ProgramOutputItem = {
+      type: 'info',
+      text: 'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.',
+    };
+
+    const contextMessages: Message[] = [];
+    const outputMessages: ChatItem[] = [{ type: 'info', text: initialMessage.text }];
+
+    if (initialPrompt) {
+      const initialMessage: UserMessage = { role: 'user', content: initialPrompt };
+      contextMessages.push(initialMessage);
+      outputMessages.push({ type: 'message', message: initialMessage });
+    }
 
     return {
       isInitialized: true,
       provider,
       providerConfig,
       contextMessages,
-      outputMessages: [],
+      outputMessages,
       verbose: options.verbose,
     };
   });
@@ -65,6 +75,22 @@ export function addUserMessage(message: UserMessage) {
   useChatState.setState((state: ChatState) => {
     return {
       contextMessages: [...state.contextMessages, message],
+      outputMessages: [...state.outputMessages, { type: 'message', message }],
+    };
+  });
+}
+
+export function addUserOutputMessage(message: UserMessage) {
+  useChatState.setState((state: ChatState) => {
+    return {
+      outputMessages: [...state.outputMessages, { type: 'message', message }],
+    };
+  });
+}
+
+export function addAiOutputMessage(message: AiMessage) {
+  useChatState.setState((state: ChatState) => {
+    return {
       outputMessages: [...state.outputMessages, { type: 'message', message }],
     };
   });

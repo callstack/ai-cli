@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Text } from 'ink';
+import { Box, Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
@@ -27,10 +27,12 @@ export const StatusBar = () => {
   const totalCost = calculateUsageCost(totalUsage, modelPricing) ?? 0;
 
   return (
-    <Text color={'gray'}>
-      LLM: {provider.label}/{providerConfig.model} - Total Cost:{' '}
-      {formatStats(totalCost, verbose ? totalUsage : undefined)}
-    </Text>
+    <Box flexDirection="row" marginTop={1}>
+      <Text color={'gray'}>
+        LLM: {provider.label}/{providerConfig.model} - Total Cost:{' '}
+        {formatStats(totalCost, verbose ? totalUsage : undefined)}
+      </Text>
+    </Box>
   );
 };
 

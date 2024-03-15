@@ -1,5 +1,6 @@
 import React from 'react';
-import { Newline, Text } from 'ink';
+import { Box, Newline, Text } from 'ink';
+import redent from 'redent';
 import { useChatState } from '../state.js';
 
 export function InfoOutput() {
@@ -9,26 +10,29 @@ export function InfoOutput() {
   const contextMessages = useChatState((state) => state.contextMessages);
 
   const contextMessagesOutput = verbose
-    ? JSON.stringify(
-        contextMessages.map((m) => `${m.role}: ${m.content}`),
-        null,
-        2,
-      )
+    ? redent(
+        JSON.stringify(
+          contextMessages.map((m) => `${m.role}: ${m.content}`),
+          null,
+          2,
+        ),
+        3,
+      ).trim()
     : null;
 
   return (
-    <Text>
-      Provider: {provider.label}
-      <Newline />
-      Model: {providerConfig.model}
-      <Newline />
-      System prompt: {providerConfig.systemPrompt}
-      {contextMessagesOutput ? (
-        <>
-          <Newline />
-          Context Messages: {contextMessagesOutput}
-        </>
-      ) : null}
-    </Text>
+    <Box marginTop={1}>
+      <Text color="grey">
+        Info:
+        <Newline /> - Provider: {provider.label}
+        <Newline /> - Model: {providerConfig.model}
+        <Newline /> - System prompt: {providerConfig.systemPrompt}
+        {contextMessagesOutput ? (
+          <>
+            <Newline /> - Context Messages: {contextMessagesOutput}
+          </>
+        ) : null}
+      </Text>
+    </Box>
   );
 }

@@ -4,7 +4,6 @@ import { Spinner } from '@inkjs/ui';
 import { colors } from '../../../theme/colors.js';
 
 export const ResponseLoader = () => {
-  // TODO: fix color of the spinner
   return (
     <Box flexDirection="row">
       <Text color={colors.assistant}>ai: </Text>

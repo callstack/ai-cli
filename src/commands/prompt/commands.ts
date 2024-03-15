@@ -1,3 +1,4 @@
+import type { UserMessage } from '../../engine/inference.js';
 import {
   addProgramMessage,
   setShouldExit,
@@ -5,6 +6,8 @@ import {
   forgetContextMessages,
   setActiveView,
   useChatState,
+  addAiOutputMessage,
+  addUserOutputMessage,
 } from './state.js';
 import { saveConversation } from './utils.js';
 
@@ -13,15 +16,7 @@ export function processCommand(input: string) {
     return false;
   }
 
-  const state = useChatState.getState();
   const command = input.split(' ')[0];
-
-  if (command === '/exit') {
-    addProgramMessage({ type: 'info', text: 'Bye!' });
-    setShouldExit(true);
-    return true;
-  }
-
   if (command === '/help') {
     setActiveView('help');
     return true;
@@ -32,7 +27,18 @@ export function processCommand(input: string) {
     return true;
   }
 
+  const userMessage: UserMessage = { role: 'user', content: input };
+  addUserOutputMessage(userMessage);
+
+  const state = useChatState.getState();
   setActiveView(null);
+
+  if (command === '/exit') {
+    addAiOutputMessage({ role: 'assistant', content: 'Bye! 👋' });
+    setShouldExit(true);
+    return true;
+  }
+
   if (command === '/verbose') {
     setVerbose(!state.verbose);
     addProgramMessage({ type: 'info', text: `Verbose mode: ${state.verbose ? 'off' : 'on'}` });
