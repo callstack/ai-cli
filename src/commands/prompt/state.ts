@@ -6,6 +6,7 @@ import type { AiMessage, Message, ModelResponse, UserMessage } from '../../engin
 import type { ChatItem, ProgramOutputItem } from './ui/types.js';
 import type { PromptOptions } from './types.js';
 import { getDefaultProvider, resolveProviderFromOption } from './providers.js';
+import { handleInputFile } from './utils.js';
 
 export interface ChatState {
   provider: Provider;
@@ -48,6 +49,21 @@ export function initChatState(
 
     const contextMessages: Message[] = [];
     const outputMessages: ChatItem[] = [];
+
+    if (options.file) {
+      const { systemMessage, costWarning, costInfo } = handleInputFile(
+        options.file,
+        providerConfig,
+        provider,
+      );
+
+      contextMessages.push(systemMessage);
+      if (costWarning) {
+        outputMessages.push({ type: 'warning', text: costWarning });
+      } else if (costInfo) {
+        outputMessages.push({ type: 'info', text: costInfo });
+      }
+    }
 
     if (initialPrompt) {
       const initialMessage: UserMessage = { role: 'user', content: initialPrompt };
