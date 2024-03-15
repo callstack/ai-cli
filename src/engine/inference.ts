@@ -16,11 +16,11 @@ export type AiMessage = {
 };
 
 export type ModelResponse = {
-  messageText: string | null;
+  message: AiMessage;
   usage: ModelUsage;
   responseTime: number;
   responseModel: string;
-  response: unknown;
+  data: unknown;
 };
 
 export type ModelUsage = {

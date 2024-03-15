@@ -46,13 +46,8 @@ export function initChatState(
       responseStyle: getResponseStyle(options),
     };
 
-    const initialMessage: ProgramOutputItem = {
-      type: 'info',
-      text: 'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.',
-    };
-
     const contextMessages: Message[] = [];
-    const outputMessages: ChatItem[] = [{ type: 'info', text: initialMessage.text }];
+    const outputMessages: ChatItem[] = [];
 
     if (initialPrompt) {
       const initialMessage: UserMessage = { role: 'user', content: initialPrompt };
@@ -98,16 +93,15 @@ export function addAiOutputMessage(message: AiMessage) {
 
 export function addAiResponse(response: ModelResponse) {
   useChatState.setState((state: ChatState) => {
-    const message: AiMessage = { role: 'assistant', content: response.messageText ?? '' };
     const outputMessages = {
       type: 'message',
-      message,
+      message: response.message,
       responseTime: response.responseTime,
       usage: response.usage,
     } as const;
 
     return {
-      contextMessages: [...state.contextMessages, message],
+      contextMessages: [...state.contextMessages, response.message],
       outputMessages: [...state.outputMessages, outputMessages],
     };
   });

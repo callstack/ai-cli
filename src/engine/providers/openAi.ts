@@ -43,7 +43,10 @@ const OpenAi: Provider = {
     const responseTime = performance.now() - startTime;
 
     return {
-      messageText: response.choices[0]?.message.content ?? null,
+      message: {
+        role: 'assistant',
+        content: response.choices[0]?.message.content ?? '',
+      },
       usage: {
         inputTokens: response.usage?.prompt_tokens ?? 0,
         outputTokens: response.usage?.completion_tokens ?? 0,
@@ -51,7 +54,7 @@ const OpenAi: Provider = {
       },
       responseTime,
       responseModel: response.model,
-      response: {},
+      data: response,
     };
   },
 };
