@@ -3,6 +3,8 @@ export const colors = {
   focusIndicator: '#9BE491',
   assistant: '#8CBFFA',
   user: 'white',
+  error: 'red',
   warning: 'yellowBright',
   info: 'gray',
+  debug: 'gray',
 };

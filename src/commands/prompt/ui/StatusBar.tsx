@@ -7,14 +7,14 @@ import { useChatState } from '../state.js';
 
 export const StatusBar = () => {
   const verbose = useChatState((state) => state.verbose);
-  const items = useChatState((state) => state.outputMessages);
+  const items = useChatState((state) => state.chatMessages);
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
 
   const totalUsage = useMemo(() => {
     const usage: ModelUsage = { inputTokens: 0, outputTokens: 0, requests: 0 };
     items.forEach((item) => {
-      if (item.type === 'message' && item.message.role === 'assistant') {
+      if (item.type === 'ai') {
         usage.inputTokens += item.usage?.inputTokens ?? 0;
         usage.outputTokens += item.usage?.outputTokens ?? 0;
         usage.requests += item.usage?.requests ?? 0;

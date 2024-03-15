@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
+import { texts } from '../texts.js';
 
-type UserInputProps = {
+type UserMessageInputProps = {
   onSubmit: (value: string) => void;
 };
 
-export const UserInput = ({ onSubmit }: UserInputProps) => {
+export const UserMessageInput = ({ onSubmit }: UserMessageInputProps) => {
   const [value, setUserInput] = useState('');
 
   const handleSubmit = (text: string) => {
@@ -21,7 +22,7 @@ export const UserInput = ({ onSubmit }: UserInputProps) => {
 
   return (
     <Box flexDirection="row">
-      <Text>{'me: '}</Text>
+      <Text>{texts.userLabel}</Text>
       <TextInput value={value} onChange={setUserInput} onSubmit={handleSubmit} />
     </Box>
   );

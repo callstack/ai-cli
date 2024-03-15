@@ -2,11 +2,12 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
 import { colors } from '../../../theme/colors.js';
+import { texts } from '../texts.js';
 
-export const ResponseLoader = () => {
+export const AiResponseLoader = () => {
   return (
     <Box flexDirection="row">
-      <Text color={colors.assistant}>ai: </Text>
+      <Text color={colors.assistant}>{texts.assistantLabel}</Text>
       <Spinner type="dots" />
       <Text color={colors.assistant}> Thinking...</Text>
     </Box>

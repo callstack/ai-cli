@@ -4,7 +4,7 @@ import { CHATS_SAVE_DIRECTORY } from '../../../file-utils.js';
 
 export function HelpOutput() {
   return (
-    <Box marginTop={1}>
+    <Box marginY={1}>
       <Text color="grey">
         Available commands:
         <Newline /> - /exit: Exit the CLI

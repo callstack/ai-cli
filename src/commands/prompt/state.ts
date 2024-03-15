@@ -2,8 +2,7 @@ import { create } from 'zustand';
 import { type ConfigFile } from '../../config-file.js';
 import type { ProviderConfig, ResponseStyle } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
-import type { AiMessage, Message, ModelResponse, UserMessage } from '../../engine/inference.js';
-import type { ChatItem, ProgramOutputItem } from './ui/types.js';
+import type { Message, ModelResponse, ModelUsage } from '../../engine/inference.js';
 import type { PromptOptions } from './types.js';
 import { getDefaultProvider, resolveProviderFromOption } from './providers.js';
 import { handleInputFile } from './utils.js';
@@ -12,10 +11,33 @@ export interface ChatState {
   provider: Provider;
   providerConfig: ProviderConfig;
   contextMessages: Message[];
-  outputMessages: ChatItem[];
+  chatMessages: ChatMessage[];
   activeView: ActiveView;
   verbose: boolean;
   shouldExit: boolean;
+}
+
+export type ChatMessage = UserChatMessage | AiChatMessage | ProgramChatMessage;
+
+export interface UserChatMessage {
+  type: 'user';
+  text: string;
+}
+
+export interface AiChatMessage {
+  type: 'ai';
+  text: string;
+  responseTime?: number;
+  usage?: ModelUsage;
+  cost?: number;
+}
+
+export type MessageLevel = 'debug' | 'info' | 'warning' | 'error';
+
+export interface ProgramChatMessage {
+  type: 'program';
+  level: MessageLevel;
+  text: string;
 }
 
 type ActiveView = 'info' | 'help' | null;
@@ -48,7 +70,7 @@ export function initChatState(
     };
 
     const contextMessages: Message[] = [];
-    const outputMessages: ChatItem[] = [];
+    const outputMessages: ChatMessage[] = [];
 
     if (options.file) {
       const { systemMessage, costWarning, costInfo } = handleInputFile(
@@ -59,16 +81,15 @@ export function initChatState(
 
       contextMessages.push(systemMessage);
       if (costWarning) {
-        outputMessages.push({ type: 'warning', text: costWarning });
+        outputMessages.push({ type: 'program', level: 'warning', text: costWarning });
       } else if (costInfo) {
-        outputMessages.push({ type: 'info', text: costInfo });
+        outputMessages.push({ type: 'program', level: 'info', text: costInfo });
       }
     }
 
     if (initialPrompt) {
-      const initialMessage: UserMessage = { role: 'user', content: initialPrompt };
-      contextMessages.push(initialMessage);
-      outputMessages.push({ type: 'message', message: initialMessage });
+      contextMessages.push({ role: 'user', content: initialPrompt });
+      outputMessages.push({ type: 'user', text: initialPrompt });
     }
 
     return {
@@ -76,33 +97,33 @@ export function initChatState(
       provider,
       providerConfig,
       contextMessages,
-      outputMessages,
+      chatMessages: outputMessages,
       verbose: options.verbose,
     };
   });
 }
 
-export function addUserMessage(message: UserMessage) {
+export function addLocalUserMessage(text: string) {
   useChatState.setState((state: ChatState) => {
     return {
-      contextMessages: [...state.contextMessages, message],
-      outputMessages: [...state.outputMessages, { type: 'message', message }],
+      chatMessages: [...state.chatMessages, { type: 'user', text }],
     };
   });
 }
 
-export function addUserOutputMessage(message: UserMessage) {
+export function addUserMessage(text: string) {
   useChatState.setState((state: ChatState) => {
     return {
-      outputMessages: [...state.outputMessages, { type: 'message', message }],
+      contextMessages: [...state.contextMessages, { role: 'user', content: text }],
+      chatMessages: [...state.chatMessages, { type: 'user', text }],
     };
   });
 }
 
-export function addAiOutputMessage(message: AiMessage) {
+export function addLocalAiMessage(text: string) {
   useChatState.setState((state: ChatState) => {
     return {
-      outputMessages: [...state.outputMessages, { type: 'message', message }],
+      chatMessages: [...state.chatMessages, { type: 'ai', text }],
     };
   });
 }
@@ -110,23 +131,23 @@ export function addAiOutputMessage(message: AiMessage) {
 export function addAiResponse(response: ModelResponse) {
   useChatState.setState((state: ChatState) => {
     const outputMessages = {
-      type: 'message',
-      message: response.message,
+      type: 'ai',
+      text: response.message.content,
       responseTime: response.responseTime,
       usage: response.usage,
     } as const;
 
     return {
       contextMessages: [...state.contextMessages, response.message],
-      outputMessages: [...state.outputMessages, outputMessages],
+      chatMessages: [...state.chatMessages, outputMessages],
     };
   });
 }
 
-export function addProgramMessage(message: ProgramOutputItem) {
+export function addProgramMessage(text: string, level: MessageLevel = 'info') {
   useChatState.setState((state: ChatState) => {
     return {
-      outputMessages: [...state.outputMessages, message],
+      chatMessages: [...state.chatMessages, { type: 'program', level, text }],
     };
   });
 }

@@ -21,7 +21,7 @@ export function InfoOutput() {
     : null;
 
   return (
-    <Box marginTop={1}>
+    <Box marginY={1}>
       <Text color="grey">
         Info:
         <Newline /> - Provider: {provider.label}

@@ -1,4 +1,3 @@
-import type { UserMessage } from '../../engine/inference.js';
 import {
   addProgramMessage,
   setShouldExit,
@@ -6,8 +5,8 @@ import {
   forgetContextMessages,
   setActiveView,
   useChatState,
-  addAiOutputMessage,
-  addUserOutputMessage,
+  addLocalAiMessage,
+  addLocalUserMessage,
 } from './state.js';
 import { saveConversation } from './utils.js';
 
@@ -27,36 +26,35 @@ export function processCommand(input: string) {
     return true;
   }
 
-  const userMessage: UserMessage = { role: 'user', content: input };
-  addUserOutputMessage(userMessage);
+  addLocalUserMessage(input);
 
   const state = useChatState.getState();
   setActiveView(null);
 
   if (command === '/exit') {
-    addAiOutputMessage({ role: 'assistant', content: 'Bye! 👋' });
+    addLocalAiMessage('Bye! 👋');
     setShouldExit(true);
     return true;
   }
 
   if (command === '/verbose') {
     setVerbose(!state.verbose);
-    addProgramMessage({ type: 'info', text: `Verbose mode: ${state.verbose ? 'off' : 'on'}` });
+    addProgramMessage(`Verbose mode: ${state.verbose ? 'off' : 'on'}`);
     return true;
   }
 
   if (command === '/forget') {
     forgetContextMessages();
-    addProgramMessage({ type: 'info', text: 'AI will forget previous messages.' });
+    addProgramMessage('AI will forget previous messages.');
     return true;
   }
 
   if (input === '/save') {
     const saveConversationMessage = saveConversation(state.contextMessages);
-    addProgramMessage({ type: 'info', text: saveConversationMessage });
+    addProgramMessage(saveConversationMessage);
     return true;
   }
 
-  addProgramMessage({ type: 'warning', text: `Unknown command ${command}` });
+  addProgramMessage(`Unknown command ${command}`, 'error');
   return true;
 }

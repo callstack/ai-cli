@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
-import type { UserMessage } from '../../../engine/inference.js';
 import { processCommand } from '../commands.js';
 import {
   addAiResponse,
@@ -10,12 +9,13 @@ import {
   setActiveView,
   useChatState,
 } from '../state.js';
-import { UserInput } from './UserInput.js';
+import { texts } from '../texts.js';
+import { UserMessageInput } from './UserMessageInput.js';
 import { HelpOutput } from './HelpOutput.js';
 import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
-import { ChatList } from './list/ChatList.js';
-import { ResponseLoader } from './ResponseLoader.js';
+import { ChatMessageList } from './list/ChatMessageList.js';
+import { AiResponseLoader } from './AiResponseLoader.js';
 
 export const ChatUi = () => {
   const contextMessages = useChatState((state) => state.contextMessages);
@@ -33,23 +33,17 @@ export const ChatUi = () => {
     addAiResponse(response);
     setLoadingResponse(false);
     if (isInitial) {
-      addProgramMessage({
-        type: 'info',
-        text: 'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.',
-      });
+      addProgramMessage(texts.initialHelp);
     }
   };
 
   // Trigger initial AI response
   useEffect(() => {
-    const lastMessage = contextMessages[contextMessages.length - 1];
-    if (lastMessage?.role === 'user') {
+    const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
+    if (initialUserMessages.length > 0) {
       void fetchAiResponse(true);
     } else {
-      addProgramMessage({
-        type: 'info',
-        text: 'Type "/exit" or press Ctrl+C to exit. Type "/help" to see available commands.',
-      });
+      addProgramMessage(texts.initialHelp);
     }
   }, []);
 
@@ -59,22 +53,22 @@ export const ChatUi = () => {
       return;
     }
 
-    const userMessage: UserMessage = { role: 'user', content: message ?? '' };
-    addUserMessage(userMessage);
+    addUserMessage(message);
     setActiveView(null);
     void fetchAiResponse();
   };
 
   return (
     <Box display="flex" flexDirection="column">
-      <ChatList />
+      <ChatMessageList />
+
       {activeView === 'help' && <HelpOutput />}
       {activeView === 'info' && <InfoOutput />}
-      {loadingResponse ? <ResponseLoader /> : null}
-      {!loadingResponse && !shouldExit && <UserInput onSubmit={handleSubmit} />}
+
+      {loadingResponse ? <AiResponseLoader /> : null}
+      {!loadingResponse && !shouldExit && <UserMessageInput onSubmit={handleSubmit} />}
 
       <StatusBar />
-
       {shouldExit && <ExitApp />}
     </Box>
   );
