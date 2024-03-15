@@ -3,7 +3,7 @@ import type { ResponseStyle } from '../../../engine/providers/config.js';
 import type { Message } from '../../../engine/inference.js';
 import type { PromptOptions } from '../prompt-options.js';
 import { getDefaultProvider, resolveProviderFromOption } from '../providers.js';
-import { handleInputFile } from '../utils.js';
+import { filterOutApiKey, handleInputFile } from '../utils.js';
 import { useChatState, type ChatMessage, type ChatState } from './state.js';
 
 export function initChatState(
@@ -30,6 +30,12 @@ export function initChatState(
 
     const contextMessages: Message[] = [];
     const outputMessages: ChatMessage[] = [];
+
+    outputMessages.push({
+      type: 'program',
+      level: 'debug',
+      text: `Loaded config: ${JSON.stringify(providerConfig, filterOutApiKey, 2)}`,
+    });
 
     if (options.file) {
       const { systemMessage, costWarning, costInfo } = handleInputFile(

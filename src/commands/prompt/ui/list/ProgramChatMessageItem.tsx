@@ -1,13 +1,15 @@
 import React from 'react';
 import { Text } from 'ink';
 import { colors } from '../../../../theme/colors.js';
-import type { ProgramChatMessage } from '../../state/state.js';
+import { useChatState, type ProgramChatMessage } from '../../state/state.js';
 
 type ProgramChatMessageItemProps = {
   output: ProgramChatMessage;
 };
 
 export function ProgramChatMessageItem({ output }: ProgramChatMessageItemProps) {
+  const verbose = useChatState((state) => state.verbose);
+
   if (output.level === 'error') {
     return <Text color={colors.error}>{output.text}</Text>;
   }
@@ -20,7 +22,7 @@ export function ProgramChatMessageItem({ output }: ProgramChatMessageItemProps) 
     return <Text color={colors.info}>{output.text}</Text>;
   }
 
-  if (output.level === 'debug') {
+  if (verbose && output.level === 'debug') {
     return <Text color={colors.debug}>{output.text}</Text>;
   }
 
