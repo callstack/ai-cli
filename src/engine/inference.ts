@@ -16,11 +16,11 @@ export interface AiMessage {
 }
 
 export interface ModelResponse {
-  messageText: string | null;
+  message: AiMessage;
   usage: ModelUsage;
   responseTime: number;
   responseModel: string;
-  response: unknown;
+  data: unknown;
 }
 
 export interface ModelUsage {

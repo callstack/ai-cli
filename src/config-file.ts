@@ -7,7 +7,6 @@ import {
   DEFAULT_PERPLEXITY_MODEL,
   DEFAULT_SYSTEM_PROMPT,
 } from './default-config.js';
-import * as output from './output.js';
 
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';
@@ -31,20 +30,17 @@ const ProvidersSchema = z.object({
 
 const ConfigFileSchema = z.object({
   providers: ProvidersSchema,
-  showStats: z.boolean().default(false),
-  showCosts: z.boolean().default(false),
 });
 
 export type ConfigFile = z.infer<typeof ConfigFileSchema>;
 
-export async function parseConfigFile() {
+export function parseConfigFile() {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
 
-  const content = await fs.promises.readFile(configPath);
+  const content = fs.readFileSync(configPath);
   const json = JSON.parse(content.toString());
 
   const typedConfig = ConfigFileSchema.parse(json);
-  output.outputVerbose(`Config with defaults: ${JSON.stringify(typedConfig, null, 2)}`);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
     throw new Error('Add your OpenAI or Perplexity API key to "~/.airc.json" and try again.');
   }
@@ -52,9 +48,9 @@ export async function parseConfigFile() {
   return typedConfig;
 }
 
-export async function createConfigFile(configContents: ConfigFile) {
+export function writeConfigFile(configContents: ConfigFile) {
   const configPath = path.join(os.homedir(), CONFIG_FILENAME);
-  await fs.promises.writeFile(configPath, JSON.stringify(configContents, null, 2) + '\n');
+  fs.writeFileSync(configPath, JSON.stringify(configContents, null, 2) + '\n');
 }
 
 export function checkIfConfigExists() {

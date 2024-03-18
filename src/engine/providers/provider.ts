@@ -26,13 +26,15 @@ export interface ModelPricing {
   requestsCost?: number;
 }
 
-const providers: Record<ProviderName, Provider> = {
+const providersMap: Record<ProviderName, Provider> = {
   openAi,
   perplexity,
 };
 
+export const providers = Object.values(providersMap);
+
 export function getProvider(providerName: ProviderName): Provider {
-  const provider = providers[providerName];
+  const provider = providersMap[providerName];
   if (!provider) {
     throw new Error(`Provider not found: ${providerName}.`);
   }

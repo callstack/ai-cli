@@ -43,3 +43,11 @@ export function formatSessionCost(cost: SessionCost | undefined) {
 
   return `costs: ${formatCost(cost.current)} (total: ${formatCost(cost.total)})`;
 }
+
+export function formatTime(timeInMs?: number) {
+  if (timeInMs == null) {
+    return '';
+  }
+
+  return `${(timeInMs / 1000).toFixed(1)} s`;
+}
