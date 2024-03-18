@@ -18,7 +18,17 @@ import {
   getUniqueFilename,
 } from '../../file-utils.js';
 
-export function handleInputFile(inputFile: string, config: ProviderConfig, provider: Provider) {
+interface HandleInputFileResult {
+  systemMessage: SystemMessage;
+  costWarning: string | null;
+  costInfo: string | null;
+}
+
+export function handleInputFile(
+  inputFile: string,
+  config: ProviderConfig,
+  provider: Provider,
+): HandleInputFileResult {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
 
   if (!fs.existsSync(filePath)) {
@@ -43,11 +53,13 @@ export function handleInputFile(inputFile: string, config: ProviderConfig, provi
     costInfo = `Using the provided file will increase conversation costs by ${costOrTokens} per message.`;
   }
 
+  const content = DEFAULT_FILE_PROMPT.replace('{filename}', path.basename(filePath)).replace(
+    '{fileContent}',
+    fileContent,
+  );
+
   return {
-    fileContextPrompt: {
-      role: 'system',
-      content: DEFAULT_FILE_PROMPT.replace('{fileContent}', fileContent),
-    } as SystemMessage,
+    systemMessage: { role: 'system', content },
     costWarning,
     costInfo,
   };

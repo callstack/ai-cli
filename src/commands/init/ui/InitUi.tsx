@@ -3,12 +3,12 @@ import { Box, Newline, Text } from 'ink';
 import Link from 'ink-link';
 import { type Provider } from '../../../engine/providers/provider.js';
 import { writeConfigFile } from '../../../config-file.js';
+import { colors } from '../../../theme/colors.js';
+import { ExitApp } from '../../../components/ExitApp.js';
 import { StepList } from './StepList.js';
 import { SelectProviderStep } from './SelectProviderStep.js';
 import { ConfirmStep } from './ConfirmStep.js';
 import { KeyInputStep } from './KeyInputStep.js';
-import { ExitApp } from '../../../components/ExitApp.js';
-import { colors } from '../../../theme/colors.js';
 
 interface InitUiProps {
   hasConfig: boolean;

@@ -1,48 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { Text } from 'ink';
+import React, { useMemo } from 'react';
+import { Box, Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
 import { formatCost, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
-import type { ModelPricing } from '../../../engine/providers/provider.js';
-import type { Session } from '../session.js';
-import type { ChatItem } from './types.js';
+import { useChatState } from '../state/state.js';
 
-type StatusBarProps = {
-  session: Session;
-  verbose: boolean;
-  items: ChatItem[];
-  pricing: ModelPricing | undefined;
-};
+export const StatusBar = () => {
+  const verbose = useChatState((state) => state.verbose);
+  const items = useChatState((state) => state.chatMessages);
+  const provider = useChatState((state) => state.provider);
+  const providerConfig = useChatState((state) => state.providerConfig);
 
-export const StatusBar = ({ session, verbose, items, pricing }: StatusBarProps) => {
-  const [totalUsage, setTotalUsage] = useState<ModelUsage>({
-    inputTokens: 0,
-    outputTokens: 0,
-    requests: 0,
-  });
-  const [totalCost, setTotalCost] = useState(0);
-
-  // TODO: migrate to useMemos
-  useEffect(() => {
+  const totalUsage = useMemo(() => {
     const usage: ModelUsage = { inputTokens: 0, outputTokens: 0, requests: 0 };
     items.forEach((item) => {
-      if (item.type === 'message' && item.message.role === 'assistant') {
+      if (item.type === 'ai') {
         usage.inputTokens += item.usage?.inputTokens ?? 0;
         usage.outputTokens += item.usage?.outputTokens ?? 0;
         usage.requests += item.usage?.requests ?? 0;
       }
     });
-    const cost = calculateUsageCost(usage, pricing) ?? 0;
-
-    setTotalUsage(usage);
-    setTotalCost(cost);
+    return usage;
   }, [items]);
 
+  const modelPricing = provider.pricing[providerConfig.model];
+  const totalCost = calculateUsageCost(totalUsage, modelPricing) ?? 0;
+
   return (
-    <Text color={'gray'}>
-      LLM: {session.provider.label}/{session.config.model} - Total Cost:{' '}
-      {formatStats(totalCost, verbose ? totalUsage : undefined)}
-    </Text>
+    <Box flexDirection="row" marginTop={1}>
+      <Text color={'gray'}>
+        LLM: {provider.label}/{providerConfig.model} - Total Cost:{' '}
+        {formatStats(totalCost, verbose ? totalUsage : undefined)}
+      </Text>
+    </Box>
   );
 };
 
