@@ -1,5 +1,5 @@
 // OpenAI models: https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
-export const DEFAULT_OPEN_AI_MODEL = 'gpt-4';
+export const DEFAULT_OPEN_AI_MODEL = 'gpt-4-turbo-preview';
 
 // Perplexity models: https://docs.perplexity.ai/docs/model-cards
 export const DEFAULT_PERPLEXITY_MODEL = 'sonar-medium-chat';
