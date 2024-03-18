@@ -22,7 +22,6 @@ export function run() {
       </ThemeProvider>,
     );
   } catch (error) {
-    output.clearLine();
     output.outputError(error);
     process.exit(1);
   }

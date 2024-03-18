@@ -1,4 +1,3 @@
-import * as readline from 'readline';
 import chalk from 'chalk';
 
 export function outputError(error: unknown, ...args: unknown[]) {
@@ -10,15 +9,7 @@ export function outputError(error: unknown, ...args: unknown[]) {
   }
 }
 
-/**
- * Clears current lint. To be used in conjunction with `progress`.
- */
-export function clearLine() {
-  readline.clearLine(process.stdout, 0);
-  readline.cursorTo(process.stdout, 0);
-}
-
-function extractErrorMessage(error: unknown) {
+export function extractErrorMessage(error: unknown) {
   if (typeof error === 'object' && error != null && 'message' in error) {
     return error.message;
   }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
+import { extractErrorMessage } from '../../../output.js';
 import { processChatCommand } from '../chat-commands.js';
 import { addAiResponse, addProgramMessage, addUserMessage } from '../state/actions.js';
 import { useChatState } from '../state/state.js';
@@ -22,13 +23,18 @@ export function ChatUi() {
   const [loadingResponse, setLoadingResponse] = useState(false);
 
   const fetchAiResponse = async (isInitial?: boolean) => {
-    setLoadingResponse(true);
-    const messages = useChatState.getState().contextMessages;
-    const response = await provider.getChatCompletion(providerConfig, messages);
-    addAiResponse(response);
-    setLoadingResponse(false);
-    if (isInitial) {
-      addProgramMessage(texts.initialHelp);
+    try {
+      setLoadingResponse(true);
+      const messages = useChatState.getState().contextMessages;
+      const response = await provider.getChatCompletion(providerConfig, messages);
+      addAiResponse(response);
+      setLoadingResponse(false);
+      if (isInitial) {
+        addProgramMessage(texts.initialHelp);
+      }
+    } catch (error) {
+      setLoadingResponse(false);
+      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     }
   };
 
@@ -43,13 +49,17 @@ export function ChatUi() {
   }, []);
 
   const handleSubmit = (message: string) => {
-    const isCommand = processChatCommand(message);
-    if (isCommand) {
-      return;
-    }
+    try {
+      const isCommand = processChatCommand(message);
+      if (isCommand) {
+        return;
+      }
 
-    addUserMessage(message);
-    void fetchAiResponse();
+      addUserMessage(message);
+      void fetchAiResponse();
+    } catch (error) {
+      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    }
   };
 
   return (

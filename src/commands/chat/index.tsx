@@ -26,7 +26,6 @@ function run(initialPrompt: string, options: PromptOptions) {
       </ThemeProvider>,
     );
   } catch (error) {
-    output.clearLine();
     output.outputError(error);
     process.exit(1);
   }
