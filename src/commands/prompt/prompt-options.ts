@@ -14,8 +14,6 @@ export interface PromptOptions {
   precise?: boolean;
   /** Show verbose-level logs. */
   verbose: boolean;
-  /** Display colorized output. Default == autodetect */
-  color?: boolean;
 }
 
 export const promptOptions: Record<keyof PromptOptions, Options> = {
@@ -43,12 +41,6 @@ export const promptOptions: Record<keyof PromptOptions, Options> = {
     type: 'boolean',
     describe: 'Enable more deterministic responses.',
     conflicts: 'creative',
-  },
-  // Note: no need to handle that explicitly, as it's being picked up automatically by Chalk.
-  color: {
-    type: 'boolean',
-    describe:
-      'Forces color output (even if stdout is not a terminal). Use --no-color to disable colors.',
   },
   verbose: {
     alias: 'V',

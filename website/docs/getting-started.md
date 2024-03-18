@@ -62,7 +62,6 @@ CLI options are passed when invoking the `ai` commend:
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way
 - `--verbose` (or `-V`): enable verbose
-- `--color`: Forces color output (even if stdout is not a terminal). Use `--no-color` to disable colors.
 
 ## CLI commands
 

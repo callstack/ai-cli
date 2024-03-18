@@ -54,8 +54,9 @@ CLI options are passed when invoking the `ai` commend:
 - `--interactive` (or `-i`): start an interactive session where user can ask follow-up questions
 - `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai` or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
+- `--creative`: respond in a creative way
+- `--precise`: respond in a more accurate way
 - `--verbose` (or `-V`): enable verbose
-- `--color`: Forces color output (even if stdout is not a terminal). Use `--no-color` to disable colors.
 
 ## CLI commands
 
@@ -64,7 +65,7 @@ CLI commands are available when using CLI in interactive mode.
 - `/help`: display available commands
 - `/exit`: exit the CLI
 - `/info`: display information about current session
-- `/verbose [on|off]`: enable/disable verbose mode
+- `/verbose`: enable/disable verbose mode
 - `/forget`: forget previous messages in the session
 
 ## Contributing
