@@ -16,7 +16,7 @@ type SelectProviderStepProps = {
 
 const providerItems = providers.map((p) => ({ label: p.label, value: p.name }));
 
-export const SelectProviderStep = ({ label, onSelect }: SelectProviderStepProps) => {
+export function SelectProviderStep({ label, onSelect }: SelectProviderStepProps) {
   const [value, setValue] = useState<Provider>();
 
   const handleSelect = (name: ProviderName) => {
@@ -40,4 +40,4 @@ export const SelectProviderStep = ({ label, onSelect }: SelectProviderStepProps)
       ) : null}
     </Box>
   );
-};
+}

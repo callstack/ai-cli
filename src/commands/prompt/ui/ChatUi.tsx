@@ -12,7 +12,7 @@ import { InfoOutput } from './InfoOutput.js';
 import { ChatMessageList } from './list/ChatMessageList.js';
 import { AiResponseLoader } from './AiResponseLoader.js';
 
-export const ChatUi = () => {
+export function ChatUi() {
   const contextMessages = useChatState((state) => state.contextMessages);
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
@@ -66,4 +66,4 @@ export const ChatUi = () => {
       {shouldExit && <ExitApp />}
     </Box>
   );
-};
+}

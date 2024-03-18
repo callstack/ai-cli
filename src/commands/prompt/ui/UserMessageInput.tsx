@@ -7,7 +7,7 @@ type UserMessageInputProps = {
   onSubmit: (value: string) => void;
 };
 
-export const UserMessageInput = ({ onSubmit }: UserMessageInputProps) => {
+export function UserMessageInput({ onSubmit }: UserMessageInputProps) {
   const [value, setUserInput] = useState('');
 
   const handleSubmit = (text: string) => {
@@ -26,4 +26,4 @@ export const UserMessageInput = ({ onSubmit }: UserMessageInputProps) => {
       <TextInput value={value} onChange={setUserInput} onSubmit={handleSubmit} />
     </Box>
   );
-};
+}

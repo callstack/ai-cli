@@ -5,7 +5,7 @@ import { formatCost, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
 import { useChatState } from '../state/state.js';
 
-export const StatusBar = () => {
+export function StatusBar() {
   const verbose = useChatState((state) => state.verbose);
   const items = useChatState((state) => state.chatMessages);
   const provider = useChatState((state) => state.provider);
@@ -34,7 +34,7 @@ export const StatusBar = () => {
       </Text>
     </Box>
   );
-};
+}
 
 const formatStats = (cost: number, usage?: ModelUsage) => {
   const usageOutput = usage

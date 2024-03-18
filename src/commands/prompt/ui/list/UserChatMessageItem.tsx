@@ -8,11 +8,11 @@ type UserChatMessageItemProps = {
   message: UserChatMessage;
 };
 
-export const UserChatMessageItem = ({ message }: UserChatMessageItemProps) => {
+export function UserChatMessageItem({ message }: UserChatMessageItemProps) {
   return (
     <Text color={colors.user}>
       <Text>{texts.userLabel}</Text>
       <Text>{message.text}</Text>
     </Text>
   );
-};
+}

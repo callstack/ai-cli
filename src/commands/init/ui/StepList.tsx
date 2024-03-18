@@ -6,7 +6,7 @@ type StepListProps = {
   step: number;
 };
 
-export const StepList = ({ children, step }: StepListProps) => {
+export function StepList({ children, step }: StepListProps) {
   const steps = React.Children.toArray(children);
 
   return (
@@ -14,4 +14,4 @@ export const StepList = ({ children, step }: StepListProps) => {
       {steps.filter((_, index) => index <= step)}
     </Box>
   );
-};
+}

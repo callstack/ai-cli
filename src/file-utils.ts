@@ -6,19 +6,19 @@ import type { Message } from './engine/inference.js';
 
 export const CHATS_SAVE_DIRECTORY = '~/ai-chats';
 
-const escapeFilename = (filename: string) => {
+function escapeFilename(filename: string) {
   const base = filename.split(' ', 5).join(' ');
   return base.replace(/[/\\:*?"<>|.]/g, '_');
-};
+}
 
-export const getDefaultFilename = (messages: Message[]) => {
+export function getDefaultFilename(messages: Message[]) {
   const currentDate = new Date();
   const firstMessagePart = escapeFilename(messages[0]?.content ?? '');
 
   return `${format(currentDate, 'yyyy-MM-dd HH-mm')} ${firstMessagePart}`;
-};
+}
 
-export const getUniqueFilename = (filePath: string) => {
+export function getUniqueFilename(filePath: string) {
   const { name, ext, dir } = path.parse(filePath);
   const extension = ext === '' ? '.txt' : ext;
 
@@ -32,7 +32,7 @@ export const getUniqueFilename = (filePath: string) => {
     numerator++;
   }
   return `${dir}/${name}-${numerator}${extension}`;
-};
+}
 
 export function getConversationStoragePath() {
   const chatsSaveDirectory = CHATS_SAVE_DIRECTORY.replace('~', os.homedir());

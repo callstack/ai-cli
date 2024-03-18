@@ -9,7 +9,7 @@ type AiChatMessageItemProps = {
   message: AiChatMessage;
 };
 
-export const AiChatMessageItem = ({ message }: AiChatMessageItemProps) => {
+export function AiChatMessageItem({ message }: AiChatMessageItemProps) {
   const verbose = useChatState((state) => state.verbose);
 
   return (
@@ -22,4 +22,4 @@ export const AiChatMessageItem = ({ message }: AiChatMessageItemProps) => {
       ) : null}
     </Text>
   );
-};
+}

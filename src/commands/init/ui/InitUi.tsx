@@ -14,7 +14,7 @@ interface InitUiProps {
   hasConfig: boolean;
 }
 
-export const InitUi = ({ hasConfig }: InitUiProps) => {
+export function InitUi({ hasConfig }: InitUiProps) {
   const [step, setStep] = useState(0);
 
   const [overwriteConfig, setOverwriteConfig] = useState(true);
@@ -126,4 +126,4 @@ export const InitUi = ({ hasConfig }: InitUiProps) => {
       </StepList>
     </Box>
   );
-};
+}

@@ -1,30 +1,30 @@
 export type Message = SystemMessage | UserMessage | AiMessage;
 
-export type SystemMessage = {
+export interface SystemMessage {
   role: 'system';
   content: string;
-};
+}
 
-export type UserMessage = {
+export interface UserMessage {
   role: 'user';
   content: string;
-};
+}
 
-export type AiMessage = {
+export interface AiMessage {
   role: 'assistant';
   content: string;
-};
+}
 
-export type ModelResponse = {
+export interface ModelResponse {
   message: AiMessage;
   usage: ModelUsage;
   responseTime: number;
   responseModel: string;
   data: unknown;
-};
+}
 
-export type ModelUsage = {
+export interface ModelUsage {
   inputTokens: number;
   outputTokens: number;
   requests: number;
-};
+}

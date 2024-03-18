@@ -9,11 +9,11 @@ type KeyInputStateProps = {
   onValidate: (text: string) => string;
 };
 
-export const KeyInputStep = ({
+export function KeyInputStep({
   onSubmit: onConfirm,
   onValidate: validate,
   label,
-}: KeyInputStateProps) => {
+}: KeyInputStateProps) {
   const [value, setValue] = useState<string>('');
 
   const [submitted, setSubmitted] = useState(false);
@@ -48,4 +48,4 @@ export const KeyInputStep = ({
       {error ? <Text color="red"> {error}</Text> : null}
     </Text>
   );
-};
+}
