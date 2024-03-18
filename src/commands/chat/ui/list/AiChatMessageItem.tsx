@@ -13,13 +13,16 @@ export function AiChatMessageItem({ message }: AiChatMessageItemProps) {
   const verbose = useChatState((state) => state.verbose);
 
   return (
-    <Text color={colors.assistant}>
-      <Text>{texts.assistantLabel}</Text>
-      <Text>{message.text}</Text>
+    <>
+      <Text color={colors.assistant}>
+        <Text>{texts.assistantLabel}</Text>
+        <Text>{message.text}</Text>
 
-      {verbose && message.responseTime != null ? (
-        <Text color={colors.info}> ({formatTime(message.responseTime)})</Text>
-      ) : null}
-    </Text>
+        {verbose && message.responseTime != null ? (
+          <Text color={colors.info}> ({formatTime(message.responseTime)})</Text>
+        ) : null}
+      </Text>
+      {verbose ? <Text color={colors.debug}>{JSON.stringify(message.data, null, 2)}</Text> : null}
+    </>
   );
 }

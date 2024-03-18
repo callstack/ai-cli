@@ -10,8 +10,8 @@ import { promptOptions, type PromptOptions } from './prompt-options.js';
 import { ChatUi } from './ui/ChatUi.js';
 
 export const command: CommandModule<{}, PromptOptions> = {
-  command: ['prompt', '$0'],
-  describe: '[Default] Ask AI assistant a question or start an interactive conversation.',
+  command: ['chat', '$0'],
+  describe: 'Start a conversation with AI assistant.',
   builder: promptOptions,
   handler: (args) => run(args._.join(' '), args),
 };

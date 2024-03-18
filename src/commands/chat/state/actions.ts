@@ -18,6 +18,7 @@ export function addAiResponse(response: ModelResponse) {
       text: response.message.content,
       responseTime: response.responseTime,
       usage: response.usage,
+      data: response.data,
     } as const;
 
     return {

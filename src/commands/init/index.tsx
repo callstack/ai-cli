@@ -9,7 +9,7 @@ import { InitUi } from './ui/InitUi.js';
 
 export const command: CommandModule<{}> = {
   command: ['init'],
-  describe: 'Automates basic configuration of AI CLI.',
+  describe: 'Basic configuration of AI CLI.',
   handler: () => run(),
 };
 

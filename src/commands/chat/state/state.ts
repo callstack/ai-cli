@@ -26,6 +26,7 @@ export interface AiChatMessage {
   responseTime?: number;
   usage?: ModelUsage;
   cost?: number;
+  data?: unknown;
 }
 
 export type MessageLevel = 'debug' | 'info' | 'warning' | 'error';
