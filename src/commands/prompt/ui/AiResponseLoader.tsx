@@ -8,8 +8,7 @@ export const AiResponseLoader = () => {
   return (
     <Box flexDirection="row">
       <Text color={colors.assistant}>{texts.assistantLabel}</Text>
-      <Spinner type="dots" />
-      <Text color={colors.assistant}> {texts.responseLoading}</Text>
+      <Spinner type="sand" label={texts.responseLoading} />
     </Box>
   );
 };
