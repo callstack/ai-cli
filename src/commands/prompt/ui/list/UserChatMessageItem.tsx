@@ -4,9 +4,9 @@ import { colors } from '../../../../theme/colors.js';
 import { type UserChatMessage } from '../../state/state.js';
 import { texts } from '../../texts.js';
 
-type UserChatMessageItemProps = {
+interface UserChatMessageItemProps {
   message: UserChatMessage;
-};
+}
 
 export function UserChatMessageItem({ message }: UserChatMessageItemProps) {
   return (

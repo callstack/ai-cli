@@ -3,9 +3,9 @@ import { Text } from 'ink';
 import { colors } from '../../../../theme/colors.js';
 import { useChatState, type ProgramChatMessage } from '../../state/state.js';
 
-type ProgramChatMessageItemProps = {
+interface ProgramChatMessageItemProps {
   output: ProgramChatMessage;
-};
+}
 
 export function ProgramChatMessageItem({ output }: ProgramChatMessageItemProps) {
   const verbose = useChatState((state) => state.verbose);

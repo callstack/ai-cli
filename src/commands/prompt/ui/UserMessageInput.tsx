@@ -3,9 +3,9 @@ import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
 import { texts } from '../texts.js';
 
-type UserMessageInputProps = {
+interface UserMessageInputProps {
   onSubmit: (value: string) => void;
-};
+}
 
 export function UserMessageInput({ onSubmit }: UserMessageInputProps) {
   const [value, setUserInput] = useState('');

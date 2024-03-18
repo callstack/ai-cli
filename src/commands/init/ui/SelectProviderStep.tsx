@@ -9,10 +9,10 @@ import {
 } from '../../../engine/providers/provider.js';
 import { colors } from '../../../theme/colors.js';
 
-type SelectProviderStepProps = {
+interface SelectProviderStepProps {
   label: string;
   onSelect: (provider: Provider) => void;
-};
+}
 
 const providerItems = providers.map((p) => ({ label: p.label, value: p.name }));
 

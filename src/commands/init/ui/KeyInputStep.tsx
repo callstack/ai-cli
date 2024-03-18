@@ -3,11 +3,11 @@ import { Text } from 'ink';
 import { TextInput } from '@inkjs/ui';
 import { colors } from '../../../theme/colors.js';
 
-type KeyInputStateProps = {
+interface KeyInputStateProps {
   label: string;
   onSubmit: (text: string) => void;
   onValidate: (text: string) => string;
-};
+}
 
 export function KeyInputStep({
   onSubmit: onConfirm,

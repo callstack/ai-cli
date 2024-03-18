@@ -5,9 +5,9 @@ import { colors } from '../../../../theme/colors.js';
 import { useChatState, type AiChatMessage } from '../../state/state.js';
 import { texts } from '../../texts.js';
 
-type AiChatMessageItemProps = {
+interface AiChatMessageItemProps {
   message: AiChatMessage;
-};
+}
 
 export function AiChatMessageItem({ message }: AiChatMessageItemProps) {
   const verbose = useChatState((state) => state.verbose);
