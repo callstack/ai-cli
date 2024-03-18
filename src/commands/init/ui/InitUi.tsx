@@ -32,8 +32,6 @@ export function InitUi({ hasConfig }: InitUiProps) {
           apiKey: apiKey,
         },
       },
-      showStats: false,
-      showCosts: true,
     });
   };
 

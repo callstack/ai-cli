@@ -30,8 +30,6 @@ const ProvidersSchema = z.object({
 
 const ConfigFileSchema = z.object({
   providers: ProvidersSchema,
-  showStats: z.boolean().default(false),
-  showCosts: z.boolean().default(false),
 });
 
 export type ConfigFile = z.infer<typeof ConfigFileSchema>;
