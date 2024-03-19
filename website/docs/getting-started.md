@@ -39,7 +39,7 @@ Read more about the [configuration file](config-file) format and available optio
 
 ## Usage
 
-Run `ai` to start a conversation with AI assistant. You can put the question in the params.
+Run `ai [query]` to start a conversation with AI assistant. You can put the question in the params.
 
 ```shell-session
 $ ai "Tell me a joke"

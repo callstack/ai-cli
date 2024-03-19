@@ -34,7 +34,7 @@ Learn about AI CLI config file [here](https://callstack.github.io/ai-cli/config-
 
 ## Usage
 
-Run `ai` to start a conversation with AI assistant. You can put the question in the params.
+Run `ai [query]` to start a conversation with AI assistant. You can put the question in the params.
 
 ```shell-session
 $ ai "Tell me a joke"
