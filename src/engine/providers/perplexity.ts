@@ -1,7 +1,8 @@
 import OpenAI from 'openai';
-import { type Message } from '../inference.js';
-import { responseStyles, type ProviderConfig } from './config.js';
+import { type Message, type ModelResponseStream } from '../inference.js';
+import { type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
+import { getChatCompletion, getChatCompletionStream } from './utils/open-ai-api.js';
 
 const Perplexity: Provider = {
   label: 'Perplexity',
@@ -22,38 +23,24 @@ const Perplexity: Provider = {
   },
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
-    const openai = new OpenAI({
+    const api = new OpenAI({
       apiKey: config.apiKey,
       baseURL: 'https://api.perplexity.ai',
     });
 
-    const systemMessage: Message = {
-      role: 'system',
-      content: config.systemPrompt,
-    };
+    return await getChatCompletion(api, config, messages);
+  },
 
-    const startTime = performance.now();
-    const response = await openai.chat.completions.create({
-      messages: [systemMessage, ...messages],
-      model: config.model,
-      ...responseStyles[config.responseStyle],
+  getChatCompletionStream: async function* (
+    config: ProviderConfig,
+    messages: Message[],
+  ): AsyncGenerator<ModelResponseStream> {
+    const api = new OpenAI({
+      apiKey: config.apiKey,
+      baseURL: 'https://api.perplexity.ai',
     });
-    const responseTime = performance.now() - startTime;
 
-    return {
-      message: {
-        role: 'assistant',
-        content: response.choices[0]?.message.content ?? '',
-      },
-      usage: {
-        inputTokens: response.usage?.prompt_tokens ?? 0,
-        outputTokens: response.usage?.completion_tokens ?? 0,
-        requests: 1,
-      },
-      responseTime,
-      responseModel: response.model,
-      data: response,
-    };
+    yield* getChatCompletionStream(api, config, messages);
   },
 };
 

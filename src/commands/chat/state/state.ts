@@ -11,6 +11,7 @@ export interface ChatState {
   activeView: ActiveView;
   verbose: boolean;
   shouldExit: boolean;
+  streamingResponse: string | null;
 }
 
 export type ChatMessage = UserChatMessage | AiChatMessage | ProgramChatMessage;

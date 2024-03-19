@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text } from 'ink';
+import { Text } from 'ink';
 import TextInput from 'ink-text-input';
 import { texts } from '../texts.js';
 
@@ -21,9 +21,9 @@ export function UserMessageInput({ onSubmit }: UserMessageInputProps) {
   };
 
   return (
-    <Box flexDirection="row">
+    <Text>
       <Text>{texts.userLabel}</Text>
       <TextInput value={value} onChange={setUserInput} onSubmit={handleSubmit} />
-    </Box>
+    </Text>
   );
 }
