@@ -26,26 +26,20 @@ You will need a valid API key from one of supported AI inference providers: Open
 
 Run `ai init` to create a basic `~/.airc.json` config file with your OpenAI or Perplexity API key.
 
+```shell-session
+$ ai init
+```
+
 Learn about AI CLI config file [here](https://callstack.github.io/ai-cli/config-file).
 
 ## Usage
 
-You can invoke `ai` either in single-answer mode:
+Run `ai [query]` to start a conversation with AI assistant. You can put the question in the params.
 
-```
+```shell-session
 $ ai "Tell me a joke"
-me:  Tell me a joke
-ai:  Why don't scientists trust atoms? Because they make up everything!
-```
-
-Or you can start a longer conversation using interactive mode (`-i` or `--interactive` option):
-
-```
-$ ai -i "Tell me a joke"
 me: Tell me a joke
 ai: Why don’t skeletons fight each other? They don’t have the guts.
-me: tell me another one
-ai: What do you call fake spaghetti? An impasta!
 me: _
 ```
 
@@ -55,7 +49,6 @@ CLI options are passed when invoking the `ai` commend:
 
 - `--help`: display available options
 - `--version`: display CLI version
-- `--interactive` (or `-i`): start an interactive session where user can ask follow-up questions
 - `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai` or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
 - `--creative`: respond in a creative way
@@ -69,8 +62,8 @@ CLI commands are available when using CLI in interactive mode.
 - `/help`: display available commands
 - `/exit`: exit the CLI
 - `/info`: display information about current session
-- `/verbose`: enable/disable verbose mode
 - `/forget`: forget previous messages in the session
+- `/verbose`: enable/disable verbose mode
 
 ## Contributing
 
