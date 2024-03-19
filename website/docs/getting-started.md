@@ -8,8 +8,11 @@ slug: /
 
 AI assistant in your terminal.
 
-```
+```shell-session
 $ ai "Tell me an interesting fact about the Roman Empire"
+me: Tell me an interesting fact about the Roman Empire
+ai: The Roman Empire had a vast network of roads extending over 250,000 miles at its peak...
+me: _
 ```
 
 ## Installation
@@ -28,26 +31,20 @@ You will need a valid API key from one of supported AI inference providers: Open
 
 Run `ai init` to create a basic `~/.airc.json` config file with your OpenAI or Perplexity API keys.
 
+```shell-session
+$ ai init
+```
+
 Read more about the [configuration file](config-file) format and available option.
 
 ## Usage
 
-You can invoke `ai` either in single-answer mode:
+Run `ai` to start a conversation with AI assistant. You can put the question in the params.
 
-```
+```shell-session
 $ ai "Tell me a joke"
-me:  Tell me a joke
-ai:  Why don't scientists trust atoms? Because they make up everything!
-```
-
-Or you can start a longer conversation using interactive mode (`-i` or `--interactive` option):
-
-```
-$ ai -i "Tell me a joke"
 me: Tell me a joke
 ai: Why don’t skeletons fight each other? They don’t have the guts.
-me: tell me another one
-ai: What do you call fake spaghetti? An impasta!
 me: _
 ```
 
