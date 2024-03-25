@@ -7,7 +7,7 @@ import {
   FILE_TOKEN_COUNT_WARNING,
 } from '../../default-config.js';
 import { calculateUsageCost } from '../../engine/session.js';
-import { tokenizer } from '../../engine/tokenizer.js';
+import { getTokensCount } from '../../engine/tokenizer.js';
 import type { Message, SystemMessage } from '../../engine/inference.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
@@ -36,7 +36,7 @@ export function handleInputFile(
   }
 
   const fileContent = fs.readFileSync(filePath).toString();
-  const fileTokens = tokenizer.getTokensCount(fileContent);
+  const fileTokens = getTokensCount(fileContent);
 
   const pricing = provider.pricing[config.model];
   const fileCost = calculateUsageCost({ inputTokens: fileTokens }, pricing);

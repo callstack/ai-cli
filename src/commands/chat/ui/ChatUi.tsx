@@ -3,7 +3,12 @@ import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
 import { extractErrorMessage } from '../../../output.js';
 import { processChatCommand } from '../chat-commands.js';
-import { addAiResponse, addProgramMessage, addUserMessage } from '../state/actions.js';
+import {
+  addAiResponse,
+  addProgramMessage,
+  addUserMessage,
+  updateAiResponseStream,
+} from '../state/actions.js';
 import { useChatState } from '../state/state.js';
 import { texts } from '../texts.js';
 import { UserMessageInput } from './UserMessageInput.js';
@@ -12,6 +17,7 @@ import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
 import { ChatMessageList } from './list/ChatMessageList.js';
 import { AiResponseLoader } from './AiResponseLoader.js';
+import { AiStreamingResponse } from './AiStreamingResponse.js';
 
 export function ChatUi() {
   const contextMessages = useChatState((state) => state.contextMessages);
@@ -19,9 +25,11 @@ export function ChatUi() {
   const providerConfig = useChatState((state) => state.providerConfig);
   const activeView = useChatState((state) => state.activeView);
   const shouldExit = useChatState((state) => state.shouldExit);
+  const streamingResponse = useChatState((state) => state.streamingResponse);
 
   const [loadingResponse, setLoadingResponse] = useState(false);
 
+  // @ts-expect-error
   const fetchAiResponse = async (isInitial?: boolean) => {
     try {
       setLoadingResponse(true);
@@ -38,11 +46,35 @@ export function ChatUi() {
     }
   };
 
+  const fetchAiResponseStream = async (isInitial?: boolean) => {
+    try {
+      updateAiResponseStream('');
+
+      const messages = useChatState.getState().contextMessages;
+      const stream = provider.getChatCompletionStream!(providerConfig, messages);
+
+      for await (const item of stream) {
+        if ('response' in item) {
+          addAiResponse(item.response);
+        } else if ('update' in item) {
+          updateAiResponseStream(item.update.content);
+        }
+      }
+
+      if (isInitial) {
+        addProgramMessage(texts.initialHelp);
+      }
+    } catch (error) {
+      updateAiResponseStream(null);
+      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    }
+  };
+
   // Trigger initial AI response
   useEffect(() => {
     const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
     if (initialUserMessages.length > 0) {
-      void fetchAiResponse(true);
+      void fetchAiResponseStream(true);
     } else {
       addProgramMessage(texts.initialHelp);
     }
@@ -56,11 +88,13 @@ export function ChatUi() {
       }
 
       addUserMessage(message);
-      void fetchAiResponse();
+      void fetchAiResponseStream();
     } catch (error) {
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     }
   };
+
+  const showInput = !loadingResponse && streamingResponse == null && !shouldExit;
 
   return (
     <Box display="flex" flexDirection="column">
@@ -70,7 +104,8 @@ export function ChatUi() {
       {activeView === 'info' && <InfoOutput />}
 
       {loadingResponse ? <AiResponseLoader /> : null}
-      {!loadingResponse && !shouldExit && <UserMessageInput onSubmit={handleSubmit} />}
+      {streamingResponse != null ? <AiStreamingResponse text={streamingResponse} /> : null}
+      {showInput && <UserMessageInput onSubmit={handleSubmit} />}
 
       <StatusBar />
       {shouldExit && <ExitApp />}
