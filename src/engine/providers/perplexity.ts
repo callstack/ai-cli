@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { type Message, type ModelResponseStream } from '../inference.js';
 import { type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
-import { getChatCompletion, getChatCompletionStream } from './utils/open-ai-api.js';
+import { getChatCompletion, getBetaChatCompletionStream } from './utils/open-ai-api.js';
 
 const Perplexity: Provider = {
   label: 'Perplexity',
@@ -40,7 +40,7 @@ const Perplexity: Provider = {
       baseURL: 'https://api.perplexity.ai',
     });
 
-    yield* getChatCompletionStream(api, config, messages);
+    yield* getBetaChatCompletionStream(api, config, messages);
   },
 };
 

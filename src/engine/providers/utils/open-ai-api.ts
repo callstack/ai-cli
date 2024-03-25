@@ -1,6 +1,7 @@
 import type OpenAI from 'openai';
 import type { ChatCompletionChunk } from 'openai/resources/index.mjs';
 import type { Message, ModelResponse, ModelResponseStream } from '../../inference.js';
+import { estimateInputTokens, estimateOutputTokens } from '../../tokenizer.js';
 import { responseStyles, type ProviderConfig } from '../config.js';
 
 export async function getChatCompletion(
@@ -93,4 +94,60 @@ export async function* getChatCompletionStream(
       data: chunks,
     },
   };
+}
+
+export async function* getBetaChatCompletionStream(
+  api: OpenAI,
+  config: ProviderConfig,
+  messages: Message[],
+): AsyncGenerator<ModelResponseStream> {
+  const systemMessage: Message = {
+    role: 'system',
+    content: config.systemPrompt,
+  };
+
+  const startTime = performance.now();
+  const stream = api.beta.chat.completions.stream({
+    messages: [systemMessage, ...messages],
+    model: config.model,
+    stream: true,
+    ...responseStyles[config.responseStyle],
+  });
+
+  let contentFromChunks = '';
+  for await (const chunk of stream) {
+    contentFromChunks += chunk.choices[0]?.delta?.content || '';
+    yield {
+      update: {
+        content: contentFromChunks,
+      },
+    };
+  }
+
+  const responseTime = performance.now() - startTime;
+  const completion = await stream.finalChatCompletion();
+
+  const content = completion.choices[0]?.message.content ?? '';
+
+  yield {
+    response: {
+      message: {
+        role: 'assistant',
+        content,
+      },
+      usage: {
+        inputTokens: estimateInputTokens(messages),
+        outputTokens: estimateOutputTokens(content),
+        requests: 1,
+      },
+      responseTime,
+      responseModel: completion.model,
+      data: completion,
+    },
+  };
+}
+
+export function estimateUsageTokens(): number {
+  // TODO
+  return 0;
 }
