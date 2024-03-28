@@ -26,10 +26,10 @@ export function ChatUi() {
   const activeView = useChatState((state) => state.activeView);
   const shouldExit = useChatState((state) => state.shouldExit);
   const streamingResponse = useChatState((state) => state.streamingResponse);
+  const stream = useChatState((state) => state.stream);
 
   const [loadingResponse, setLoadingResponse] = useState(false);
 
-  // @ts-expect-error
   const fetchAiResponse = async (isInitial?: boolean) => {
     try {
       setLoadingResponse(true);
@@ -74,7 +74,11 @@ export function ChatUi() {
   useEffect(() => {
     const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
     if (initialUserMessages.length > 0) {
-      void fetchAiResponseStream(true);
+      if (stream) {
+        void fetchAiResponseStream(true);
+      } else {
+        void fetchAiResponse(true);
+      }
     } else {
       addProgramMessage(texts.initialHelp);
     }
@@ -88,7 +92,11 @@ export function ChatUi() {
       }
 
       addUserMessage(message);
-      void fetchAiResponseStream();
+      if (stream) {
+        void fetchAiResponseStream();
+      } else {
+        void fetchAiResponse();
+      }
     } catch (error) {
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     }

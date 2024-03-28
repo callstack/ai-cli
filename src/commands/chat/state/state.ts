@@ -11,6 +11,7 @@ export interface ChatState {
   activeView: ActiveView;
   verbose: boolean;
   shouldExit: boolean;
+  stream: boolean;
   streamingResponse: string | null;
 }
 

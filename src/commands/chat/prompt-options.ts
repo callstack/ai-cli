@@ -14,6 +14,8 @@ export interface PromptOptions {
   precise?: boolean;
   /** Show verbose-level logs. */
   verbose: boolean;
+  /** Enable streaming response */
+  stream: boolean;
 }
 
 export const promptOptions: Record<keyof PromptOptions, Options> = {
@@ -41,6 +43,11 @@ export const promptOptions: Record<keyof PromptOptions, Options> = {
     type: 'boolean',
     describe: 'Enable more deterministic responses.',
     conflicts: 'creative',
+  },
+  stream: {
+    type: 'boolean',
+    default: true,
+    describe: 'Enable streaming response',
   },
   verbose: {
     alias: 'V',
