@@ -20,28 +20,65 @@ import { AiResponseLoader } from './AiResponseLoader.js';
 import { AiStreamingResponse } from './AiStreamingResponse.js';
 
 export function ChatUi() {
-  const contextMessages = useChatState((state) => state.contextMessages);
-  const provider = useChatState((state) => state.provider);
-  const providerConfig = useChatState((state) => state.providerConfig);
   const activeView = useChatState((state) => state.activeView);
   const shouldExit = useChatState((state) => state.shouldExit);
   const streamingResponse = useChatState((state) => state.streamingResponse);
+
+  const { fetchAiResponse, isLoading } = useAiResponse();
+
+  const handleSubmit = (message: string) => {
+    try {
+      const isCommand = processChatCommand(message);
+      if (isCommand) {
+        return;
+      }
+
+      addUserMessage(message);
+      void fetchAiResponse();
+    } catch (error) {
+      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    }
+  };
+
+  const showInput = !isLoading && streamingResponse == null && !shouldExit;
+
+  return (
+    <Box display="flex" flexDirection="column">
+      <ChatMessageList />
+
+      {activeView === 'help' && <HelpOutput />}
+      {activeView === 'info' && <InfoOutput />}
+
+      {isLoading ? <AiResponseLoader /> : null}
+      {streamingResponse != null ? <AiStreamingResponse text={streamingResponse} /> : null}
+      {showInput && <UserMessageInput onSubmit={handleSubmit} />}
+
+      <StatusBar />
+      {shouldExit && <ExitApp />}
+    </Box>
+  );
+}
+
+function useAiResponse() {
+  const contextMessages = useChatState((state) => state.contextMessages);
+  const provider = useChatState((state) => state.provider);
+  const providerConfig = useChatState((state) => state.providerConfig);
   const stream = useChatState((state) => state.stream);
 
-  const [loadingResponse, setLoadingResponse] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const fetchAiResponse = async (isInitial?: boolean) => {
     try {
-      setLoadingResponse(true);
+      setLoading(true);
       const messages = useChatState.getState().contextMessages;
       const response = await provider.getChatCompletion(providerConfig, messages);
       addAiResponse(response);
-      setLoadingResponse(false);
+      setLoading(false);
       if (isInitial) {
         addProgramMessage(texts.initialHelp);
       }
     } catch (error) {
-      setLoadingResponse(false);
+      setLoading(false);
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     }
   };
@@ -84,39 +121,8 @@ export function ChatUi() {
     }
   }, []);
 
-  const handleSubmit = (message: string) => {
-    try {
-      const isCommand = processChatCommand(message);
-      if (isCommand) {
-        return;
-      }
-
-      addUserMessage(message);
-      if (stream) {
-        void fetchAiResponseStream();
-      } else {
-        void fetchAiResponse();
-      }
-    } catch (error) {
-      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
-    }
+  return {
+    fetchAiResponse: stream ? fetchAiResponseStream : fetchAiResponse,
+    isLoading,
   };
-
-  const showInput = !loadingResponse && streamingResponse == null && !shouldExit;
-
-  return (
-    <Box display="flex" flexDirection="column">
-      <ChatMessageList />
-
-      {activeView === 'help' && <HelpOutput />}
-      {activeView === 'info' && <InfoOutput />}
-
-      {loadingResponse ? <AiResponseLoader /> : null}
-      {streamingResponse != null ? <AiStreamingResponse text={streamingResponse} /> : null}
-      {showInput && <UserMessageInput onSubmit={handleSubmit} />}
-
-      <StatusBar />
-      {shouldExit && <ExitApp />}
-    </Box>
-  );
 }
