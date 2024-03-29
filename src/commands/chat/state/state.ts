@@ -12,7 +12,7 @@ export interface ChatState {
   verbose: boolean;
   shouldExit: boolean;
   stream: boolean;
-  streamingResponse: string | null;
+  streamingResponse: string | undefined;
 }
 
 export type ChatMessage = UserChatMessage | AiChatMessage | ProgramChatMessage;

@@ -17,14 +17,24 @@ import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
 import { ChatMessageList } from './list/ChatMessageList.js';
 import { AiResponseLoader } from './AiResponseLoader.js';
-import { AiStreamingResponse } from './AiStreamingResponse.js';
 
 export function ChatUi() {
+  const contextMessages = useChatState((state) => state.contextMessages);
   const activeView = useChatState((state) => state.activeView);
   const shouldExit = useChatState((state) => state.shouldExit);
   const streamingResponse = useChatState((state) => state.streamingResponse);
 
   const { fetchAiResponse, isLoading } = useAiResponse();
+
+  // Trigger initial AI response
+  useEffect(() => {
+    const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
+    if (initialUserMessages.length > 0) {
+      void fetchAiResponse(true);
+    } else {
+      addProgramMessage(texts.initialHelp);
+    }
+  }, []);
 
   const handleSubmit = (message: string) => {
     try {
@@ -49,8 +59,7 @@ export function ChatUi() {
       {activeView === 'help' && <HelpOutput />}
       {activeView === 'info' && <InfoOutput />}
 
-      {isLoading ? <AiResponseLoader /> : null}
-      {streamingResponse != null ? <AiStreamingResponse text={streamingResponse} /> : null}
+      {isLoading ? <AiResponseLoader text={streamingResponse} /> : null}
       {showInput && <UserMessageInput onSubmit={handleSubmit} />}
 
       <StatusBar />
@@ -60,7 +69,6 @@ export function ChatUi() {
 }
 
 function useAiResponse() {
-  const contextMessages = useChatState((state) => state.contextMessages);
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
   const stream = useChatState((state) => state.stream);
@@ -70,10 +78,12 @@ function useAiResponse() {
   const fetchAiResponse = async (isInitial?: boolean) => {
     try {
       setLoading(true);
+
       const messages = useChatState.getState().contextMessages;
       const response = await provider.getChatCompletion(providerConfig, messages);
       addAiResponse(response);
       setLoading(false);
+
       if (isInitial) {
         addProgramMessage(texts.initialHelp);
       }
@@ -85,7 +95,7 @@ function useAiResponse() {
 
   const fetchAiResponseStream = async (isInitial?: boolean) => {
     try {
-      updateAiResponseStream('');
+      setLoading(true);
 
       const messages = useChatState.getState().contextMessages;
       const stream = provider.getChatCompletionStream!(providerConfig, messages);
@@ -93,6 +103,7 @@ function useAiResponse() {
       for await (const item of stream) {
         if ('response' in item) {
           addAiResponse(item.response);
+          setLoading(false);
         } else if ('update' in item) {
           updateAiResponseStream(item.update.content);
         }
@@ -102,24 +113,12 @@ function useAiResponse() {
         addProgramMessage(texts.initialHelp);
       }
     } catch (error) {
-      updateAiResponseStream(null);
+      setLoading(false);
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    } finally {
+      setLoading(false);
     }
   };
-
-  // Trigger initial AI response
-  useEffect(() => {
-    const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
-    if (initialUserMessages.length > 0) {
-      if (stream) {
-        void fetchAiResponseStream(true);
-      } else {
-        void fetchAiResponse(true);
-      }
-    } else {
-      addProgramMessage(texts.initialHelp);
-    }
-  }, []);
 
   return {
     fetchAiResponse: stream ? fetchAiResponseStream : fetchAiResponse,

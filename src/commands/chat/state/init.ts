@@ -65,7 +65,7 @@ export function initChatState(
     verbose: options.verbose,
     shouldExit: false,
     stream: options.stream,
-    streamingResponse: null,
+    streamingResponse: undefined,
   };
 
   useChatState.setState(state);

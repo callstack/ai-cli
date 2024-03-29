@@ -25,12 +25,12 @@ export function addAiResponse(response: ModelResponse) {
       activeView: null,
       contextMessages: [...state.contextMessages, response.message],
       chatMessages: [...state.chatMessages, outputMessages],
-      streamingResponse: null,
+      streamingResponse: undefined,
     };
   });
 }
 
-export function updateAiResponseStream(text: string | null) {
+export function updateAiResponseStream(text: string | undefined) {
   useChatState.setState(() => {
     return {
       activeView: null,
