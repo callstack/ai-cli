@@ -23,6 +23,7 @@ export function AiChatMessageItem({ message }: AiChatMessageItemProps) {
         ) : null}
       </Text>
       {verbose ? <Text color={colors.debug}>{JSON.stringify(message.data, null, 2)}</Text> : null}
+      <Text> {/* Add a newline */}</Text>
     </>
   );
 }
