@@ -1,7 +1,11 @@
+import { createRequire } from 'module';
 import { Tiktoken } from 'tiktoken/lite';
-// @ts-expect-error not yet supported
-import model from 'tiktoken/encoders/cl100k_base.json' assert { type: 'json' };
 import type { Message } from './inference.js';
+
+// Workaround for JSON loading in ESM
+// See: https://www.stefanjudis.com/snippets/how-to-import-json-files-in-es-modules-node-js/#option-2%3A-leverage-the-commonjs-%60require%60-function-to-load-json-files
+const require = createRequire(import.meta.url);
+const model = require('tiktoken/encoders/cl100k_base.json');
 
 const encoder = new Tiktoken(model.bpe_ranks, model.special_tokens, model.pat_str);
 
