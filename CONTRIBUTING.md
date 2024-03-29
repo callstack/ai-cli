@@ -99,6 +99,12 @@ To publish new versions, run the following:
 yarn release
 ```
 
+To publish new beta version, run the following:
+
+```sh
+yarn release --preRelease=beta
+```
+
 ### Scripts
 
 The `package.json` file contains various scripts for common tasks:
