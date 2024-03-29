@@ -4,7 +4,7 @@ import type { Message } from '../../../engine/inference.js';
 import type { PromptOptions } from '../prompt-options.js';
 import { getDefaultProvider, resolveProviderFromOption } from '../providers.js';
 import { filterOutApiKey, handleInputFile } from '../utils.js';
-import { useChatState, type ChatMessage } from './state.js';
+import { useChatState, type ChatMessage, type ChatState } from './state.js';
 
 export function initChatState(
   options: PromptOptions,
@@ -56,15 +56,18 @@ export function initChatState(
     outputMessages.push({ type: 'user', text: initialPrompt });
   }
 
-  useChatState.setState({
+  const state: ChatState = {
     activeView: null,
     provider,
     providerConfig,
     contextMessages,
     chatMessages: outputMessages,
-    verbose: options.verbose,
+    verbose: options.verbose ?? false,
     shouldExit: false,
-  });
+    stream: options.stream ?? true,
+  };
+
+  useChatState.setState(state);
 }
 
 function getResponseStyle(options: PromptOptions): ResponseStyle {

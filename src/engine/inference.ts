@@ -23,6 +23,10 @@ export interface ModelResponse {
   data: unknown;
 }
 
+export interface ModelResponseUpdate {
+  content: string;
+}
+
 export interface ModelUsage {
   inputTokens: number;
   outputTokens: number;

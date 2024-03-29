@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
+import type { ModelResponseUpdate } from '../../../engine/inference.js';
 import { extractErrorMessage } from '../../../output.js';
 import { processChatCommand } from '../chat-commands.js';
-import { addAiResponse, addProgramMessage, addUserMessage } from '../state/actions.js';
+import {
+  addAiResponse,
+  addProgramMessage,
+  addUserMessage,
+  hideActiveView,
+} from '../state/actions.js';
 import { useChatState } from '../state/state.js';
 import { texts } from '../texts.js';
 import { UserMessageInput } from './UserMessageInput.js';
@@ -15,34 +21,17 @@ import { AiResponseLoader } from './AiResponseLoader.js';
 
 export function ChatUi() {
   const contextMessages = useChatState((state) => state.contextMessages);
-  const provider = useChatState((state) => state.provider);
-  const providerConfig = useChatState((state) => state.providerConfig);
   const activeView = useChatState((state) => state.activeView);
   const shouldExit = useChatState((state) => state.shouldExit);
 
-  const [loadingResponse, setLoadingResponse] = useState(false);
-
-  const fetchAiResponse = async (isInitial?: boolean) => {
-    try {
-      setLoadingResponse(true);
-      const messages = useChatState.getState().contextMessages;
-      const response = await provider.getChatCompletion(providerConfig, messages);
-      addAiResponse(response);
-      setLoadingResponse(false);
-      if (isInitial) {
-        addProgramMessage(texts.initialHelp);
-      }
-    } catch (error) {
-      setLoadingResponse(false);
-      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
-    }
-  };
+  const { fetchAiResponse, isLoading, loadedResponse } = useAiResponse();
 
   // Trigger initial AI response
   useEffect(() => {
     const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
     if (initialUserMessages.length > 0) {
-      void fetchAiResponse(true);
+      // eslint-disable-next-line promise/prefer-await-to-then
+      void fetchAiResponse().then(() => addProgramMessage(texts.initialHelp));
     } else {
       addProgramMessage(texts.initialHelp);
     }
@@ -50,6 +39,8 @@ export function ChatUi() {
 
   const handleSubmit = (message: string) => {
     try {
+      hideActiveView();
+
       const isCommand = processChatCommand(message);
       if (isCommand) {
         return;
@@ -62,6 +53,8 @@ export function ChatUi() {
     }
   };
 
+  const showInput = !isLoading && !shouldExit;
+
   return (
     <Box display="flex" flexDirection="column">
       <ChatMessageList />
@@ -69,11 +62,51 @@ export function ChatUi() {
       {activeView === 'help' && <HelpOutput />}
       {activeView === 'info' && <InfoOutput />}
 
-      {loadingResponse ? <AiResponseLoader /> : null}
-      {!loadingResponse && !shouldExit && <UserMessageInput onSubmit={handleSubmit} />}
+      {isLoading ? <AiResponseLoader text={loadedResponse} /> : null}
+      {showInput && <UserMessageInput onSubmit={handleSubmit} />}
 
       <StatusBar />
       {shouldExit && <ExitApp />}
     </Box>
   );
+}
+
+function useAiResponse() {
+  const provider = useChatState((state) => state.provider);
+  const providerConfig = useChatState((state) => state.providerConfig);
+  const stream = useChatState((state) => state.stream);
+
+  const [isLoading, setLoading] = useState(false);
+  const [loadedResponse, setLoadedResponse] = useState<string | undefined>(undefined);
+
+  const fetchAiResponse = async () => {
+    try {
+      setLoading(true);
+      setLoadedResponse(undefined);
+
+      const messages = useChatState.getState().contextMessages;
+      if (stream && provider.getChatCompletionStream != null) {
+        const response = await provider.getChatCompletionStream(
+          providerConfig,
+          messages,
+          (update: ModelResponseUpdate) => setLoadedResponse(update.content),
+        );
+        addAiResponse(response);
+      } else {
+        const response = await provider.getChatCompletion(providerConfig, messages);
+        addAiResponse(response);
+      }
+    } catch (error) {
+      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    } finally {
+      setLoading(false);
+      setLoadedResponse(undefined);
+    }
+  };
+
+  return {
+    fetchAiResponse,
+    isLoading,
+    loadedResponse,
+  };
 }

@@ -66,6 +66,14 @@ export function showInfoView() {
   });
 }
 
+export function hideActiveView() {
+  useChatState.setState(() => {
+    return {
+      activeView: null,
+    };
+  });
+}
+
 export function triggerExit() {
   useChatState.setState((state) => {
     return {
