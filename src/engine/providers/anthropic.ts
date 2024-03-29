@@ -42,12 +42,15 @@ const Anthropic: Provider = {
 
     const nonSystemMessages = messages.filter((m) => m.role !== 'system') as ModelMessage[];
 
+    const systemMessagesContent = messages.filter((m) => m.role === 'system').map((m) => m.content);
+    const systemPrompt = [config.systemPrompt, ...systemMessagesContent].join('\n\n');
+
     const startTime = performance.now();
     const response = await api.messages.create({
       messages: nonSystemMessages,
       model: config.model,
       max_tokens: 1024,
-      system: config.systemPrompt,
+      system: systemPrompt,
       ...responseStyles[config.responseStyle],
     });
     const responseTime = performance.now() - startTime;
@@ -79,6 +82,9 @@ const Anthropic: Provider = {
 
     const nonSystemMessages = messages.filter((m) => m.role !== 'system') as ModelMessage[];
 
+    const systemMessagesContent = messages.filter((m) => m.role === 'system').map((m) => m.content);
+    const systemPrompt = [config.systemPrompt, ...systemMessagesContent].join('\n\n');
+
     const startTime = performance.now();
     let content = '';
     const stream = api.messages
@@ -86,7 +92,7 @@ const Anthropic: Provider = {
         messages: nonSystemMessages,
         model: config.model,
         max_tokens: 1024,
-        system: config.systemPrompt,
+        system: systemPrompt,
         ...responseStyles[config.responseStyle],
       })
       .on('text', (text) => {
