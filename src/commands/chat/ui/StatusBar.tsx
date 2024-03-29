@@ -40,6 +40,5 @@ const formatStats = (cost: number, usage?: ModelUsage) => {
   const usageOutput = usage
     ? ` (tokens: ${formatTokenCount(usage.inputTokens)} in + ${formatTokenCount(usage.outputTokens)} out, requests: ${usage.requests})`
     : '';
-
   return `${formatCost(cost)}${usageOutput}`;
 };

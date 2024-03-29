@@ -58,9 +58,11 @@ export async function getChatCompletionStream(
     content: config.systemPrompt,
   };
 
+  const allMessages = [systemMessage, ...messages];
+
   const startTime = performance.now();
   const stream = await api.chat.completions.create({
-    messages: [systemMessage, ...messages],
+    messages: allMessages,
     model: config.model,
     stream: true,
     ...responseStyles[config.responseStyle],
@@ -85,7 +87,7 @@ export async function getChatCompletionStream(
     },
     // Perplexity provides output data in the last chunk, while OpenAI does not.
     usage: {
-      inputTokens: lastChunk?.usage?.prompt_tokens ?? estimateInputTokens(messages),
+      inputTokens: lastChunk?.usage?.prompt_tokens ?? estimateInputTokens(allMessages),
       outputTokens: lastChunk?.usage?.completion_tokens ?? estimateOutputTokens(content),
       requests: 1,
     },

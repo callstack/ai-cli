@@ -13,6 +13,9 @@ export function formatCost(value: number | undefined, precision = 4) {
  */
 export function formatTokenCount(tokenCount: number, roundTo = 1) {
   const roundedCount = Math.round(tokenCount / roundTo) * roundTo;
+  if (roundedCount === 0) {
+    return '0';
+  }
 
   const suffixes = ['', 'K', 'M'];
 
@@ -21,6 +24,7 @@ export function formatTokenCount(tokenCount: number, roundTo = 1) {
     Math.floor(Math.log10(Math.abs(roundedCount)) / 3),
     suffixes.length - 1,
   );
+
   const scaledCount = roundedCount / Math.pow(10, suffixIndex * 3);
   return `${scaledCount.toFixed(0)}${suffixes[suffixIndex]}`;
 }
