@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
+import type { ModelResponseUpdate } from '../../../engine/inference.js';
 import { extractErrorMessage } from '../../../output.js';
 import { processChatCommand } from '../chat-commands.js';
 import {
@@ -29,7 +30,8 @@ export function ChatUi() {
   useEffect(() => {
     const initialUserMessages = contextMessages.filter((m) => m.role === 'user');
     if (initialUserMessages.length > 0) {
-      void fetchAiResponse(true);
+      // eslint-disable-next-line promise/prefer-await-to-then
+      void fetchAiResponse().then(() => addProgramMessage(texts.initialHelp));
     } else {
       addProgramMessage(texts.initialHelp);
     }
@@ -77,7 +79,7 @@ function useAiResponse() {
   const [isLoading, setLoading] = useState(false);
   const [loadedResponse, setLoadedResponse] = useState<string | undefined>(undefined);
 
-  const fetchAiResponse = async (isInitial?: boolean) => {
+  const fetchAiResponse = async () => {
     try {
       setLoading(true);
       setLoadedResponse(undefined);
@@ -88,10 +90,6 @@ function useAiResponse() {
 
       setLoading(false);
       setLoadedResponse(undefined);
-
-      if (isInitial) {
-        addProgramMessage(texts.initialHelp);
-      }
     } catch (error) {
       setLoading(false);
       setLoadedResponse(undefined);
@@ -99,27 +97,24 @@ function useAiResponse() {
     }
   };
 
-  const fetchAiResponseStream = async (isInitial?: boolean) => {
+  const fetchAiResponseStream = async () => {
     try {
       setLoading(true);
       setLoadedResponse(undefined);
 
+      const onResponseUpdate = (update: ModelResponseUpdate) => {
+        setLoadedResponse(update.content);
+      };
+
       const messages = useChatState.getState().contextMessages;
-      const stream = provider.getChatCompletionStream!(providerConfig, messages);
+      const response = await provider.getChatCompletionStream!(
+        providerConfig,
+        messages,
+        onResponseUpdate,
+      );
 
-      for await (const item of stream) {
-        if ('update' in item) {
-          setLoadedResponse(item.update.content);
-        }
-        if ('response' in item) {
-          addAiResponse(item.response);
-          setLoading(false);
-        }
-      }
-
-      if (isInitial) {
-        addProgramMessage(texts.initialHelp);
-      }
+      setLoading(false);
+      addAiResponse(response);
     } catch (error) {
       setLoading(false);
       setLoadedResponse(undefined);

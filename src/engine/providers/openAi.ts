@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
-import { type Message, type ModelResponseStream } from '../inference.js';
+import { type Message, type ModelResponseUpdate } from '../inference.js';
 import { type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
-import { getChatCompletion, getBetaChatCompletionStream } from './utils/open-ai-api.js';
+import { getChatCompletion, getChatCompletionStream } from './utils/open-ai-api.js';
 
 const OpenAi: Provider = {
   label: 'OpenAI',
@@ -31,15 +31,16 @@ const OpenAi: Provider = {
     return await getChatCompletion(api, config, messages);
   },
 
-  getChatCompletionStream: async function* (
+  getChatCompletionStream: async function (
     config: ProviderConfig,
     messages: Message[],
-  ): AsyncGenerator<ModelResponseStream> {
+    onResponseUpdate: (update: ModelResponseUpdate) => void,
+  ) {
     const api = new OpenAI({
       apiKey: config.apiKey,
     });
 
-    yield* getBetaChatCompletionStream(api, config, messages);
+    return await getChatCompletionStream(api, config, messages, onResponseUpdate);
   },
 };
 

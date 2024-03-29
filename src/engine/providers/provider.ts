@@ -1,4 +1,4 @@
-import type { Message, ModelResponse, ModelResponseStream } from '../inference.js';
+import type { Message, ModelResponse, ModelResponseUpdate } from '../inference.js';
 import type { ProviderConfig } from './config.js';
 import openAi from './openAi.js';
 import perplexity from './perplexity.js';
@@ -16,7 +16,8 @@ export interface Provider {
   getChatCompletionStream?: (
     config: ProviderConfig,
     messages: Message[],
-  ) => AsyncGenerator<ModelResponseStream>;
+    onStreamUpdate: (update: ModelResponseUpdate) => void,
+  ) => Promise<ModelResponse>;
 }
 
 export interface ModelPricing {

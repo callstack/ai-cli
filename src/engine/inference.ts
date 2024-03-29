@@ -27,8 +27,6 @@ export interface ModelResponseUpdate {
   content: string;
 }
 
-export type ModelResponseStream = { response: ModelResponse } | { update: ModelResponseUpdate };
-
 export interface ModelUsage {
   inputTokens: number;
   outputTokens: number;
