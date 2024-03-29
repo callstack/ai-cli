@@ -15,6 +15,8 @@ export interface Provider {
   modelPricing: Record<string, ModelPricing>;
   modelAliases: Record<string, string>;
 
+  skipSystemPrompt?: string[];
+
   getChatCompletion: (config: ProviderConfig, messages: Message[]) => Promise<ModelResponse>;
   getChatCompletionStream?: (
     config: ProviderConfig,

@@ -42,6 +42,8 @@ const Perplexity: Provider = {
     mixtral: 'mixtral-8x7b-instruct',
   },
 
+  skipSystemPrompt: ['sonar-small-online', 'sonar-medium-online'],
+
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
     const api = new OpenAI({
       apiKey: config.apiKey,

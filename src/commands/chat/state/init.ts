@@ -22,11 +22,16 @@ export function initChatState(
   }
 
   const optionsModel = options.model ? provider.modelAliases[options.model] : options.model;
+  const model = optionsModel ?? providerFileConfig.model ?? provider.defaultModel;
+
+  const systemPrompt = !provider.skipSystemPrompt?.includes(model)
+    ? providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT
+    : undefined;
 
   const providerConfig = {
     apiKey: providerFileConfig.apiKey,
-    model: optionsModel ?? providerFileConfig.model ?? provider.defaultModel,
-    systemPrompt: providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT,
+    model,
+    systemPrompt,
     responseStyle: getResponseStyle(options),
   };
 
