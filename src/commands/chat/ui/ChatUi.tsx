@@ -74,7 +74,7 @@ export function ChatUi() {
 function useAiResponse() {
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
-  const stream = useChatState((state) => state.stream);
+  const stream = useChatState((state) => state.stream) && provider.getChatCompletionStream != null;
 
   const [isLoading, setLoading] = useState(false);
   const [loadedResponse, setLoadedResponse] = useState<string | undefined>(undefined);
