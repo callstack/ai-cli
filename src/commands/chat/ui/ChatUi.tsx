@@ -74,7 +74,7 @@ export function ChatUi() {
 function useAiResponse() {
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
-  const stream = useChatState((state) => state.stream) && provider.getChatCompletionStream != null;
+  const stream = useChatState((state) => state.stream);
 
   const [isLoading, setLoading] = useState(false);
   const [loadedResponse, setLoadedResponse] = useState<string | undefined>(undefined);
@@ -85,36 +85,20 @@ function useAiResponse() {
       setLoadedResponse(undefined);
 
       const messages = useChatState.getState().contextMessages;
-      const response = await provider.getChatCompletion(providerConfig, messages);
-      addAiResponse(response);
+      if (stream && provider.getChatCompletionStream != null) {
+        const response = await provider.getChatCompletionStream(
+          providerConfig,
+          messages,
+          (update: ModelResponseUpdate) => setLoadedResponse(update.content),
+        );
+        addAiResponse(response);
+      } else {
+        const response = await provider.getChatCompletion(providerConfig, messages);
+        addAiResponse(response);
+      }
 
       setLoading(false);
       setLoadedResponse(undefined);
-    } catch (error) {
-      setLoading(false);
-      setLoadedResponse(undefined);
-      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
-    }
-  };
-
-  const fetchAiResponseStream = async () => {
-    try {
-      setLoading(true);
-      setLoadedResponse(undefined);
-
-      const onResponseUpdate = (update: ModelResponseUpdate) => {
-        setLoadedResponse(update.content);
-      };
-
-      const messages = useChatState.getState().contextMessages;
-      const response = await provider.getChatCompletionStream!(
-        providerConfig,
-        messages,
-        onResponseUpdate,
-      );
-
-      setLoading(false);
-      addAiResponse(response);
     } catch (error) {
       setLoading(false);
       setLoadedResponse(undefined);
@@ -123,7 +107,7 @@ function useAiResponse() {
   };
 
   return {
-    fetchAiResponse: stream ? fetchAiResponseStream : fetchAiResponse,
+    fetchAiResponse,
     isLoading,
     loadedResponse,
   };

@@ -1,4 +1,5 @@
 import type OpenAI from 'openai';
+import type { ChatCompletionChunk } from 'openai/resources/index.mjs';
 import type { Message, ModelResponse, ModelResponseUpdate } from '../../inference.js';
 import { estimateInputTokens, estimateOutputTokens } from '../../tokenizer.js';
 import { responseStyles, type ProviderConfig } from '../config.js';
@@ -37,6 +38,15 @@ export async function getChatCompletion(
   };
 }
 
+// Perplexity provides output data in the last chunk, while OpenAI does not.
+interface ChunkWithExtras extends ChatCompletionChunk {
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
+
 export async function getChatCompletionStream(
   api: OpenAI,
   config: ProviderConfig,
@@ -56,7 +66,7 @@ export async function getChatCompletionStream(
     ...responseStyles[config.responseStyle],
   });
 
-  const chunks = [];
+  const chunks: ChunkWithExtras[] = [];
   let content = '';
 
   for await (const chunk of stream) {
@@ -66,16 +76,17 @@ export async function getChatCompletionStream(
   }
 
   const responseTime = performance.now() - startTime;
-  const lastChunk = chunks[chunks.length - 1];
+  const lastChunk = chunks[chunks.length - 1] as ChunkWithExtras;
 
   return {
     message: {
       role: 'assistant',
       content,
     },
+    // Perplexity provides output data in the last chunk, while OpenAI does not.
     usage: {
-      inputTokens: estimateInputTokens(messages),
-      outputTokens: estimateOutputTokens(content),
+      inputTokens: lastChunk?.usage?.prompt_tokens ?? estimateInputTokens(messages),
+      outputTokens: lastChunk?.usage?.completion_tokens ?? estimateOutputTokens(content),
       requests: 1,
     },
     responseTime,
@@ -83,105 +94,3 @@ export async function getChatCompletionStream(
     data: lastChunk,
   };
 }
-
-// export async function* getChatCompletionStream(
-//   api: OpenAI,
-//   config: ProviderConfig,
-//   messages: Message[],
-// ): AsyncGenerator<ModelResponseStream> {
-//   const systemMessage: Message = {
-//     role: 'system',
-//     content: config.systemPrompt,
-//   };
-
-//   const startTime = performance.now();
-//   const stream = api.beta.chat.completions.stream({
-//     messages: [systemMessage, ...messages],
-//     model: config.model,
-//     stream: true,
-//     ...responseStyles[config.responseStyle],
-//   });
-
-//   let contentFromChunks = '';
-//   for await (const chunk of stream) {
-//     contentFromChunks += chunk.choices[0]?.delta?.content || '';
-//     yield {
-//       update: {
-//         content: contentFromChunks,
-//       },
-//     };
-//   }
-
-//   const responseTime = performance.now() - startTime;
-//   const completion = await stream.finalChatCompletion();
-
-//   const content = completion.choices[0]?.message.content ?? '';
-
-//   yield {
-//     response: {
-//       message: {
-//         role: 'assistant',
-//         content,
-//       },
-//       usage: {
-//         inputTokens: estimateInputTokens(messages),
-//         outputTokens: estimateOutputTokens(content),
-//         requests: 1,
-//       },
-//       responseTime,
-//       responseModel: completion.model,
-//       data: completion,
-//     },
-//   };
-// }
-
-// export async function* getBetaChatCompletionStream(
-//   api: OpenAI,
-//   config: ProviderConfig,
-//   messages: Message[],
-// ): AsyncGenerator<ModelResponseStream> {
-//   const systemMessage: Message = {
-//     role: 'system',
-//     content: config.systemPrompt,
-//   };
-
-//   const startTime = performance.now();
-//   const stream = api.beta.chat.completions.stream({
-//     messages: [systemMessage, ...messages],
-//     model: config.model,
-//     stream: true,
-//     ...responseStyles[config.responseStyle],
-//   });
-
-//   let contentFromChunks = '';
-//   for await (const chunk of stream) {
-//     contentFromChunks += chunk.choices[0]?.delta?.content || '';
-//     yield {
-//       update: {
-//         content: contentFromChunks,
-//       },
-//     };
-//   }
-
-//   const responseTime = performance.now() - startTime;
-//   const completion = await stream.finalChatCompletion();
-
-//   const content = completion.choices[0]?.message.content ?? '';
-
-//   yield {
-//     response: {
-//       message: {
-//         role: 'assistant',
-//         content,
-//       },
-//       usage: {
-//         inputTokens: estimateInputTokens(messages),
-//         outputTokens: estimateOutputTokens(content),
-//         requests: 1,
-//       },
-//       responseTime,
-//       responseModel: completion.model,
-//       data: completion,
-//     },
-//   };
-// }
