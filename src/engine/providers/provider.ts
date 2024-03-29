@@ -4,7 +4,7 @@ import openAi from './openAi.js';
 import perplexity from './perplexity.js';
 import anthropic from './anthropic.js';
 
-export const providerNames = ['openAi', 'perplexity', 'anthropic'] as const;
+export const providerNames = ['openAi', 'anthropic', 'perplexity'] as const;
 export type ProviderName = (typeof providerNames)[number];
 
 export interface Provider {
@@ -39,8 +39,8 @@ export interface ModelPricing {
 
 const providersMap: Record<ProviderName, Provider> = {
   openAi,
-  perplexity,
   anthropic,
+  perplexity,
 };
 
 export const providers = Object.values(providersMap);
