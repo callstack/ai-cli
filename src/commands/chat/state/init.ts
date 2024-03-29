@@ -62,9 +62,9 @@ export function initChatState(
     providerConfig,
     contextMessages,
     chatMessages: outputMessages,
-    verbose: options.verbose,
+    verbose: options.verbose ?? false,
     shouldExit: false,
-    stream: options.stream,
+    stream: options.stream ?? true,
   };
 
   useChatState.setState(state);

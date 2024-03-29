@@ -13,46 +13,50 @@ export interface PromptOptions {
   /** Precise response style */
   precise?: boolean;
   /** Show verbose-level logs. */
-  verbose: boolean;
-  /** Enable streaming response */
-  stream: boolean;
+  verbose?: boolean;
+  /** Disable streaming in responses */
+  stream?: boolean;
 }
 
 export const promptOptions: Record<keyof PromptOptions, Options> = {
-  provider: {
+  'provider': {
     alias: 'p',
     type: 'string',
     describe: 'AI provider to be used',
     choices: providerOptions,
   },
-  model: {
+  'model': {
     alias: 'm',
     type: 'string',
     describe: 'AI model to be used',
   },
-  file: {
+  'file': {
     type: 'string',
-    describe: 'Add given file to conversation context.',
+    describe: 'Add given file to conversation context',
   },
-  creative: {
+  'creative': {
     type: 'boolean',
-    describe: 'Enable more creative responses.',
+    describe: 'Enable more creative responses',
     conflicts: 'precise',
   },
-  precise: {
+  'precise': {
     type: 'boolean',
-    describe: 'Enable more deterministic responses.',
+    describe: 'Enable more deterministic responses',
     conflicts: 'creative',
   },
-  stream: {
+  'stream': {
     type: 'boolean',
-    default: true,
-    describe: 'Enable streaming response',
+    describe: 'Enable streaming in responses',
+    hidden: true,
   },
-  verbose: {
+  // @ts-expect-error: yargs workaround. See: https://github.com/yargs/yargs/issues/1116#issuecomment-568297110
+  'no-stream': {
+    type: 'boolean',
+    describe: 'Disable streaming in responses',
+  },
+  'verbose': {
     alias: 'V',
     type: 'boolean',
-    default: false,
     describe: 'Verbose output',
   },
 };
