@@ -13,7 +13,7 @@ export function AiResponseLoader({ text }: AiResponseLoaderProps) {
     return (
       <Text color={colors.assistant}>
         <Text color={colors.assistant}>{texts.assistantLabel}</Text>
-        {!!text && <Text>{text} </Text>} <TextSpinner type="sand" />
+        <Text>{text} </Text> <TextSpinner type="sand" />
       </Text>
     );
   }
