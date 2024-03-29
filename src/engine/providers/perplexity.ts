@@ -13,13 +13,21 @@ const Perplexity: Provider = {
   // Source: https://docs.perplexity.ai/docs/model-cards
   // Source: https://docs.perplexity.ai/docs/pricing
   pricing: {
-    'sonar-small-chat': { inputTokensCost: 0.00007, outputTokensCost: 0.00028 },
-    'sonar-medium-chat': { inputTokensCost: 0.0006, outputTokensCost: 0.0018 },
-    'sonar-small-online': { requestsCost: 0.005, outputTokensCost: 0.00028 },
-    'sonar-medium-online': { requestsCost: 0.005, outputTokensCost: 0.0018 },
-    'codellama-70b-instruct': { inputTokensCost: 0.0007, outputTokensCost: 0.0028 },
-    'mistral-7b-instruct': { inputTokensCost: 0.00007, outputTokensCost: 0.00028 },
-    'mixtral-8x7b-instruct': { inputTokensCost: 0.0006, outputTokensCost: 0.0018 },
+    'sonar-small-chat': { inputTokensCost: 0.0002, outputTokensCost: 0.0002 },
+    'sonar-medium-chat': { inputTokensCost: 0.0006, outputTokensCost: 0.0006 },
+    'sonar-small-online': {
+      inputTokensCost: 0.0002,
+      outputTokensCost: 0.0002,
+      requestsCost: 0.005,
+    },
+    'sonar-medium-online': {
+      inputTokensCost: 0.0006,
+      outputTokensCost: 0.0006,
+      requestsCost: 0.005,
+    },
+    'codellama-70b-instruct': { inputTokensCost: 0.001, outputTokensCost: 0.001 },
+    'mistral-7b-instruct': { inputTokensCost: 0.0002, outputTokensCost: 0.0002 },
+    'mixtral-8x7b-instruct': { inputTokensCost: 0.0006, outputTokensCost: 0.0006 },
   },
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
