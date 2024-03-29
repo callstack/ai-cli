@@ -2,8 +2,9 @@ import type { Message, ModelResponse, ModelResponseUpdate } from '../inference.j
 import type { ProviderConfig } from './config.js';
 import openAi from './openAi.js';
 import perplexity from './perplexity.js';
+import anthropic from './anthropic.js';
 
-export const providerNames = ['openAi', 'perplexity'] as const;
+export const providerNames = ['openAi', 'perplexity', 'anthropic'] as const;
 export type ProviderName = (typeof providerNames)[number];
 
 export interface Provider {
@@ -39,6 +40,7 @@ export interface ModelPricing {
 const providersMap: Record<ProviderName, Provider> = {
   openAi,
   perplexity,
+  anthropic,
 };
 
 export const providers = Object.values(providersMap);

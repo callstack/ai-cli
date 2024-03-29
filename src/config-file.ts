@@ -6,21 +6,16 @@ import { z } from 'zod';
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';
 
+const CommonProviderSchema = z.object({
+  apiKey: z.string(),
+  model: z.string().optional(),
+  systemPrompt: z.string().optional(),
+});
+
 const ProvidersSchema = z.object({
-  openAi: z.optional(
-    z.object({
-      apiKey: z.string(),
-      model: z.string().optional(),
-      systemPrompt: z.string().optional(),
-    }),
-  ),
-  perplexity: z.optional(
-    z.object({
-      apiKey: z.string(),
-      model: z.string().optional(),
-      systemPrompt: z.string().optional(),
-    }),
-  ),
+  openAi: z.optional(CommonProviderSchema),
+  perplexity: z.optional(CommonProviderSchema),
+  anthropic: z.optional(CommonProviderSchema),
 });
 
 const ConfigFileSchema = z.object({
