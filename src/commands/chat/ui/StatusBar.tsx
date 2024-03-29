@@ -14,7 +14,7 @@ export function StatusBar() {
   const totalUsage = useMemo(() => calculateTotalUsage(items), [items]);
   const totalTime = useMemo(() => calculateTotalResponseTime(items), [items]);
 
-  const modelPricing = provider.pricing[providerConfig.model];
+  const modelPricing = provider.modelPricing[providerConfig.model];
   const totalCost = calculateUsageCost(totalUsage, modelPricing) ?? 0;
 
   return (

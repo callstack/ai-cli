@@ -10,7 +10,10 @@ export interface Provider {
   name: ProviderName;
   label: string;
   apiKeyUrl: string;
-  pricing: Record<string, ModelPricing>;
+
+  defaultModel: string;
+  modelPricing: Record<string, ModelPricing>;
+  modelAliases: Record<string, string>;
 
   getChatCompletion: (config: ProviderConfig, messages: Message[]) => Promise<ModelResponse>;
   getChatCompletionStream?: (

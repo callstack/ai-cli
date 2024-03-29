@@ -1,4 +1,5 @@
 import { type ConfigFile } from '../../../config-file.js';
+import { DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
 import type { ResponseStyle } from '../../../engine/providers/config.js';
 import type { Message } from '../../../engine/inference.js';
 import type { PromptOptions } from '../prompt-options.js';
@@ -20,10 +21,12 @@ export function initChatState(
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
+  const optionsModel = options.model ? provider.modelAliases[options.model] : options.model;
+
   const providerConfig = {
-    model: options.model ?? providerFileConfig.model,
     apiKey: providerFileConfig.apiKey,
-    systemPrompt: providerFileConfig.systemPrompt,
+    model: optionsModel ?? providerFileConfig.model ?? provider.defaultModel,
+    systemPrompt: providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT,
     responseStyle: getResponseStyle(options),
   };
 
