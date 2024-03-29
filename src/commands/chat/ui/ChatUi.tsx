@@ -7,7 +7,7 @@ import {
   addAiResponse,
   addProgramMessage,
   addUserMessage,
-  updateAiResponseStream,
+  hideActiveView,
 } from '../state/actions.js';
 import { useChatState } from '../state/state.js';
 import { texts } from '../texts.js';
@@ -22,9 +22,8 @@ export function ChatUi() {
   const contextMessages = useChatState((state) => state.contextMessages);
   const activeView = useChatState((state) => state.activeView);
   const shouldExit = useChatState((state) => state.shouldExit);
-  const streamingResponse = useChatState((state) => state.streamingResponse);
 
-  const { fetchAiResponse, isLoading } = useAiResponse();
+  const { fetchAiResponse, isLoading, loadedResponse } = useAiResponse();
 
   // Trigger initial AI response
   useEffect(() => {
@@ -38,6 +37,8 @@ export function ChatUi() {
 
   const handleSubmit = (message: string) => {
     try {
+      hideActiveView();
+
       const isCommand = processChatCommand(message);
       if (isCommand) {
         return;
@@ -50,7 +51,7 @@ export function ChatUi() {
     }
   };
 
-  const showInput = !isLoading && streamingResponse == null && !shouldExit;
+  const showInput = !isLoading && !shouldExit;
 
   return (
     <Box display="flex" flexDirection="column">
@@ -59,7 +60,7 @@ export function ChatUi() {
       {activeView === 'help' && <HelpOutput />}
       {activeView === 'info' && <InfoOutput />}
 
-      {isLoading ? <AiResponseLoader text={streamingResponse} /> : null}
+      {isLoading ? <AiResponseLoader text={loadedResponse} /> : null}
       {showInput && <UserMessageInput onSubmit={handleSubmit} />}
 
       <StatusBar />
@@ -74,21 +75,26 @@ function useAiResponse() {
   const stream = useChatState((state) => state.stream);
 
   const [isLoading, setLoading] = useState(false);
+  const [loadedResponse, setLoadedResponse] = useState<string | undefined>(undefined);
 
   const fetchAiResponse = async (isInitial?: boolean) => {
     try {
       setLoading(true);
+      setLoadedResponse(undefined);
 
       const messages = useChatState.getState().contextMessages;
       const response = await provider.getChatCompletion(providerConfig, messages);
       addAiResponse(response);
+
       setLoading(false);
+      setLoadedResponse(undefined);
 
       if (isInitial) {
         addProgramMessage(texts.initialHelp);
       }
     } catch (error) {
       setLoading(false);
+      setLoadedResponse(undefined);
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     }
   };
@@ -96,16 +102,18 @@ function useAiResponse() {
   const fetchAiResponseStream = async (isInitial?: boolean) => {
     try {
       setLoading(true);
+      setLoadedResponse(undefined);
 
       const messages = useChatState.getState().contextMessages;
       const stream = provider.getChatCompletionStream!(providerConfig, messages);
 
       for await (const item of stream) {
+        if ('update' in item) {
+          setLoadedResponse(item.update.content);
+        }
         if ('response' in item) {
           addAiResponse(item.response);
           setLoading(false);
-        } else if ('update' in item) {
-          updateAiResponseStream(item.update.content);
         }
       }
 
@@ -114,14 +122,14 @@ function useAiResponse() {
       }
     } catch (error) {
       setLoading(false);
+      setLoadedResponse(undefined);
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
-    } finally {
-      setLoading(false);
     }
   };
 
   return {
     fetchAiResponse: stream ? fetchAiResponseStream : fetchAiResponse,
     isLoading,
+    loadedResponse,
   };
 }

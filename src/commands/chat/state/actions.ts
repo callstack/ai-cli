@@ -25,16 +25,6 @@ export function addAiResponse(response: ModelResponse) {
       activeView: null,
       contextMessages: [...state.contextMessages, response.message],
       chatMessages: [...state.chatMessages, outputMessages],
-      streamingResponse: undefined,
-    };
-  });
-}
-
-export function updateAiResponseStream(text: string | undefined) {
-  useChatState.setState(() => {
-    return {
-      activeView: null,
-      streamingResponse: text,
     };
   });
 }
@@ -72,6 +62,14 @@ export function showInfoView() {
   useChatState.setState(() => {
     return {
       activeView: 'info',
+    };
+  });
+}
+
+export function hideActiveView() {
+  useChatState.setState(() => {
+    return {
+      activeView: null,
     };
   });
 }
