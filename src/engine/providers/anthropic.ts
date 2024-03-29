@@ -1,5 +1,10 @@
 import AnthropicAPI from '@anthropic-ai/sdk';
-import { type AiMessage, type Message, type UserMessage } from '../inference.js';
+import {
+  type AiMessage,
+  type Message,
+  type ModelResponseUpdate,
+  type UserMessage,
+} from '../inference.js';
 import { responseStyles, type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
 
@@ -19,10 +24,9 @@ const Anthropic: Provider = {
     'claude-3-haiku-20240307': { inputTokensCost: 0.25 / 1000, outputTokensCost: 1.25 / 1000 },
     'claude-3-sonnet-20240229': { inputTokensCost: 3.0 / 1000, outputTokensCost: 15.0 / 1000 },
     'claude-3-opus-20240229': { inputTokensCost: 15.0 / 1000, outputTokensCost: 75.0 / 1000 },
-    // TODO: update pricing for these models
-    'claude-2.1': { inputTokensCost: 75.0 / 1000, outputTokensCost: 375.0 / 1000 },
-    'claude-2.0': { inputTokensCost: 0.25 / 1000, outputTokensCost: 1.25 / 1000 },
-    'claude-instant-1.2': { inputTokensCost: 0.25 / 1000, outputTokensCost: 1.25 / 1000 },
+    'claude-2.1': { inputTokensCost: 8.0 / 1000, outputTokensCost: 24.0 / 1000 },
+    'claude-2.0': { inputTokensCost: 8.0 / 1000, outputTokensCost: 24.0 / 1000 },
+    'claude-instant-1.2': { inputTokensCost: 0.8 / 1000, outputTokensCost: 2.4 / 1000 },
   },
 
   modelAliases: {
@@ -64,17 +68,50 @@ const Anthropic: Provider = {
     };
   },
 
-  // getChatCompletionStream: async function (
-  //   config: ProviderConfig,
-  //   messages: Message[],
-  //   onResponseUpdate: (update: ModelResponseUpdate) => void,
-  // ) {
-  //   const api = new AnthropicAPI({
-  //     apiKey: config.apiKey,
-  //   });
+  getChatCompletionStream: async function (
+    config: ProviderConfig,
+    messages: Message[],
+    onResponseUpdate: (update: ModelResponseUpdate) => void,
+  ) {
+    const api = new AnthropicAPI({
+      apiKey: config.apiKey,
+    });
 
-  //   return await getChatCompletionStream(api, config, messages, onResponseUpdate);
-  // },
+    const nonSystemMessages = messages.filter((m) => m.role !== 'system') as ModelMessage[];
+
+    const startTime = performance.now();
+    let content = '';
+    const stream = api.messages
+      .stream({
+        messages: nonSystemMessages,
+        model: config.model,
+        max_tokens: 1024,
+        system: config.systemPrompt,
+        ...responseStyles[config.responseStyle],
+      })
+      .on('text', (text) => {
+        content += text;
+        onResponseUpdate({ content });
+      });
+
+    const response = await stream.finalMessage();
+    const responseTime = performance.now() - startTime;
+
+    return {
+      message: {
+        role: 'assistant',
+        content,
+      },
+      usage: {
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        requests: 1,
+      },
+      responseTime,
+      responseModel: response.model,
+      data: response,
+    };
+  },
 };
 
 export default Anthropic;
