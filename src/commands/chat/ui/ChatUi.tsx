@@ -96,13 +96,11 @@ function useAiResponse() {
         const response = await provider.getChatCompletion(providerConfig, messages);
         addAiResponse(response);
       }
-
-      setLoading(false);
-      setLoadedResponse(undefined);
     } catch (error) {
+      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    } finally {
       setLoading(false);
       setLoadedResponse(undefined);
-      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     }
   };
 

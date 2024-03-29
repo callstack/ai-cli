@@ -9,19 +9,18 @@ interface AiResponseLoaderProps {
 }
 
 export function AiResponseLoader({ text }: AiResponseLoaderProps) {
-  if (text) {
-    return (
-      <Text color={colors.assistant}>
-        <Text color={colors.assistant}>{texts.assistantLabel}</Text>
-        <Text>{text} </Text> <TextSpinner type="sand" />
-      </Text>
-    );
-  }
-
   return (
     <Text color={colors.assistant}>
       <Text color={colors.assistant}>{texts.assistantLabel}</Text>
-      <TextSpinner type="sand" /> {texts.responseLoading}
+      {text ? (
+        <>
+          {text} <TextSpinner type="sand" />
+        </>
+      ) : (
+        <>
+          <TextSpinner type="sand" /> {texts.responseLoading}
+        </>
+      )}
     </Text>
   );
 }
