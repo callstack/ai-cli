@@ -38,7 +38,7 @@ export function InitUi({ hasConfig }: InitUiProps) {
   return (
     <Box flexDirection="column">
       <Text color={colors.initPrompt} key="welcome">
-        Welcome to AI CLI.
+        Welcome to AI CLI!
         {!hasConfig ? " Let's set you up quickly." : null}
         <Newline />
       </Text>
@@ -108,16 +108,11 @@ export function InitUi({ hasConfig }: InitUiProps) {
           </Text>
           <Newline count={2} />
           <Text color={colors.initPrompt}>
-            For a single question and answer just pass a prompt as a param:
+            Run "ai" to start a chat with an AI assistant. You can put the initial question in the
+            params.
           </Text>
           <Newline />
           <Text>$ ai "Tell me a useful productivity hack"</Text>
-          <Newline count={2} />
-          <Text color={colors.initPrompt}>
-            For interactive session use "-i" (or "--interactive") option:
-          </Text>
-          <Newline />
-          <Text>$ ai -i "Tell me an interesting fact about JavaScript"</Text>
           <Newline />
           <ExitApp />
         </Text>

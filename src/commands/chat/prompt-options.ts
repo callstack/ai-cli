@@ -57,6 +57,6 @@ export const promptOptions: Record<keyof PromptOptions, Options> = {
   'verbose': {
     alias: 'V',
     type: 'boolean',
-    describe: 'Verbose output',
+    describe: 'Enable verbose output',
   },
 };
