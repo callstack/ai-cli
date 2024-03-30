@@ -55,3 +55,11 @@ export function formatTime(timeInMs?: number) {
 
   return `${(timeInMs / 1000).toFixed(1)} s`;
 }
+
+export function formatSpeed(tokens?: number, timeInMs?: number) {
+  if (tokens == null || timeInMs == null || timeInMs === 0) {
+    return '? tok/s';
+  }
+
+  return `${((tokens * 1000) / timeInMs).toFixed(1)} tok/s`;
+}

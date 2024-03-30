@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { Box, Text } from 'ink';
 import type { ModelUsage } from '../../../engine/inference.js';
-import { formatCost, formatTokenCount } from '../../../format.js';
+import { formatCost, formatSpeed, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
-import { useChatState } from '../state/state.js';
+import { useChatState, type ChatMessage } from '../state/state.js';
 
 export function StatusBar() {
   const verbose = useChatState((state) => state.verbose);
@@ -11,17 +11,8 @@ export function StatusBar() {
   const provider = useChatState((state) => state.provider);
   const providerConfig = useChatState((state) => state.providerConfig);
 
-  const totalUsage = useMemo(() => {
-    const usage: ModelUsage = { inputTokens: 0, outputTokens: 0, requests: 0 };
-    items.forEach((item) => {
-      if (item.type === 'ai') {
-        usage.inputTokens += item.usage?.inputTokens ?? 0;
-        usage.outputTokens += item.usage?.outputTokens ?? 0;
-        usage.requests += item.usage?.requests ?? 0;
-      }
-    });
-    return usage;
-  }, [items]);
+  const totalUsage = useMemo(() => calculateTotalUsage(items), [items]);
+  const totalTime = useMemo(() => calculateTotalResponseTime(items), [items]);
 
   const modelPricing = provider.pricing[providerConfig.model];
   const totalCost = calculateUsageCost(totalUsage, modelPricing) ?? 0;
@@ -30,15 +21,37 @@ export function StatusBar() {
     <Box flexDirection="row" marginTop={1}>
       <Text color={'gray'}>
         LLM: {provider.label}/{providerConfig.model} - Total Cost:{' '}
-        {formatStats(totalCost, verbose ? totalUsage : undefined)}
+        {formatStats(totalCost, verbose ? totalUsage : undefined, verbose ? totalTime : undefined)}
       </Text>
     </Box>
   );
 }
 
-const formatStats = (cost: number, usage?: ModelUsage) => {
+function formatStats(cost: number, usage?: ModelUsage, time?: number) {
   const usageOutput = usage
-    ? ` (tokens: ${formatTokenCount(usage.inputTokens)} in + ${formatTokenCount(usage.outputTokens)} out, requests: ${usage.requests})`
+    ? ` (tokens: ${formatTokenCount(usage.inputTokens)} in + ${formatTokenCount(usage.outputTokens)} out, requests: ${usage.requests}, speed: ${formatSpeed(usage.outputTokens, time)})`
     : '';
   return `${formatCost(cost)}${usageOutput}`;
-};
+}
+
+function calculateTotalUsage(messages: ChatMessage[]) {
+  const usage: ModelUsage = { inputTokens: 0, outputTokens: 0, requests: 0 };
+  messages.forEach((message) => {
+    if (message.type === 'ai') {
+      usage.inputTokens += message.usage?.inputTokens ?? 0;
+      usage.outputTokens += message.usage?.outputTokens ?? 0;
+      usage.requests += message.usage?.requests ?? 0;
+    }
+  });
+  return usage;
+}
+
+function calculateTotalResponseTime(messages: ChatMessage[]) {
+  let total = 0;
+  messages.forEach((message) => {
+    if (message.type === 'ai') {
+      total += message.responseTime ?? 0;
+    }
+  });
+  return total;
+}

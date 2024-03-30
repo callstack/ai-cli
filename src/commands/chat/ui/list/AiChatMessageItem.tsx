@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'ink';
-import { formatTime } from '../../../../format.js';
+import { formatSpeed, formatTime } from '../../../../format.js';
 import { colors } from '../../../../theme/colors.js';
 import { useChatState, type AiChatMessage } from '../../state/state.js';
 import { texts } from '../../texts.js';
@@ -19,7 +19,11 @@ export function AiChatMessageItem({ message }: AiChatMessageItemProps) {
         <Text>{message.text}</Text>
 
         {verbose && message.responseTime != null ? (
-          <Text color={colors.info}> ({formatTime(message.responseTime)})</Text>
+          <Text color={colors.info}>
+            {' '}
+            ({formatTime(message.responseTime)},{' '}
+            {formatSpeed(message.usage?.outputTokens, message.responseTime)})
+          </Text>
         ) : null}
       </Text>
       {verbose ? <Text color={colors.debug}>{JSON.stringify(message.data, null, 2)}</Text> : null}
