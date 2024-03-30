@@ -21,13 +21,13 @@ export function StatusBar() {
     <Box flexDirection="row" marginTop={1}>
       <Text color={'gray'}>
         LLM: {provider.label}/{providerConfig.model} - Total Cost:{' '}
-        {formatStats(totalCost, verbose ? totalUsage : undefined, verbose ? totalTime : undefined)}
+        {verbose ? formatVerboseStats(totalCost, totalUsage, totalTime) : formatCost(totalCost)}
       </Text>
     </Box>
   );
 }
 
-function formatStats(cost: number, usage?: ModelUsage, time?: number) {
+function formatVerboseStats(cost: number, usage: ModelUsage, time: number) {
   const usageOutput = usage
     ? ` (tokens: ${formatTokenCount(usage.inputTokens)} in + ${formatTokenCount(usage.outputTokens)} out, requests: ${usage.requests}, speed: ${formatSpeed(usage.outputTokens, time)})`
     : '';

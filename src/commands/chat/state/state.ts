@@ -24,8 +24,8 @@ export interface UserChatMessage {
 export interface AiChatMessage {
   type: 'ai';
   text: string;
-  responseTime?: number;
-  usage?: ModelUsage;
+  responseTime: number;
+  usage: ModelUsage;
   cost?: number;
   data?: unknown;
 }
