@@ -38,6 +38,19 @@ export function addProgramMessage(text: string, level: MessageLevel = 'info') {
   });
 }
 
+export function removeUnansweredUserContextMessage() {
+  useChatState.setState((state) => {
+    const lastMessage = state.contextMessages.at(-1);
+    if (lastMessage?.role !== 'user') {
+      return state;
+    }
+
+    return {
+      contextMessages: state.contextMessages.slice(0, state.contextMessages.length - 1),
+    };
+  });
+}
+
 export function forgetContextMessages() {
   useChatState.setState((state) => {
     return {
