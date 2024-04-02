@@ -21,8 +21,10 @@ export function initChatState(
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
-  const optionsModel = options.model ? provider.modelAliases[options.model] : options.model;
-  const model = optionsModel ?? providerFileConfig.model ?? provider.defaultModel;
+  const modelOrAlias = options.model ?? providerFileConfig.systemPrompt;
+  const model = modelOrAlias
+    ? provider.modelAliases[modelOrAlias] ?? modelOrAlias
+    : provider.defaultModel;
 
   const systemPrompt = !provider.skipSystemPrompt?.includes(model)
     ? providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT
