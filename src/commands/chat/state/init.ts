@@ -40,6 +40,14 @@ export function initChatState(
   const contextMessages: Message[] = [];
   const outputMessages: ChatMessage[] = [];
 
+  if (modelOrAlias != null && modelOrAlias !== model) {
+    outputMessages.push({
+      type: 'program',
+      level: 'debug',
+      text: `Resolved model alias "${modelOrAlias}" to "${model}".`,
+    });
+  }
+
   outputMessages.push({
     type: 'program',
     level: 'debug',
