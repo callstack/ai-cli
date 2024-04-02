@@ -37,10 +37,14 @@ export function parseConfigFile() {
 
   const typedConfig = ConfigFileSchema.parse(json);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
-    throw new Error('Add your OpenAI or Perplexity API key to "~/.airc.json" and try again.');
+    throw new Error(
+      `Add your OpenAI or Perplexity API key to "~/${CONFIG_FILENAME}" and try again.`,
+    );
   }
 
-  return typedConfig;
+  // Note: we return original json object, and not `typedConfig` because we want to preserve
+  // the original order of providers in the config file.
+  return json;
 }
 
 export function writeConfigFile(configContents: ConfigFile) {
