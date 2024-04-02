@@ -9,6 +9,7 @@ import {
   addProgramMessage,
   addUserMessage,
   hideActiveView,
+  removeUnansweredUserContextMessage,
 } from '../state/actions.js';
 import { useChatState } from '../state/state.js';
 import { texts } from '../texts.js';
@@ -38,19 +39,15 @@ export function ChatUi() {
   }, []);
 
   const handleSubmit = (message: string) => {
-    try {
-      hideActiveView();
+    hideActiveView();
 
-      const isCommand = processChatCommand(message);
-      if (isCommand) {
-        return;
-      }
-
-      addUserMessage(message);
-      void fetchAiResponse();
-    } catch (error) {
-      addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
+    const isCommand = processChatCommand(message);
+    if (isCommand) {
+      return;
     }
+
+    addUserMessage(message);
+    void fetchAiResponse();
   };
 
   const showInput = !isLoading && !shouldExit;
@@ -97,6 +94,9 @@ function useAiResponse() {
         addAiResponse(response);
       }
     } catch (error) {
+      // We cannot leave unanswered user message in context, as there is no AI response for it.
+      // Inference APIs require that user and assistant messages should be alternating.
+      removeUnansweredUserContextMessage();
       addProgramMessage(`Error: ${extractErrorMessage(error)}`, 'error');
     } finally {
       setLoading(false);
