@@ -48,10 +48,14 @@ export function formatSessionCost(cost: SessionCost | undefined) {
   return `costs: ${formatCost(cost.current)} (total: ${formatCost(cost.total)})`;
 }
 
-export function formatTime(timeInMs?: number) {
-  if (timeInMs == null) {
-    return '';
+export function formatTime(timeInMs: number) {
+  return `${(timeInMs / 1000).toFixed(1)} s`;
+}
+
+export function formatSpeed(tokens: number, timeInMs: number) {
+  if (tokens == null || timeInMs == null || timeInMs === 0) {
+    return '? tok/s';
   }
 
-  return `${(timeInMs / 1000).toFixed(1)} s`;
+  return `${((tokens * 1000) / timeInMs).toFixed(1)} tok/s`;
 }
