@@ -34,13 +34,12 @@ Learn about AI CLI config file [here](https://callstack.github.io/ai-cli/config-
 
 ## Usage
 
-Run `ai [query]` to start a conversation with AI assistant. You can put the question in the params.
+Run `ai` to start a chat with an AI assistant. You can put the question in the params.
 
 ```shell-session
 $ ai "Tell me a joke"
 me: Tell me a joke
 ai: Why don’t skeletons fight each other? They don’t have the guts.
-me: _
 ```
 
 ## CLI options
@@ -53,7 +52,7 @@ CLI options are passed when invoking the `ai` commend:
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way
-- `--verbose` (or `-V`): enable verbose
+- `--verbose` (or `-V`): enable verbose output
 
 ## CLI commands
 

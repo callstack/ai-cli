@@ -11,7 +11,7 @@ export function HelpOutput() {
         <Newline /> - /info: Show current provider, model, and system prompt
         <Newline /> - /forget: AI will forget previous messages
         <Newline /> - /save: Save in a text file in {CHATS_SAVE_DIRECTORY}
-        <Newline /> - /verbose: Toggle verbose-level output
+        <Newline /> - /verbose: Toggle verbose output
       </Text>
     </Box>
   );
