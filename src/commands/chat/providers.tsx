@@ -1,10 +1,13 @@
-import perplexity from '../../engine/providers/perplexity.js';
 import openAi from '../../engine/providers/openAi.js';
+import anthropic from '../../engine/providers/anthropic.js';
+import perplexity from '../../engine/providers/perplexity.js';
 import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
 import type { ConfigFile } from '../../config-file.js';
 
 export const providerOptionMapping: Record<string, Provider> = {
   openai: openAi,
+  anthropic: anthropic,
+  anth: anthropic,
   perplexity: perplexity,
   pplx: perplexity,
 };

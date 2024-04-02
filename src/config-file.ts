@@ -2,25 +2,21 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { z } from 'zod';
+import { providerNames } from './engine/providers/provider.js';
 
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';
 
+const CommonProviderSchema = z.object({
+  apiKey: z.string(),
+  model: z.string().optional(),
+  systemPrompt: z.string().optional(),
+});
+
 const ProvidersSchema = z.object({
-  openAi: z.optional(
-    z.object({
-      apiKey: z.string(),
-      model: z.string().optional(),
-      systemPrompt: z.string().optional(),
-    }),
-  ),
-  perplexity: z.optional(
-    z.object({
-      apiKey: z.string(),
-      model: z.string().optional(),
-      systemPrompt: z.string().optional(),
-    }),
-  ),
+  openAi: z.optional(CommonProviderSchema),
+  perplexity: z.optional(CommonProviderSchema),
+  anthropic: z.optional(CommonProviderSchema),
 });
 
 const ConfigFileSchema = z.object({
@@ -36,10 +32,8 @@ export function parseConfigFile() {
   const json = JSON.parse(content.toString());
 
   const typedConfig = ConfigFileSchema.parse(json);
-  if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
-    throw new Error(
-      `Add your OpenAI or Perplexity API key to "~/${CONFIG_FILENAME}" and try again.`,
-    );
+  if (providerNames.every((p) => !typedConfig.providers[p]?.apiKey)) {
+    throw new Error(`Add your provider API key to "~/${CONFIG_FILENAME}" and try again.`);
   }
 
   // Note: we return original json object, and not `typedConfig` because we want to preserve

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, Newline, Text } from 'ink';
-import Link from 'ink-link';
 import { type Provider } from '../../../engine/providers/provider.js';
 import { writeConfigFile } from '../../../config-file.js';
 import { colors } from '../../../theme/colors.js';
@@ -46,7 +45,7 @@ export function InitUi({ hasConfig }: InitUiProps) {
       <StepList step={step}>
         {hasConfig ? (
           <ConfirmStep
-            label='Existing \"~/.airc.json\" file found, do you want to overwrite it?'
+            label='Existing "~/.airc.json" file found, do you want to overwrite it?'
             defaultChoice="cancel"
             onConfirm={() => {
               setStep((step) => step + 1);
@@ -96,8 +95,8 @@ export function InitUi({ hasConfig }: InitUiProps) {
         ) : (
           <ExitApp>
             <Text>
-              You can get your ${provider?.label} API key{' '}
-              <Link url={provider?.apiKeyUrl ?? ''}>here</Link>.
+              You can get your {provider?.label} API key here: {provider?.apiKeyUrl}
+              <Newline />
             </Text>
           </ExitApp>
         )}
@@ -109,7 +108,7 @@ export function InitUi({ hasConfig }: InitUiProps) {
           <Newline count={2} />
           <Text color={colors.initPrompt}>
             Run "ai" to start a chat with an AI assistant. You can put the initial question in the
-            params.
+            params:
           </Text>
           <Newline />
           <Text>$ ai "Tell me a useful productivity hack"</Text>
