@@ -16,7 +16,7 @@ const Anthropic: Provider = {
   apiKeyUrl: 'https://console.anthropic.com/settings/keys',
 
   // Anthropic models: https://docs.anthropic.com/claude/docs/models-overview
-  defaultModel: 'claude-3-haiku-20240307',
+  defaultModel: 'claude-3-sonnet-20240229',
 
   // Price per 1k tokens [input, output].
   // Source: https://www.anthropic.com/api

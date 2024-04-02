@@ -53,7 +53,7 @@ CLI options are passed when invoking the `ai` commend:
 
 - `--help`: display available options
 - `--version`: display CLI version
-- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai`, `anthropic`, or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
+- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai`, `anthropic` (alias `anth`), or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way

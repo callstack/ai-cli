@@ -30,11 +30,11 @@ Run `ai init` to create a basic `~/.airc.json` config file with your OpenAI or P
 $ ai init
 ```
 
-Learn about AI CLI config file [here](https://callstack.github.io/ai-cli/config-file).
+Read more about the [configuration file](https://callstack.github.io/ai-cli/config-file) format and available option.
 
 ## Usage
 
-Run `ai` to start a chat with an AI assistant. You can put the question in the params.
+Run `ai [query]` to start a chat with an AI assistant. You can put the question in the params.
 
 ```shell-session
 $ ai "Tell me a joke"
@@ -48,7 +48,7 @@ CLI options are passed when invoking the `ai` commend:
 
 - `--help`: display available options
 - `--version`: display CLI version
-- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai` or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
+- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai`, `anthropic` (alias `anth`), or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way

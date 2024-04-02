@@ -7,6 +7,7 @@ import type { ConfigFile } from '../../config-file.js';
 export const providerOptionMapping: Record<string, Provider> = {
   openai: openAi,
   anthropic: anthropic,
+  anth: anthropic,
   perplexity: perplexity,
   pplx: perplexity,
 };
