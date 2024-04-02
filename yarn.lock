@@ -32,9 +32,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/sdk@npm:^0.19.0":
-  version: 0.19.0
-  resolution: "@anthropic-ai/sdk@npm:0.19.0"
+"@anthropic-ai/sdk@npm:^0.19.1":
+  version: 0.19.1
+  resolution: "@anthropic-ai/sdk@npm:0.19.1"
   dependencies:
     "@types/node": ^18.11.18
     "@types/node-fetch": ^2.6.4
@@ -45,7 +45,7 @@ __metadata:
     formdata-node: ^4.3.2
     node-fetch: ^2.6.7
     web-streams-polyfill: ^3.2.1
-  checksum: 060571063c8241672c193931fea087ef1f15246837cd0504ddc8d9d9da3814b3e3d54b50fa5646d0abb3e88c4563df6e8890c4590dc5da77bc6ca4eaeac165b0
+  checksum: c85a1be98e70ea37b726f077515910698b04365b4c8964754bf424b91c80c9a2ff8401afe2787d856c7471c00b2eec1afeeeebc86ecd2a09777099b1543a843c
   languageName: node
   linkType: hard
 
@@ -504,7 +504,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@callstack/ai-cli@workspace:."
   dependencies:
-    "@anthropic-ai/sdk": ^0.19.0
+    "@anthropic-ai/sdk": ^0.19.1
     "@callstack/eslint-config": ^14.1.0
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0

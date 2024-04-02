@@ -87,7 +87,6 @@ const Anthropic: Provider = {
 
     const startTime = performance.now();
     let content = '';
-    let outputTokens = 0;
     const stream = api.messages
       .stream({
         messages: nonSystemMessages,
@@ -99,13 +98,6 @@ const Anthropic: Provider = {
       .on('text', (text) => {
         content += text;
         onResponseUpdate({ content });
-      })
-      .on('streamEvent', (event) => {
-        // Workaround until SDK reports proper output tokens.
-        // See: https://github.com/anthropics/anthropic-sdk-typescript/pull/362
-        if (event.type === 'message_delta') {
-          outputTokens += event.usage.output_tokens;
-        }
       });
 
     const response = await stream.finalMessage();
@@ -118,8 +110,7 @@ const Anthropic: Provider = {
       },
       usage: {
         inputTokens: response.usage.input_tokens,
-        // Workaround until SDK reports proper output tokens.
-        outputTokens: outputTokens > 0 ? outputTokens : response.usage.output_tokens,
+        outputTokens: response.usage.output_tokens,
         requests: 1,
       },
       responseTime,
