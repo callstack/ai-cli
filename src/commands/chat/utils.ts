@@ -38,7 +38,7 @@ export function handleInputFile(
   const fileContent = fs.readFileSync(filePath).toString();
   const fileTokens = getTokensCount(fileContent);
 
-  const pricing = provider.pricing[config.model];
+  const pricing = provider.modelPricing[config.model];
   const fileCost = calculateUsageCost({ inputTokens: fileTokens }, pricing);
 
   let costWarning = null;

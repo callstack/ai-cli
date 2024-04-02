@@ -9,10 +9,13 @@ const Perplexity: Provider = {
   name: 'perplexity',
   apiKeyUrl: 'https://perplexity.ai/settings/api',
 
+  // Perplexity models: https://docs.perplexity.ai/docs/model-cards
+  defaultModel: 'sonar-medium-chat',
+
   // Price per 1k tokens [input, output].
   // Source: https://docs.perplexity.ai/docs/model-cards
   // Source: https://docs.perplexity.ai/docs/pricing
-  pricing: {
+  modelPricing: {
     'sonar-small-chat': { inputTokensCost: 0.2 / 1000, outputTokensCost: 0.2 / 1000 },
     'sonar-medium-chat': { inputTokensCost: 0.6 / 1000, outputTokensCost: 0.6 / 1000 },
     'sonar-small-online': {
@@ -29,6 +32,15 @@ const Perplexity: Provider = {
     'mistral-7b-instruct': { inputTokensCost: 0.2 / 1000, outputTokensCost: 0.2 / 1000 },
     'mixtral-8x7b-instruct': { inputTokensCost: 0.6 / 1000, outputTokensCost: 0.6 / 1000 },
   },
+
+  modelAliases: {
+    online: 'sonar-medium-online',
+    codellama: 'codellama-70b-instruct',
+    mistral: 'mistral-7b-instruct',
+    mixtral: 'mixtral-8x7b-instruct',
+  },
+
+  skipSystemPrompt: ['sonar-small-online', 'sonar-medium-online'],
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
     const api = new OpenAI({

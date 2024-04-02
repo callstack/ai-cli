@@ -1,4 +1,5 @@
 import { type ConfigFile } from '../../../config-file.js';
+import { DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
 import type { ResponseStyle } from '../../../engine/providers/config.js';
 import type { Message } from '../../../engine/inference.js';
 import type { PromptOptions } from '../prompt-options.js';
@@ -20,15 +21,32 @@ export function initChatState(
     throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
+  const modelOrAlias = options.model ?? providerFileConfig.model;
+  const model = modelOrAlias
+    ? provider.modelAliases[modelOrAlias] ?? modelOrAlias
+    : provider.defaultModel;
+
+  const systemPrompt = !provider.skipSystemPrompt?.includes(model)
+    ? providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT
+    : undefined;
+
   const providerConfig = {
-    model: options.model ?? providerFileConfig.model,
     apiKey: providerFileConfig.apiKey,
-    systemPrompt: providerFileConfig.systemPrompt,
+    model,
+    systemPrompt,
     responseStyle: getResponseStyle(options),
   };
 
   const contextMessages: Message[] = [];
   const outputMessages: ChatMessage[] = [];
+
+  if (modelOrAlias != null && modelOrAlias !== model) {
+    outputMessages.push({
+      type: 'program',
+      level: 'debug',
+      text: `Resolved model alias "${modelOrAlias}" to "${model}".`,
+    });
+  }
 
   outputMessages.push({
     type: 'program',

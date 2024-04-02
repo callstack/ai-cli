@@ -9,14 +9,11 @@ export async function getChatCompletion(
   config: ProviderConfig,
   messages: Message[],
 ): Promise<ModelResponse> {
-  const systemMessage: Message = {
-    role: 'system',
-    content: config.systemPrompt,
-  };
+  const allMessages = getMessages(config, messages);
 
   const startTime = performance.now();
   const response = await api.chat.completions.create({
-    messages: [systemMessage, ...messages],
+    messages: allMessages,
     model: config.model,
     ...responseStyles[config.responseStyle],
   });
@@ -53,12 +50,7 @@ export async function getChatCompletionStream(
   messages: Message[],
   onResponseUpdate: (response: ModelResponseUpdate) => void,
 ): Promise<ModelResponse> {
-  const systemMessage: Message = {
-    role: 'system',
-    content: config.systemPrompt,
-  };
-
-  const allMessages = [systemMessage, ...messages];
+  const allMessages = getMessages(config, messages);
 
   const startTime = performance.now();
   const stream = await api.chat.completions.create({
@@ -95,4 +87,16 @@ export async function getChatCompletionStream(
     responseModel: lastChunk?.model || 'unknown',
     data: lastChunk,
   };
+}
+
+function getMessages(config: ProviderConfig, messages: Message[]): Message[] {
+  if (!config.systemPrompt) {
+    return messages;
+  }
+
+  const systemMessage: Message = {
+    role: 'system',
+    content: config.systemPrompt,
+  };
+  return [systemMessage, ...messages];
 }

@@ -2,11 +2,6 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { z } from 'zod';
-import {
-  DEFAULT_OPEN_AI_MODEL,
-  DEFAULT_PERPLEXITY_MODEL,
-  DEFAULT_SYSTEM_PROMPT,
-} from './default-config.js';
 
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';
@@ -15,15 +10,15 @@ const ProvidersSchema = z.object({
   openAi: z.optional(
     z.object({
       apiKey: z.string(),
-      model: z.string().default(DEFAULT_OPEN_AI_MODEL),
-      systemPrompt: z.string().default(DEFAULT_SYSTEM_PROMPT),
+      model: z.string().optional(),
+      systemPrompt: z.string().optional(),
     }),
   ),
   perplexity: z.optional(
     z.object({
       apiKey: z.string(),
-      model: z.string().default(DEFAULT_PERPLEXITY_MODEL),
-      systemPrompt: z.string().default(DEFAULT_SYSTEM_PROMPT),
+      model: z.string().optional(),
+      systemPrompt: z.string().optional(),
     }),
   ),
 });
@@ -42,10 +37,14 @@ export function parseConfigFile() {
 
   const typedConfig = ConfigFileSchema.parse(json);
   if (!typedConfig.providers.openAi?.apiKey && !typedConfig.providers.perplexity?.apiKey) {
-    throw new Error('Add your OpenAI or Perplexity API key to "~/.airc.json" and try again.');
+    throw new Error(
+      `Add your OpenAI or Perplexity API key to "~/${CONFIG_FILENAME}" and try again.`,
+    );
   }
 
-  return typedConfig;
+  // Note: we return original json object, and not `typedConfig` because we want to preserve
+  // the original order of providers in the config file.
+  return json;
 }
 
 export function writeConfigFile(configContents: ConfigFile) {
