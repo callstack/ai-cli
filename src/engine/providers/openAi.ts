@@ -27,10 +27,7 @@ const OpenAi: Provider = {
   },
 
   modelAliases: {
-    'small': 'gpt-3.5-turbo',
-    'medium': 'gpt-4-turbo-preview',
     'gpt-4-turbo': 'gpt-4-turbo-preview',
-    'gpt-3': 'gpt-3.5-turbo',
     'gpt-3.5': 'gpt-3.5-turbo',
   },
 

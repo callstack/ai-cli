@@ -34,8 +34,6 @@ const Perplexity: Provider = {
   },
 
   modelAliases: {
-    small: 'sonar-small-chat',
-    medium: 'sonar-medium-chat',
     online: 'sonar-medium-online',
     codellama: 'codellama-70b-instruct',
     mistral: 'mistral-7b-instruct',
