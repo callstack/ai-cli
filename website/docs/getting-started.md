@@ -4,6 +4,9 @@ title: Getting Started
 slug: /
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # AI CLI
 
 AI assistant in your terminal.
@@ -53,11 +56,44 @@ CLI options are passed when invoking the `ai` commend:
 
 - `--help`: display available options
 - `--version`: display CLI version
-- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai`, `anthropic` (alias `anth`), or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
-- `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
+- `--provider [name]` (or `-p [name]`): select an inference provider to use:
+  - `openai`
+  - `anthropic` (or `anth`)
+  - `perplexity` (or `pplx`)
+- `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for the selected provider.
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way
 - `--verbose` (or `-V`): enable verbose output
+
+You should have a relevant API key in your `~/.airc.json` file.
+
+### Model Aliases
+
+Using full model names can be tedious, so AI CLI supports shorthand model aliases:
+
+<Tabs groupId="provider">
+<TabItem value="openAi" label="Open AI">
+| Alias           | Model                 |
+| --------------- | --------------------- |
+| `gpt-4-turbo`   | `gpt-4-turbo-preview` |
+| `gpt-3.5-turbo` | `gpt-3.5-turbo`       |
+</TabItem>
+<TabItem value="anthropic" label="Anthropic">
+| Alias    | Model                      |
+| -------- | -------------------------- |
+| `haiku`  | `claude-3-haiku-20240307`  |
+| `sonnet` | `claude-3-sonnet-20240229` |
+| `opus`   | `claude-3-opus-20240229`   |
+</TabItem>
+<TabItem value="perplexity" label="Perplexity">
+| Alias       | Model                    |
+| ----------- | ------------------------ |
+| `online`    | `sonar-medium-online`    |
+| `codellama` | `codellama-70b-instruct` |
+| `mistral`   | `mistral-7b-instruct`    |
+| `mixtral`   | `mixtral-8x7b-instruct`  |
+</TabItem>
+</Tabs>
 
 ## CLI commands
 

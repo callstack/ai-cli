@@ -47,12 +47,14 @@ ai: Why don’t skeletons fight each other? They don’t have the guts.
 CLI options are passed when invoking the `ai` commend:
 
 - `--help`: display available options
-- `--version`: display CLI version
-- `--provider [name]` (or `-p [name]`): select an inference provider to use: `openai`, `anthropic` (alias `anth`), or `perplexity` (alias `pplx`). You should have relevant API key in your `~/.airc.json` file.
-- `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for selected provider.
+- `--provider [name]` (or `-p [name]`): select an inference provider to use
+- `--model [name]` (or `-m [name]`): select a model to use
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way
-- `--verbose` (or `-V`): enable verbose output
+
+You need to have an API key for selected provider in your `~/.airc.json` file.
+
+See more info about the [command line options](https://callstack.github.io/ai-cli/#cli-options).
 
 ## CLI commands
 
