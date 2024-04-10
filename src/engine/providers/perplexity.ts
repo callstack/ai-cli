@@ -12,25 +12,25 @@ const Perplexity: Provider = {
   // Perplexity models: https://docs.perplexity.ai/docs/model-cards
   defaultModel: 'sonar-medium-chat',
 
-  // Price per 1k tokens [input, output].
+  // Price per 1M tokens [input, output], per 1k requests.
   // Source: https://docs.perplexity.ai/docs/model-cards
   // Source: https://docs.perplexity.ai/docs/pricing
   modelPricing: {
-    'sonar-small-chat': { inputTokensCost: 0.2 / 1000, outputTokensCost: 0.2 / 1000 },
-    'sonar-medium-chat': { inputTokensCost: 0.6 / 1000, outputTokensCost: 0.6 / 1000 },
+    'sonar-small-chat': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'sonar-medium-chat': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
     'sonar-small-online': {
-      inputTokensCost: 0.2 / 1000,
-      outputTokensCost: 0.2 / 1000,
-      requestsCost: 5 / 1000,
+      inputTokensCost: 0.2,
+      outputTokensCost: 0.2,
+      requestsCost: 5,
     },
     'sonar-medium-online': {
-      inputTokensCost: 0.6 / 1000,
-      outputTokensCost: 0.6 / 1000,
-      requestsCost: 5 / 1000,
+      inputTokensCost: 0.6,
+      outputTokensCost: 0.6,
+      requestsCost: 5,
     },
-    'codellama-70b-instruct': { inputTokensCost: 1 / 1000, outputTokensCost: 1 / 1000 },
-    'mistral-7b-instruct': { inputTokensCost: 0.2 / 1000, outputTokensCost: 0.2 / 1000 },
-    'mixtral-8x7b-instruct': { inputTokensCost: 0.6 / 1000, outputTokensCost: 0.6 / 1000 },
+    'codellama-70b-instruct': { inputTokensCost: 1, outputTokensCost: 1 },
+    'mistral-7b-instruct': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'mixtral-8x7b-instruct': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
   },
 
   modelAliases: {

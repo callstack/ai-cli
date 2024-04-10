@@ -21,12 +21,12 @@ const Anthropic: Provider = {
   // Price per 1k tokens [input, output].
   // Source: https://www.anthropic.com/api
   modelPricing: {
-    'claude-3-haiku-20240307': { inputTokensCost: 0.25 / 1000, outputTokensCost: 1.25 / 1000 },
-    'claude-3-sonnet-20240229': { inputTokensCost: 3.0 / 1000, outputTokensCost: 15.0 / 1000 },
-    'claude-3-opus-20240229': { inputTokensCost: 15.0 / 1000, outputTokensCost: 75.0 / 1000 },
-    'claude-2.1': { inputTokensCost: 8.0 / 1000, outputTokensCost: 24.0 / 1000 },
-    'claude-2.0': { inputTokensCost: 8.0 / 1000, outputTokensCost: 24.0 / 1000 },
-    'claude-instant-1.2': { inputTokensCost: 0.8 / 1000, outputTokensCost: 2.4 / 1000 },
+    'claude-3-haiku-20240307': { inputTokensCost: 0.25, outputTokensCost: 1.25 },
+    'claude-3-sonnet-20240229': { inputTokensCost: 3.0, outputTokensCost: 15.0 },
+    'claude-3-opus-20240229': { inputTokensCost: 15.0, outputTokensCost: 75.0 },
+    'claude-2.1': { inputTokensCost: 8.0, outputTokensCost: 24.0 },
+    'claude-2.0': { inputTokensCost: 8.0, outputTokensCost: 24.0 },
+    'claude-instant-1.2': { inputTokensCost: 0.8, outputTokensCost: 2.4 },
   },
 
   modelAliases: {
