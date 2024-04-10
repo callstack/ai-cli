@@ -21,7 +21,5 @@ const packageJson = require('../package.json');
 export function checkForUpdates() {
   updateNotifier({
     pkg: packageJson,
-    shouldNotifyInNpmScript: true,
-    updateCheckInterval: 1,
-  }).notify();
+  }).notify({ isGlobal: true });
 }
