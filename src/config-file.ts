@@ -15,8 +15,9 @@ const CommonProviderSchema = z.object({
 
 const ProvidersSchema = z.object({
   openAi: z.optional(CommonProviderSchema),
-  perplexity: z.optional(CommonProviderSchema),
   anthropic: z.optional(CommonProviderSchema),
+  perplexity: z.optional(CommonProviderSchema),
+  mistral: z.optional(CommonProviderSchema),
 });
 
 const ConfigFileSchema = z.object({

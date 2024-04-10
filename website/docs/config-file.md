@@ -46,6 +46,17 @@ A minimal `~/.airc.json` file consists only of API key for selected AI inference
 }
 ```
 </TabItem>
+<TabItem value="mistral" label="Mistral">
+```json
+{
+  "providers": {
+    "mistral": {
+      "apiKey": "Your API key"
+    }
+  }
+}
+```
+</TabItem>
 </Tabs>
 
 ## Provider Options
@@ -57,6 +68,7 @@ Supported providers are currently:
 - `openAi`
 - `anthropic`
 - `perplexity`
+- `mistral`
 
 ### AI Model
 
@@ -99,6 +111,18 @@ Each of supported providers can be tuned with `model` option to select an exact 
 }
 ```
 </TabItem>
+<TabItem value="mistral" label="Mistral">
+```json
+{
+  "providers": {
+    "mistral": {
+      // ...
+      "model": "open-mixtral-8x7b"
+    }
+  }
+}
+```
+</TabItem>
 </Tabs>
 
 Choosing proper model can have a huge impact on your AI assistant response quality, response time, as well as costs (although costs should be reasonable for manual, single-user interactions).
@@ -108,6 +132,7 @@ Available models:
 - [OpenAI](https://platform.openai.com/docs/models)
 - [Anthropic](https://docs.anthropic.com/claude/docs/models-overview)
 - [Perplexity](https://docs.perplexity.ai/docs/model-cards)
+- [Mistral](https://docs.mistral.ai/platform/endpoints/)
 
 ### System Prompt
 
@@ -143,6 +168,18 @@ You can specify system prompt for each of the supported providers:
 {
   "providers": {
     "perplexity": {
+      // ...
+      "systemPrompt": "You are a helpful AI assistant. Respond in a concise way."
+    }
+  }
+}
+```
+</TabItem>
+<TabItem value="mistral" label="Mistral">
+```json
+{
+  "providers": {
+    "mistral": {
       // ...
       "systemPrompt": "You are a helpful AI assistant. Respond in a concise way."
     }
