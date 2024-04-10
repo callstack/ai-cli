@@ -27,13 +27,13 @@ export interface Provider {
 }
 
 export interface ModelPricing {
-  /** Cost per 1k input tokens */
+  /** Cost per 1M input tokens */
   inputTokensCost?: number;
 
-  /** Cost per 1k output tokens */
+  /** Cost per 1M output tokens */
   outputTokensCost?: number;
 
-  /** Cost per 1k requests */
+  /** Cost per 1M requests */
   requestsCost?: number;
 }
 

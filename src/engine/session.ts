@@ -24,9 +24,9 @@ export function calculateUsageCost(usage: Partial<ModelUsage>, pricing: ModelPri
     return undefined;
   }
 
-  const inputCost = ((usage.inputTokens ?? 0) * (pricing.inputTokensCost ?? 0)) / 1000;
-  const outputCost = ((usage.outputTokens ?? 0) * (pricing.outputTokensCost ?? 0)) / 1000;
-  const requestsCost = ((usage.requests ?? 0) * (pricing.requestsCost ?? 0)) / 1000;
+  const inputCost = ((usage.inputTokens ?? 0) * (pricing.inputTokensCost ?? 0)) / 1_000_000;
+  const outputCost = ((usage.outputTokens ?? 0) * (pricing.outputTokensCost ?? 0)) / 1_000_000;
+  const requestsCost = ((usage.requests ?? 0) * (pricing.requestsCost ?? 0)) / 1_000_000;
   return inputCost + outputCost + requestsCost;
 }
 
