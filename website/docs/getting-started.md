@@ -60,6 +60,7 @@ CLI options are passed when invoking the `ai` commend:
   - `openai`
   - `anthropic` (or `anth`)
   - `perplexity` (or `pplx`)
+  - `mistral`
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for the selected provider.
 - `--creative`: respond in a creative way
 - `--precise`: respond in a more accurate way
@@ -92,6 +93,15 @@ Using full model names can be tedious, so AI CLI supports shorthand model aliase
 | `codellama` | `codellama-70b-instruct` |
 | `mistral`   | `mistral-7b-instruct`    |
 | `mixtral`   | `mixtral-8x7b-instruct`  |
+</TabItem>
+<TabItem value="mistral" label="Mistral">
+| Alias     | Model                   |
+| --------- | ----------------------- |
+| `mistral` | `open-mistral-7b`       |
+| `mixtral` | `open-mixtral-8x7b`     |
+| `small`   | `mistral-small-latest`  |
+| `medium`  | `mistral-medium-latest` |
+| `large`   | `mistral-large-latest`  |
 </TabItem>
 </Tabs>
 

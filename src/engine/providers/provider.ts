@@ -3,8 +3,9 @@ import type { ProviderConfig } from './config.js';
 import openAi from './openAi.js';
 import perplexity from './perplexity.js';
 import anthropic from './anthropic.js';
+import mistral from './mistral.js';
 
-export const providerNames = ['openAi', 'anthropic', 'perplexity'] as const;
+export const providerNames = ['openAi', 'anthropic', 'perplexity', 'mistral'] as const;
 export type ProviderName = (typeof providerNames)[number];
 
 export interface Provider {
@@ -41,6 +42,7 @@ const providersMap: Record<ProviderName, Provider> = {
   openAi,
   anthropic,
   perplexity,
+  mistral,
 };
 
 export const providers = Object.values(providersMap);
