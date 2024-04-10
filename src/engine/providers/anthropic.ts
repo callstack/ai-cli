@@ -18,7 +18,7 @@ const Anthropic: Provider = {
   // Anthropic models: https://docs.anthropic.com/claude/docs/models-overview
   defaultModel: 'claude-3-sonnet-20240229',
 
-  // Price per 1k tokens [input, output].
+  // Price per 1M tokens [input, output].
   // Source: https://www.anthropic.com/api
   modelPricing: {
     'claude-3-haiku-20240307': { inputTokensCost: 0.25, outputTokensCost: 1.25 },
