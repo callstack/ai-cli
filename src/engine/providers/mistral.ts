@@ -1,8 +1,17 @@
-import MistralClient from '@mistralai/mistralai';
+import MistralClient, { type ChatCompletionResponseChunk } from '@mistralai/mistralai';
 import { type Message, type ModelResponseUpdate } from '../inference.js';
 import { estimateInputTokens, estimateOutputTokens } from '../tokenizer.js';
 import { responseStyles, type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
+
+// Mistral provides output data in the last chunk.
+interface ChunkWithUsage extends ChatCompletionResponseChunk {
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
 
 const Mistral: Provider = {
   label: 'Mistral',
@@ -10,7 +19,7 @@ const Mistral: Provider = {
   apiKeyUrl: 'https://console.mistral.ai/api-keys/',
 
   // OpenAI models: https://docs.mistral.ai/platform/endpoints/
-  defaultModel: 'open-mixtral-8x7b',
+  defaultModel: 'mistral-medium-latest',
 
   // Price per 1k tokens [input, output].
   // Source: https://docs.mistral.ai/platform/pricing/
@@ -39,8 +48,7 @@ const Mistral: Provider = {
     const response = await api.chat({
       messages: allMessages,
       model: config.model,
-      // TODO: apply response style
-      // ...responseStyles[config.responseStyle],
+      ...getMistralResponseStyle(config),
     });
     const responseTime = performance.now() - startTime;
 
@@ -73,11 +81,10 @@ const Mistral: Provider = {
     const stream = await api.chatStream({
       messages: allMessages,
       model: config.model,
-      // TODO: apply response style
-      // ...responseStyles[config.responseStyle],
+      ...getMistralResponseStyle(config),
     });
 
-    let lastChunk;
+    let lastChunk: ChunkWithUsage | null = null;
     let content = '';
     for await (const chunk of stream) {
       lastChunk = chunk;
@@ -93,8 +100,8 @@ const Mistral: Provider = {
         content,
       },
       usage: {
-        inputTokens: estimateInputTokens(allMessages),
-        outputTokens: estimateOutputTokens(content),
+        inputTokens: lastChunk?.usage?.prompt_tokens ?? estimateInputTokens(allMessages),
+        outputTokens: lastChunk?.usage?.completion_tokens ?? estimateOutputTokens(content),
         requests: 1,
       },
       responseTime,
@@ -114,6 +121,25 @@ function getMessages(config: ProviderConfig, messages: Message[]): Message[] {
     content: config.systemPrompt,
   };
   return [systemMessage, ...messages];
+}
+
+interface MistralResponseStyle {
+  temperature?: number;
+  topP?: number;
+}
+
+function getMistralResponseStyle(config: ProviderConfig): MistralResponseStyle {
+  const style = responseStyles[config.responseStyle];
+
+  const result: MistralResponseStyle = {};
+  if ('temperature' in style) {
+    result.temperature = style.temperature;
+  }
+  if ('top_p' in style) {
+    result.topP = style.top_p;
+  }
+
+  return result;
 }
 
 export default Mistral;
