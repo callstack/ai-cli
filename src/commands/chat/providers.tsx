@@ -1,4 +1,4 @@
-import openAi from '../../engine/providers/openAi.js';
+import openAi from '../../engine/providers/open-ai.js';
 import anthropic from '../../engine/providers/anthropic.js';
 import perplexity from '../../engine/providers/perplexity.js';
 import mistral from '../../engine/providers/mistral.js';

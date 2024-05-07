@@ -26,9 +26,7 @@ export function initChatState(
     ? provider.modelAliases[modelOrAlias] ?? modelOrAlias
     : provider.defaultModel;
 
-  const systemPrompt = !provider.skipSystemPrompt?.includes(model)
-    ? providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT
-    : undefined;
+  const systemPrompt = providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT;
 
   const providerConfig = {
     apiKey: providerFileConfig.apiKey,
