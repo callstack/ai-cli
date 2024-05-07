@@ -62,15 +62,12 @@
   },
   "devDependencies": {
     "@callstack/eslint-config": "^14.1.1",
-    "@commitlint/config-conventional": "^17.8.1",
-    "@evilmartians/lefthook": "^1.6.10",
     "@release-it/conventional-changelog": "^5.1.1",
     "@types/jest": "^29.5.12",
     "@types/mock-fs": "^4.13.4",
     "@types/prompts": "^2.4.9",
     "@types/react": "^18.2.63",
     "@types/update-notifier": "^6.0.8",
-    "commitlint": "^17.8.1",
     "del-cli": "^5.1.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -90,11 +87,6 @@
   "jest": {
     "modulePathIgnorePatterns": [
       "<rootDir>/build/"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
     ]
   },
   "prettier": {
