@@ -10,7 +10,7 @@ const Perplexity: Provider = {
   apiKeyUrl: 'https://perplexity.ai/settings/api',
 
   // Perplexity models: https://docs.perplexity.ai/docs/model-cards
-  defaultModel: 'sonar-medium-chat',
+  defaultModel: 'llama-3-sonar-large-32k-chat',
 
   // Price per 1M tokens [input, output], per 1k requests.
   // Source: https://docs.perplexity.ai/docs/model-cards

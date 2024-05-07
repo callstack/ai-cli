@@ -27,14 +27,14 @@ const Mistral: Provider = {
     'open-mistral-7b': { inputTokensCost: 0.25, outputTokensCost: 0.25 },
     'open-mixtral-8x7b': { inputTokensCost: 0.7, outputTokensCost: 0.7 },
     'open-mixtral-8x22b': { inputTokensCost: 2, outputTokensCost: 6 },
-    'mistral-small': { inputTokensCost: 1, outputTokensCost: 3 },
-    'mistral-medium': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
-    'mistral-large': { inputTokensCost: 4, outputTokensCost: 12 },
+    'mistral-small-latest': { inputTokensCost: 1, outputTokensCost: 3 },
+    'mistral-medium-latest': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
+    'mistral-large-latest': { inputTokensCost: 4, outputTokensCost: 12 },
   },
 
   modelAliases: {
     mistral: 'open-mistral-7b',
-    mixtral: 'open-mixtral-8x7b',
+    mixtral: 'open-mixtral-8x22b',
     small: 'mistral-small-latest',
     medium: 'mistral-medium-latest',
     large: 'mistral-large-latest',
