@@ -76,7 +76,7 @@ export async function getChatCompletionStream(
     },
     responseTime,
     responseModel: lastChunk?.model || 'unknown',
-    data: chunks,
+    data: lastChunk,
   };
 }
 
