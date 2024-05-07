@@ -35,15 +35,6 @@ export async function getChatCompletion(
   };
 }
 
-// Perplexity provides output data in the last chunk, while OpenAI does not.
-interface ChunkWithUsage extends ChatCompletionChunk {
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
 export async function getChatCompletionStream(
   api: OpenAI,
   config: ProviderConfig,
@@ -57,10 +48,11 @@ export async function getChatCompletionStream(
     messages: allMessages,
     model: config.model,
     stream: true,
+    stream_options: { include_usage: true },
     ...responseStyles[config.responseStyle],
   });
 
-  const chunks: ChunkWithUsage[] = [];
+  const chunks: ChatCompletionChunk[] = [];
   let content = '';
 
   for await (const chunk of stream) {
@@ -70,14 +62,13 @@ export async function getChatCompletionStream(
   }
 
   const responseTime = performance.now() - startTime;
-  const lastChunk = chunks[chunks.length - 1] as ChunkWithUsage;
+  const lastChunk = chunks[chunks.length - 1];
 
   return {
     message: {
       role: 'assistant',
       content,
     },
-    // Perplexity provides output data in the last chunk, while OpenAI does not.
     usage: {
       inputTokens: lastChunk?.usage?.prompt_tokens ?? estimateInputTokens(allMessages),
       outputTokens: lastChunk?.usage?.completion_tokens ?? estimateOutputTokens(content),
@@ -85,7 +76,7 @@ export async function getChatCompletionStream(
     },
     responseTime,
     responseModel: lastChunk?.model || 'unknown',
-    data: lastChunk,
+    data: chunks,
   };
 }
 
