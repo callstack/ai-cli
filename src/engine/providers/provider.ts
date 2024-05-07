@@ -1,6 +1,6 @@
 import type { Message, ModelResponse, ModelResponseUpdate } from '../inference.js';
 import type { ProviderConfig } from './config.js';
-import openAi from './openAi.js';
+import openAi from './open-ai.js';
 import perplexity from './perplexity.js';
 import anthropic from './anthropic.js';
 import mistral from './mistral.js';
@@ -16,8 +16,6 @@ export interface Provider {
   defaultModel: string;
   modelPricing: Record<string, ModelPricing>;
   modelAliases: Record<string, string>;
-
-  skipSystemPrompt?: string[];
 
   getChatCompletion: (config: ProviderConfig, messages: Message[]) => Promise<ModelResponse>;
   getChatCompletionStream?: (

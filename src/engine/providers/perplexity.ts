@@ -16,31 +16,30 @@ const Perplexity: Provider = {
   // Source: https://docs.perplexity.ai/docs/model-cards
   // Source: https://docs.perplexity.ai/docs/pricing
   modelPricing: {
-    'sonar-small-chat': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
-    'sonar-medium-chat': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
-    'sonar-small-online': {
+    'llama-3-sonar-small-32k-chat': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'llama-3-sonar-small-32k-online': {
       inputTokensCost: 0.2,
       outputTokensCost: 0.2,
       requestsCost: 5,
     },
-    'sonar-medium-online': {
+    'llama-3-sonar-large-32k-chat': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
+    'llama-3-sonar-large-32k-online': {
       inputTokensCost: 0.6,
       outputTokensCost: 0.6,
       requestsCost: 5,
     },
-    'codellama-70b-instruct': { inputTokensCost: 1, outputTokensCost: 1 },
-    'mistral-7b-instruct': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'llama-3-8b-instruct': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'llama-3-70b-instruct': { inputTokensCost: 1, outputTokensCost: 1 },
     'mixtral-8x7b-instruct': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
   },
 
   modelAliases: {
-    online: 'sonar-medium-online',
-    codellama: 'codellama-70b-instruct',
-    mistral: 'mistral-7b-instruct',
-    mixtral: 'mixtral-8x7b-instruct',
+    'small': 'llama-3-sonar-small-32k-chat',
+    'large': 'llama-3-sonar-large-32k-chat',
+    'online': 'llama-3-sonar-large-32k-online',
+    'llama-3': 'llama-3-70b-instruct',
+    'mixtral': 'mixtral-8x7b-instruct',
   },
-
-  skipSystemPrompt: ['sonar-small-online', 'sonar-medium-online'],
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
     const api = new OpenAI({
