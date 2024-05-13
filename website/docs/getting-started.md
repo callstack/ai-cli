@@ -73,9 +73,9 @@ You should have a relevant API key in your `~/.airc.json` file.
 - OpenAI: `gpt-4o` (input: $5, output: $15\*)
 - Anthropic: `claude-3-sonnet-20240229` (input: $3, output: $15\*)
 - Perplexity: `llama-3-sonar-large-32k-chat` (input: $1, output: $1\*)
-- Mistral: `'mistral-large-latest` (input: $4, output: $12\*)
+- Mistral: `mistral-large-latest` (input: $4, output: $12\*)
 
-\* prices per 1 million tokens
+\* API prices per 1 million tokens
 
 ### Model Aliases
 
@@ -83,8 +83,8 @@ Using full model names can be tedious, so AI CLI supports shorthand model aliase
 
 <Tabs groupId="provider">
 <TabItem value="openAi" label="Open AI">
-| Alias           | Model                 |
-| --------------- | --------------------- |
+| Alias     | Model                 |
+| --------- | --------------------- |
 | `gpt-3.5` | `gpt-3.5-turbo`       |
 </TabItem>
 <TabItem value="anthropic" label="Anthropic">
@@ -95,18 +95,19 @@ Using full model names can be tedious, so AI CLI supports shorthand model aliase
 | `opus`   | `claude-3-opus-20240229`   |
 </TabItem>
 <TabItem value="perplexity" label="Perplexity">
-| Alias       | Model                    |
-| ----------- | ------------------------ |
-| `online`    | `sonar-medium-online`    |
-| `codellama` | `codellama-70b-instruct` |
-| `mistral`   | `mistral-7b-instruct`    |
-| `mixtral`   | `mixtral-8x7b-instruct`  |
+| Alias     | Model                            |
+| --------- | -------------------------------- |
+| `small`   | `llama-3-sonar-small-32k-chat`   |
+| `large`   | `llama-3-sonar-large-32k-chat`   |
+| `online`  | `llama-3-sonar-large-32k-online` |
+| `llama-3` | `llama-3-70b-instruct`           |
+| `mixtral` | `mixtral-8x7b-instruct`          |
 </TabItem>
 <TabItem value="mistral" label="Mistral">
 | Alias     | Model                   |
 | --------- | ----------------------- |
 | `mistral` | `open-mistral-7b`       |
-| `mixtral` | `open-mixtral-8x7b`     |
+| `mixtral` | `open-mixtral-8x22b`     |
 | `small`   | `mistral-small-latest`  |
 | `medium`  | `mistral-medium-latest` |
 | `large`   | `mistral-large-latest`  |
