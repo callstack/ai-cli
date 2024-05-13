@@ -138,13 +138,6 @@ List of [supported Mistral models](https://docs.mistral.ai/getting-started/model
 
 Choosing proper model can have a huge impact on your AI assistant response quality, response time, as well as costs (although costs should be reasonable for manual, single-user interactions).
 
-Available models:
-
-- [OpenAI](https://platform.openai.com/docs/models)
-- [Anthropic](https://docs.anthropic.com/claude/docs/models-overview)
-- [Perplexity](https://docs.perplexity.ai/docs/model-cards)
-- [Mistral](https://docs.mistral.ai/platform/endpoints/)
-
 ### System Prompt
 
 You can specify system prompt for each of the supported providers:
