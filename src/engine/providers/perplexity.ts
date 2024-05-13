@@ -22,10 +22,10 @@ const Perplexity: Provider = {
       outputTokensCost: 0.2,
       requestsCost: 5,
     },
-    'llama-3-sonar-large-32k-chat': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
+    'llama-3-sonar-large-32k-chat': { inputTokensCost: 1, outputTokensCost: 1 },
     'llama-3-sonar-large-32k-online': {
-      inputTokensCost: 0.6,
-      outputTokensCost: 0.6,
+      inputTokensCost: 1,
+      outputTokensCost: 1,
       requestsCost: 5,
     },
     'llama-3-8b-instruct': { inputTokensCost: 0.2, outputTokensCost: 0.2 },

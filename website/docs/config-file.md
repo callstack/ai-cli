@@ -81,47 +81,58 @@ Each of supported providers can be tuned with `model` option to select an exact 
   "providers": {
     "openAi": {
       // ...
-      "model": "gpt-4-turbo-preview"
+      "model": "gpt-4o" // Current default model
     }
   }
 }
 ```
+
+List of [supported Open AI models](https://platform.openai.com/docs/models).
 </TabItem>
 <TabItem value="anthropic" label="Anthropic">
+
 ```json
 {
   "providers": {
     "anthropic": {
       // ...
-      "model": "claude-3-sonnet-20240229"
+      "model": "claude-3-sonnet-20240229" // Current default model
     }
   }
 }
 ```
+
+List of [supported Anthropic models](https://docs.anthropic.com/en/docs/models-overview).
 </TabItem>
 <TabItem value="perplexity" label="Perplexity">
+
 ```json
 {
   "providers": {
     "perplexity": {
       // ...
-      "model": "sonar-medium-chat"
+      "model": "llama-3-sonar-large-32k-chat" // Current default model
     }
   }
 }
 ```
+
+List of [supported Perplexity models](https://docs.perplexity.ai/docs/model-cards).
 </TabItem>
 <TabItem value="mistral" label="Mistral">
+
 ```json
 {
   "providers": {
     "mistral": {
       // ...
-      "model": "open-mixtral-8x7b"
+      "model": "mistral-large-latest" // Current default model
     }
   }
 }
 ```
+
+List of [supported Mistral models](https://docs.mistral.ai/getting-started/models/).
 </TabItem>
 </Tabs>
 

@@ -9,12 +9,13 @@ const OpenAi: Provider = {
   name: 'openAi',
   apiKeyUrl: 'https://platform.openai.com/api-keys',
 
-  // OpenAI models: https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
-  defaultModel: 'gpt-4-turbo',
+  // OpenAI models: https://platform.openai.com/docs/models
+  defaultModel: 'gpt-4o',
 
   // Price per 1M tokens [input, output].
   // Source: https://openai.com/pricing
   modelPricing: {
+    'gpt-4o': { inputTokensCost: 5, outputTokensCost: 15 },
     'gpt-4-turbo': { inputTokensCost: 10, outputTokensCost: 30 },
     'gpt-4-turbo-2024-04-09': { inputTokensCost: 10, outputTokensCost: 30 },
     'gpt-4': { inputTokensCost: 30, outputTokensCost: 60 },

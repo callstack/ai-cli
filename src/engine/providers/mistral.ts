@@ -19,7 +19,7 @@ const Mistral: Provider = {
   apiKeyUrl: 'https://console.mistral.ai/api-keys/',
 
   // OpenAI models: https://docs.mistral.ai/platform/endpoints/
-  defaultModel: 'mistral-medium-latest',
+  defaultModel: 'mistral-large-latest',
 
   // Price per 1M tokens [input, output].
   // Source: https://docs.mistral.ai/platform/pricing/
