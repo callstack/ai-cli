@@ -68,6 +68,15 @@ CLI options are passed when invoking the `ai` commend:
 
 You should have a relevant API key in your `~/.airc.json` file.
 
+### Defaults models
+
+- OpenAI: `gpt-4o` (input: $5, output: $15\*)
+- Anthropic: `claude-3-sonnet-20240229` (input: $3, output: $15\*)
+- Perplexity: `llama-3-sonar-large-32k-chat` (input: $1, output: $1\*)
+- Mistral: `'mistral-large-latest` (input: $4, output: $12\*)
+
+\* prices per 1 million tokens
+
 ### Model Aliases
 
 Using full model names can be tedious, so AI CLI supports shorthand model aliases:
@@ -76,8 +85,7 @@ Using full model names can be tedious, so AI CLI supports shorthand model aliase
 <TabItem value="openAi" label="Open AI">
 | Alias           | Model                 |
 | --------------- | --------------------- |
-| `gpt-4-turbo`   | `gpt-4-turbo-preview` |
-| `gpt-3.5-turbo` | `gpt-3.5-turbo`       |
+| `gpt-3.5` | `gpt-3.5-turbo`       |
 </TabItem>
 <TabItem value="anthropic" label="Anthropic">
 | Alias    | Model                      |
