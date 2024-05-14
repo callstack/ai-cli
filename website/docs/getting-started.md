@@ -60,6 +60,7 @@ CLI options are passed when invoking the `ai` commend:
   - `openai`
   - `anthropic` (or `anth`)
   - `perplexity` (or `pplx`)
+  - `google` (or `gemini`)
   - `mistral`
 - `--model [name]` (or `-m [name]`): select a model to use. This should be a model available for the selected provider.
 - `--creative`: respond in a creative way
@@ -115,6 +116,16 @@ More info: [Anthropic docs](https://docs.anthropic.com/claude/docs/models-overvi
 \*\* Perplexity online models can lookup information on the Internet, they also charge a per request fee ($5/1000 requests) and ignore system prompts.
 
 More info: [Perplexity docs](https://docs.perplexity.ai/docs/model-cards)
+
+</TabItem>
+<TabItem value="google" label="Google">
+
+| Model | Alias | Price: in \| out \* | Notes |
+| ----- | ----- | ------------------- | ----- |
+
+\* API prices per 1 million input/output tokens
+
+More info: [Google docs](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)
 
 </TabItem>
 <TabItem value="mistral" label="Mistral">

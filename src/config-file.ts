@@ -17,6 +17,7 @@ const ProvidersSchema = z.object({
   openAi: z.optional(CommonProviderSchema),
   anthropic: z.optional(CommonProviderSchema),
   perplexity: z.optional(CommonProviderSchema),
+  google: z.optional(CommonProviderSchema),
   mistral: z.optional(CommonProviderSchema),
 });
 

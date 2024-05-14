@@ -1,6 +1,7 @@
 import openAi from '../../engine/providers/open-ai.js';
 import anthropic from '../../engine/providers/anthropic.js';
 import perplexity from '../../engine/providers/perplexity.js';
+import google from '../../engine/providers/google.js';
 import mistral from '../../engine/providers/mistral.js';
 import { getProvider, type Provider, type ProviderName } from '../../engine/providers/provider.js';
 import type { ConfigFile } from '../../config-file.js';
@@ -11,6 +12,8 @@ export const providerOptionMapping: Record<string, Provider> = {
   anth: anthropic,
   perplexity,
   pplx: perplexity,
+  google,
+  gemini: google,
   mistral,
 };
 

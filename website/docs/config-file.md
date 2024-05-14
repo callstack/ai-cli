@@ -46,6 +46,17 @@ A minimal `~/.airc.json` file consists only of API key for selected AI inference
 }
 ```
 </TabItem>
+<TabItem value="google" label="Google">
+```json
+{
+  "providers": {
+    "google": {
+      "apiKey": "Your API key"
+    }
+  }
+}
+```
+</TabItem>
 <TabItem value="mistral" label="Mistral">
 ```json
 {

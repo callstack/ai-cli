@@ -696,6 +696,7 @@ __metadata:
   dependencies:
     "@anthropic-ai/sdk": "npm:^0.20.8"
     "@callstack/eslint-config": "npm:^14.1.1"
+    "@google/generative-ai": "npm:^0.11.1"
     "@inkjs/ui": "npm:^1.0.0"
     "@mistralai/mistralai": "npm:^0.1.3"
     "@release-it/conventional-changelog": "npm:^5.1.1"
@@ -802,6 +803,13 @@ __metadata:
   version: 8.57.0
   resolution: "@eslint/js@npm:8.57.0"
   checksum: 10/3c501ce8a997cf6cbbaf4ed358af5492875e3550c19b9621413b82caa9ae5382c584b0efa79835639e6e0ddaa568caf3499318e5bdab68643ef4199dce5eb0a0
+  languageName: node
+  linkType: hard
+
+"@google/generative-ai@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "@google/generative-ai@npm:0.11.1"
+  checksum: 10/25f5b2a0282a0add0df61948ec73315a2e13c0b3bcb3f819acc3cca9f100abcc2ec8c008c75eef4359b733b3309212ecd628eb7d8014b53f8ffdbee150b9dcc3
   languageName: node
   linkType: hard
 
