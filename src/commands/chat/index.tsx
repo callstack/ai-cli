@@ -16,10 +16,10 @@ export const command: CommandModule<{}, PromptOptions> = {
   handler: (args) => run(args._.join(' '), args),
 };
 
-function run(initialPrompt: string, options: PromptOptions) {
+async function run(initialPrompt: string, options: PromptOptions) {
   try {
     const configFile = parseConfigFile();
-    initChatState(options, configFile, initialPrompt);
+    await initChatState(options, configFile, initialPrompt);
     render(
       <ThemeProvider theme={inkTheme}>
         <ChatUi />

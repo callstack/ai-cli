@@ -703,6 +703,7 @@ __metadata:
     "@types/mock-fs": "npm:^4.13.4"
     "@types/prompts": "npm:^2.4.9"
     "@types/react": "npm:^18.2.63"
+    "@types/turndown": "npm:^5.0.4"
     "@types/update-notifier": "npm:^6.0.8"
     chalk: "npm:^5.3.0"
     date-fns: "npm:^3.6.0"
@@ -725,6 +726,7 @@ __metadata:
     redent: "npm:^4.0.0"
     release-it: "npm:^15.11.0"
     tiktoken: "npm:^1.0.14"
+    turndown: "npm:^7.1.3"
     typescript: "npm:^5.4.5"
     update-notifier: "npm:^7.0.0"
     yargs: "npm:^17.7.2"
@@ -1710,6 +1712,13 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10/72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/turndown@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "@types/turndown@npm:5.0.4"
+  checksum: 10/500ba3a40952a5e41d99e407d83df70066408eb78d92e5f1f5f27bf70939aad11dcb64ae36872289b9c11948aa9bc4242d63d4898ad4bd91e9a41e1eb368c24f
   languageName: node
   linkType: hard
 
@@ -3518,6 +3527,13 @@ __metadata:
   dependencies:
     esutils: "npm:^2.0.2"
   checksum: 10/b4b28f1df5c563f7d876e7461254a4597b8cabe915abe94d7c5d1633fed263fcf9a85e8d3836591fc2d040108e822b0d32758e5ec1fe31c590dc7e08086e3e48
+  languageName: node
+  linkType: hard
+
+"domino@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "domino@npm:2.1.6"
+  checksum: 10/cc2fb95084dd7cdf5df073191768807d70c8bef0e08e92cf5ce02d02933d6e6ecc4c742ac4985e5adfb93466776980280b9c6fb93fb4fd6b4ec85368c9f5e053
   languageName: node
   linkType: hard
 
@@ -9210,6 +9226,15 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: 10/ea036bec1dd024e309939ffd49fda7a351c0e87a1b8eb049570dd119d447250e2c56e0e6c00554e8205760e7417793fdebff752a46e573fbe07d4f375502a5b2
+  languageName: node
+  linkType: hard
+
+"turndown@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "turndown@npm:7.1.3"
+  dependencies:
+    domino: "npm:^2.1.6"
+  checksum: 10/a3622c4a26b9079dfad4e4b004fc8c3a6a7f786ae0ba1ccaa78d1de71094594977413fccce62dc68dc45d521cf1864d6a253c886403122f7824e9244179dc740
   languageName: node
   linkType: hard
 

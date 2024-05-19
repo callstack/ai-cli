@@ -8,6 +8,8 @@ export interface PromptOptions {
   model?: string;
   /** Add file to conversation */
   file?: string;
+  /** Add website to the conversation */
+  url?: string;
   /** Creative response style */
   creative?: boolean;
   /** Precise response style */
@@ -33,6 +35,10 @@ export const promptOptions: Record<keyof PromptOptions, Options> = {
   'file': {
     type: 'string',
     describe: 'Add given file to conversation context',
+  },
+  'url': {
+    type: 'string',
+    describe: 'Add given website to conversation context',
   },
   'creative': {
     type: 'boolean',

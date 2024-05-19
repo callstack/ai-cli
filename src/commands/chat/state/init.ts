@@ -1,5 +1,6 @@
+import TurndownService from 'turndown';
 import { type ConfigFile } from '../../../config-file.js';
-import { DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
+import { DEFAULT_FILE_PROMPT, DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
 import type { ResponseStyle } from '../../../engine/providers/config.js';
 import type { Message } from '../../../engine/inference.js';
 import type { PromptOptions } from '../prompt-options.js';
@@ -7,7 +8,7 @@ import { getDefaultProvider, resolveProviderFromOption } from '../providers.js';
 import { filterOutApiKey, handleInputFile } from '../utils.js';
 import { useChatState, type ChatMessage, type ChatState } from './state.js';
 
-export function initChatState(
+export async function initChatState(
   options: PromptOptions,
   configFile: ConfigFile,
   initialPrompt: string,
@@ -65,6 +66,37 @@ export function initChatState(
     } else if (costInfo) {
       outputMessages.push({ type: 'program', level: 'info', text: costInfo });
     }
+  }
+
+  if (options.url) {
+    const urlResponse = await fetch(options.url);
+    const urlContent = await urlResponse.text();
+    const turndown = new TurndownService();
+    turndown.addRule('removeScript', {
+      filter: 'script',
+      replacement: function () {
+        return '';
+      },
+    });
+    turndown.addRule('removeStyle', {
+      filter: 'style',
+      replacement: function () {
+        return '';
+      },
+    });
+    turndown.addRule('removeImage', {
+      filter: 'img',
+      replacement: function () {
+        return '';
+      },
+    });
+    const urlMarkdown = turndown.turndown(urlContent);
+
+    const content = DEFAULT_FILE_PROMPT.replace('{filename}', options.url).replace(
+      '{fileContent}',
+      urlMarkdown,
+    );
+    contextMessages.push({ role: 'system', content });
   }
 
   if (initialPrompt) {
