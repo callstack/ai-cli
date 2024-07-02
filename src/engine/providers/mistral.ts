@@ -4,15 +4,6 @@ import { estimateInputTokens, estimateOutputTokens } from '../tokenizer.js';
 import { responseStyles, type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
 
-// Mistral provides output data in the last chunk.
-interface ChunkWithUsage extends ChatCompletionResponseChunk {
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
 const Mistral: Provider = {
   label: 'Mistral',
   name: 'mistral',
@@ -89,7 +80,7 @@ const Mistral: Provider = {
       ...getMistralResponseStyle(config),
     });
 
-    let lastChunk: ChunkWithUsage | null = null;
+    let lastChunk: ChatCompletionResponseChunk | null = null;
     let content = '';
     for await (const chunk of stream) {
       lastChunk = chunk;

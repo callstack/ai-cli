@@ -56,10 +56,15 @@ const Anthropic: Provider = {
     });
     const responseTime = performance.now() - startTime;
 
+    const firstContent = response.content[0];
+    if (firstContent?.type !== 'text') {
+      throw new Error(`Received unexpected content type from Anthropic API: ${firstContent?.type}`);
+    }
+
     return {
       message: {
         role: 'assistant',
-        content: response.content[0]?.text ?? '',
+        content: firstContent.text ?? '',
       },
       usage: {
         inputTokens: response.usage.input_tokens,
