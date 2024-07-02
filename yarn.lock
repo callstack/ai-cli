@@ -32,9 +32,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/sdk@npm:^0.20.8":
-  version: 0.20.8
-  resolution: "@anthropic-ai/sdk@npm:0.20.8"
+"@anthropic-ai/sdk@npm:^0.24.3":
+  version: 0.24.3
+  resolution: "@anthropic-ai/sdk@npm:0.24.3"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -44,7 +44,7 @@ __metadata:
     formdata-node: "npm:^4.3.2"
     node-fetch: "npm:^2.6.7"
     web-streams-polyfill: "npm:^3.2.1"
-  checksum: 10/3f771a7e4b106a114bf417019324376d0881da8b2a90801c3e56554b0bcaf5233e54e24dad3bba7ba419c4068893ef0f268922c43fc55dc13cac5d2a26cd2281
+  checksum: 10/afc865e89a49b4608f4c3db3ad05dcecbfd8799236788d798d690338cf3301c2dec6654671573dc681091339357e285e3ae3988652c9133dbb09c1cc8a4820ae
   languageName: node
   linkType: hard
 
@@ -694,10 +694,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@callstack/ai-cli@workspace:."
   dependencies:
-    "@anthropic-ai/sdk": "npm:^0.20.8"
+    "@anthropic-ai/sdk": "npm:^0.24.3"
     "@callstack/eslint-config": "npm:^14.1.1"
     "@inkjs/ui": "npm:^1.0.0"
-    "@mistralai/mistralai": "npm:^0.1.3"
+    "@mistralai/mistralai": "npm:^0.5.0"
     "@release-it/conventional-changelog": "npm:^5.1.1"
     "@types/jest": "npm:^29.5.12"
     "@types/mock-fs": "npm:^4.13.4"
@@ -718,13 +718,13 @@ __metadata:
     ink-text-input: "npm:^5.0.1"
     jest: "npm:^29.7.0"
     mock-fs: "npm:^5.2.0"
-    openai: "npm:^4.42.0"
+    openai: "npm:^4.52.2"
     prettier: "npm:^3.2.5"
     prompts: "npm:^2.4.2"
     react: "npm:^18.2.0"
     redent: "npm:^4.0.0"
     release-it: "npm:^15.11.0"
-    tiktoken: "npm:^1.0.14"
+    tiktoken: "npm:^1.0.15"
     typescript: "npm:^5.4.5"
     update-notifier: "npm:^7.0.0"
     yargs: "npm:^17.7.2"
@@ -1192,12 +1192,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mistralai/mistralai@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "@mistralai/mistralai@npm:0.1.3"
+"@mistralai/mistralai@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@mistralai/mistralai@npm:0.5.0"
   dependencies:
     node-fetch: "npm:^2.6.7"
-  checksum: 10/e4bbdea881c543eb54a7d8557016689f421b67205e5d553fbe3c7e36c6883478c32cef9f4ed6cbfd1cdc795ac7c3d3dd9f8a324e25bbf6b58c5cbbf70ae277c2
+  checksum: 10/788e4b6d4bb124131272beea1079081f4b279befc8608ac4fcf0efa147f524c48e4af4b68414c6f71a32704eaf0c9c6d5550634ed6be8a9bcf9cc8d15d55161a
   languageName: node
   linkType: hard
 
@@ -7357,9 +7357,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openai@npm:^4.42.0":
-  version: 4.42.0
-  resolution: "openai@npm:4.42.0"
+"openai@npm:^4.52.2":
+  version: 4.52.2
+  resolution: "openai@npm:4.52.2"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -7371,7 +7371,7 @@ __metadata:
     web-streams-polyfill: "npm:^3.2.1"
   bin:
     openai: bin/cli
-  checksum: 10/e550ebdd6e805c4743d840bc1e223d1f3d98526c6edec697517d0ed3732b4fcc898b22ac28929bf448e0b2f91542bf6de4dafa1c7f0a466616e016ea865d5a43
+  checksum: 10/2c240dbcf8e14ce2121207809edf3844bca28c21095ffc9b58dd8279b2d68b3552da707ee2a529258581d8a4d39a448f1f4152b52eed456065280792cc1904c8
   languageName: node
   linkType: hard
 
@@ -9100,10 +9100,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiktoken@npm:^1.0.14":
-  version: 1.0.14
-  resolution: "tiktoken@npm:1.0.14"
-  checksum: 10/14600edfc5f12753524f91a21ff3b70eaaa450c932efb1ce668d31658e7ab9495910ef3c47256a50705af231d628034a1307b03055ca1f68f4a0b6711868bed2
+"tiktoken@npm:^1.0.15":
+  version: 1.0.15
+  resolution: "tiktoken@npm:1.0.15"
+  checksum: 10/8bca51e6e6c095319ecf2ff39afb1556141c785e7f213d5235c71a5ef2fc96a9ded19c77499d04d3173c5a92cd29f3e49effa95b80497ead5d69b5c0c762a635
   languageName: node
   linkType: hard
 

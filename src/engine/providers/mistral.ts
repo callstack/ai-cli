@@ -4,15 +4,6 @@ import { estimateInputTokens, estimateOutputTokens } from '../tokenizer.js';
 import { responseStyles, type ProviderConfig } from './config.js';
 import type { Provider } from './provider.js';
 
-// Mistral provides output data in the last chunk.
-interface ChunkWithUsage extends ChatCompletionResponseChunk {
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
 const Mistral: Provider = {
   label: 'Mistral',
   name: 'mistral',
@@ -28,8 +19,13 @@ const Mistral: Provider = {
     'open-mixtral-8x7b': { inputTokensCost: 0.7, outputTokensCost: 0.7 },
     'open-mixtral-8x22b': { inputTokensCost: 2, outputTokensCost: 6 },
     'mistral-small-latest': { inputTokensCost: 1, outputTokensCost: 3 },
+    'mistral-small-2402': { inputTokensCost: 1, outputTokensCost: 3 },
     'mistral-medium-latest': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
+    'mistral-medium-2312': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
     'mistral-large-latest': { inputTokensCost: 4, outputTokensCost: 12 },
+    'mistral-large-2402': { inputTokensCost: 4, outputTokensCost: 12 },
+    'codestral-latest': { inputTokensCost: 1, outputTokensCost: 3 },
+    'codestral-2405': { inputTokensCost: 1, outputTokensCost: 3 },
   },
 
   modelAliases: {
@@ -38,6 +34,7 @@ const Mistral: Provider = {
     small: 'mistral-small-latest',
     medium: 'mistral-medium-latest',
     large: 'mistral-large-latest',
+    codestral: 'codestral-latest',
   },
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
@@ -83,7 +80,7 @@ const Mistral: Provider = {
       ...getMistralResponseStyle(config),
     });
 
-    let lastChunk: ChunkWithUsage | null = null;
+    let lastChunk: ChatCompletionResponseChunk | null = null;
     let content = '';
     for await (const chunk of stream) {
       lastChunk = chunk;
