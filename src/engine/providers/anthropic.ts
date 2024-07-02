@@ -64,7 +64,7 @@ const Anthropic: Provider = {
     return {
       message: {
         role: 'assistant',
-        content: firstContent.text ?? '',
+        content: firstContent.text,
       },
       usage: {
         inputTokens: response.usage.input_tokens,
