@@ -10,12 +10,21 @@ const Mistral: Provider = {
   name: 'mistral',
   apiKeyUrl: 'https://console.mistral.ai/api-keys/',
 
-  // OpenAI models: https://docs.mistral.ai/platform/endpoints/
+  // Mistral models: https://docs.mistral.ai/getting-started/models/
   defaultModel: 'mistral-large-latest',
 
   // Price per 1M tokens [input, output].
   // Source: https://docs.mistral.ai/platform/pricing/
   modelPricing: {
+    // Current models
+    'open-mistral-nemo': { inputTokensCost: 0.3, outputTokensCost: 0.3 },
+    'open-mistral-nemo-2407': { inputTokensCost: 0.3, outputTokensCost: 0.3 },
+    'mistral-large-latest': { inputTokensCost: 3, outputTokensCost: 9 },
+    'mistral-large-2407': { inputTokensCost: 3, outputTokensCost: 9 },
+    'codestral-latest': { inputTokensCost: 1, outputTokensCost: 3 },
+    'codestral-2405': { inputTokensCost: 1, outputTokensCost: 3 },
+
+    // Legacy models
     'open-mistral-7b': { inputTokensCost: 0.25, outputTokensCost: 0.25 },
     'open-mixtral-8x7b': { inputTokensCost: 0.7, outputTokensCost: 0.7 },
     'open-mixtral-8x22b': { inputTokensCost: 2, outputTokensCost: 6 },
@@ -23,17 +32,10 @@ const Mistral: Provider = {
     'mistral-small-2402': { inputTokensCost: 1, outputTokensCost: 3 },
     'mistral-medium-latest': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
     'mistral-medium-2312': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
-    'mistral-large-latest': { inputTokensCost: 4, outputTokensCost: 12 },
-    'mistral-large-2402': { inputTokensCost: 4, outputTokensCost: 12 },
-    'codestral-latest': { inputTokensCost: 1, outputTokensCost: 3 },
-    'codestral-2405': { inputTokensCost: 1, outputTokensCost: 3 },
   },
 
   modelAliases: {
-    mistral: 'open-mistral-7b',
-    mixtral: 'open-mixtral-8x22b',
-    small: 'mistral-small-latest',
-    medium: 'mistral-medium-latest',
+    nemo: 'open-mistral-nemo-2407',
     large: 'mistral-large-latest',
     codestral: 'codestral-latest',
   },
