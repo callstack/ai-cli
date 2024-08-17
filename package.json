@@ -80,7 +80,7 @@
     "release-it": "^15.11.0",
     "typescript": "^5.4.5"
   },
-  "packageManager": "yarn@4.2.1",
+  "packageManager": "yarn@4.4.0",
   "engines": {
     "node": ">= 18.0.0"
   },
