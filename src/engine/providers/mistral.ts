@@ -1,4 +1,5 @@
-import MistralClient, { type ChatCompletionResponseChunk } from '@mistralai/mistralai';
+import { Mistral as MistralClient } from '@mistralai/mistralai';
+import type { CompletionEvent } from '@mistralai/mistralai/models/components/completionevent.js';
 import { type Message, type ModelResponseUpdate } from '../inference.js';
 import { estimateInputTokens, estimateOutputTokens } from '../tokenizer.js';
 import { responseStyles, type ProviderConfig } from './config.js';
@@ -38,13 +39,13 @@ const Mistral: Provider = {
   },
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
-    const api = new MistralClient(config.apiKey);
+    const api = new MistralClient({ apiKey: config.apiKey });
     const allMessages = getMessages(config, messages);
 
     const startTime = performance.now();
-    const response = await api.chat({
-      messages: allMessages,
+    const response = await api.chat.complete({
       model: config.model,
+      messages: allMessages,
       ...getMistralResponseStyle(config),
     });
     const responseTime = performance.now() - startTime;
@@ -52,11 +53,11 @@ const Mistral: Provider = {
     return {
       message: {
         role: 'assistant',
-        content: response.choices[0]?.message.content ?? '',
+        content: response.choices?.[0]?.message?.content ?? '',
       },
       usage: {
-        inputTokens: response.usage?.prompt_tokens ?? 0,
-        outputTokens: response.usage?.completion_tokens ?? 0,
+        inputTokens: response.usage.promptTokens,
+        outputTokens: response.usage.completionTokens,
         requests: 1,
       },
       responseTime,
@@ -70,21 +71,21 @@ const Mistral: Provider = {
     messages: Message[],
     onResponseUpdate: (update: ModelResponseUpdate) => void,
   ) {
-    const api = new MistralClient(config.apiKey);
+    const api = new MistralClient({ apiKey: config.apiKey });
     const allMessages = getMessages(config, messages);
 
     const startTime = performance.now();
-    const stream = await api.chatStream({
+    const stream = await api.chat.stream({
       messages: allMessages,
       model: config.model,
       ...getMistralResponseStyle(config),
     });
 
-    let lastChunk: ChatCompletionResponseChunk | null = null;
+    let lastChunk: CompletionEvent | null = null;
     let content = '';
     for await (const chunk of stream) {
       lastChunk = chunk;
-      content += chunk.choices[0]?.delta?.content || '';
+      content += chunk.data.choices[0]?.delta?.content || '';
       onResponseUpdate({ content });
     }
 
@@ -96,12 +97,12 @@ const Mistral: Provider = {
         content,
       },
       usage: {
-        inputTokens: lastChunk?.usage?.prompt_tokens ?? estimateInputTokens(allMessages),
-        outputTokens: lastChunk?.usage?.completion_tokens ?? estimateOutputTokens(content),
+        inputTokens: lastChunk?.data.usage?.promptTokens ?? estimateInputTokens(allMessages),
+        outputTokens: lastChunk?.data.usage?.completionTokens ?? estimateOutputTokens(content),
         requests: 1,
       },
       responseTime,
-      responseModel: lastChunk?.model || 'unknown',
+      responseModel: lastChunk?.data.model || 'unknown',
       data: lastChunk,
     };
   },
