@@ -23,7 +23,7 @@ export function initChatState(
 
   const modelOrAlias = options.model ?? providerFileConfig.model;
   const model = modelOrAlias
-    ? provider.modelAliases[modelOrAlias] ?? modelOrAlias
+    ? (provider.modelAliases[modelOrAlias] ?? modelOrAlias)
     : provider.defaultModel;
 
   const systemPrompt = providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT;
