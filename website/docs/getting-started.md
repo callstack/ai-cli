@@ -68,30 +68,29 @@ CLI options are passed when invoking the `ai` commend:
 
 You should have a relevant API key in your `~/.airc.json` file.
 
-### Models
+### Current Models
 
 <Tabs groupId="provider">
 <TabItem value="openAi" label="Open AI">
 
-| Model           | Alias     | Price: in \| out \* | Notes   |
-| --------------- | --------- | ------------------- | ------- |
-| `gpt-4o`        |           | $5 \| $15           | Default |
-| `gpt-4-turbo`   |           | $10 \| $30          |         |
-| `gpt-4`         |           | $30 \| $60          |         |
-| `gpt-3.5-turbo` | `gpt-3.5` | $0.5 \| $1.5        |         |
+| Model               | Alias | Price: in \| out \* | Notes   |
+| ------------------- | ----- | ------------------- | ------- |
+| `gpt-4o-2024-08-06` |       | $2.5 \| $10         | Default |
+| `gpt-4o`            |       | $5 \| $15           |         |
+| `gpt-4o-mini`       |       | $0.15 \| $0.6       |         |
 
 \* API prices per 1 million input/output tokens
 
-More info: [OpenAI docs](https://platform.openai.com/docs/models)
+More models & info: [OpenAI docs](https://platform.openai.com/docs/models)
 
 </TabItem>
 <TabItem value="anthropic" label="Anthropic">
 
-| Model                      | Alias    | Price: in \| out \* | Notes   |
-| -------------------------- | -------- | ------------------- | ------- |
-| `claude-3-opus-20240229`   | `opus`   | $15 \| $75          |         |
-| `claude-3-sonnet-20240229` | `sonnet` | $3 \| $15           | Default |
-| `claude-3-haiku-20240307`  | `haiku`  | $0.25 \| $1.25      |         |
+| Model                        | Alias    | Price: in \| out \* | Notes   |
+| ---------------------------- | -------- | ------------------- | ------- |
+| `claude-3-5-sonnet-20240620` | `sonnet` | $3 \| $15           | Default |
+| `claude-3-opus-20240229`     | `opus`   | $15 \| $75          |         |
+| `claude-3-haiku-20240307`    | `haiku`  | $0.25 \| $1.25      |         |
 
 \* API prices per 1 million input/output tokens
 
@@ -100,15 +99,15 @@ More info: [Anthropic docs](https://docs.anthropic.com/claude/docs/models-overvi
 </TabItem>
 <TabItem value="perplexity" label="Perplexity">
 
-| Model                            | Alias     | Price: in \| out \*         | Notes      |
-| -------------------------------- | --------- | --------------------------- | ---------- |
-| `llama-3-sonar-large-32k-chat`   | `large`   | $1 \| $1                    | Default    |
-| `llama-3-sonar-large-32k-online` | `online`  | $1 \| $1 \| request: $5     | Online\*\* |
-| `llama-3-sonar-small-32k-chat`   | `small`   | $0.2 \| $0.2                |            |
-| `llama-3-sonar-small-32k-online` |           | $0.2 \| $0.2 \| request: $5 | Online\*\* |
-| `llama-3-70b-instruct`           | `llama-3` | $1 \| $1                    |            |
-| `llama-3-8b-instruct`            |           | $0.2 \| $0.2                |            |
-| `mixtral-8x7b-instruct`          | `mixtral` | $0.6 \| $0.6                |            |
+| Model                               | Alias   | Price: in \| out \*          | Notes               |
+| ----------------------------------- | ------- | ---------------------------- | ------------------- |
+| `llama-3.1-sonar-huge-128k-online`  | `huge`  | $5 \| $5 \| requests: $5     | Default, Online\*\* |
+| `llama-3.1-sonar-large-128k-online` | `large` | $1 \| $1 \| requests: $5     | Online\*\*          |
+| `llama-3.1-sonar-small-128k-online` | `small` | $0.2 \| $0.2 \| requests: $5 | Online\*\*          |
+| `llama-3.1-sonar-large-128k-chat`   |         | $1 \| $1                     |                     |
+| `llama-3.1-sonar-small-128k-chat`   |         | $0.2 \| $0.2                 |                     |
+| `llama-3.1-70b-instruct`            |         | $1 \| $1                     |                     |
+| `llama-3.1-8b-instruct`             |         | $0.2 \| $0.2                 |                     |
 
 \* API prices per 1 million input/output tokens, per 1 thousands requests
 
@@ -119,14 +118,11 @@ More info: [Perplexity docs](https://docs.perplexity.ai/docs/model-cards)
 </TabItem>
 <TabItem value="mistral" label="Mistral">
 
-| Model                   | Alias     | Price: in \| out \* | Notes   |
-| ----------------------- | --------- | ------------------- | ------- |
-| `mistral-large-latest`  | `large`   | $4 \| $12           | Default |
-| `mistral-medium-latest` | `medium`  | $2.7 \| $8.1        |         |
-| `mistral-small-latest`  | `small`   | $1 \| $3            |         |
-| `open-mixtral-8x22b`    | `mixtral` | $2 \| $6            |         |
-| `open-mixtral-8x7b`     |           | $0.7 \| $0.7        |         |
-| `open-mistral-7b`       | `mistral` | $0.25 \| $0.25      |         |
+| Model                  | Alias       | Price: in \| out \* | Notes   |
+| ---------------------- | ----------- | ------------------- | ------- |
+| `mistral-large-latest` | `large`     | $3 \| $9            | Default |
+| `open-mistral-nemo`    | `nemo`      | $0.3 \| $0.3        |         |
+| `codestral-latest`     | `codestral` | $1 \| $3            |         |
 
 \* API prices per 1 million input/output tokens
 
