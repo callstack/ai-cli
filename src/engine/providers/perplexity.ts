@@ -10,35 +10,37 @@ const Perplexity: Provider = {
   apiKeyUrl: 'https://perplexity.ai/settings/api',
 
   // Perplexity models: https://docs.perplexity.ai/docs/model-cards
-  defaultModel: 'llama-3-sonar-large-32k-chat',
+  defaultModel: 'llama-3.1-sonar-huge-128k-online',
 
   // Price per 1M tokens [input, output], per 1k requests.
   // Source: https://docs.perplexity.ai/docs/model-cards
   // Source: https://docs.perplexity.ai/docs/pricing
   modelPricing: {
-    'llama-3-sonar-small-32k-chat': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
-    'llama-3-sonar-small-32k-online': {
+    'llama-3.1-sonar-small-128k-online': {
       inputTokensCost: 0.2,
       outputTokensCost: 0.2,
       requestsCost: 5,
     },
-    'llama-3-sonar-large-32k-chat': { inputTokensCost: 1, outputTokensCost: 1 },
-    'llama-3-sonar-large-32k-online': {
+    'llama-3.1-sonar-large-128k-online': {
       inputTokensCost: 1,
       outputTokensCost: 1,
       requestsCost: 5,
     },
-    'llama-3-8b-instruct': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
-    'llama-3-70b-instruct': { inputTokensCost: 1, outputTokensCost: 1 },
-    'mixtral-8x7b-instruct': { inputTokensCost: 0.6, outputTokensCost: 0.6 },
+    'llama-3.1-sonar-huge-128k-online': {
+      inputTokensCost: 5,
+      outputTokensCost: 5,
+      requestsCost: 5,
+    },
+    'llama-3.1-sonar-small-128k-chat': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'llama-3.1-sonar-large-128k-chat': { inputTokensCost: 1, outputTokensCost: 1 },
+    'llama-3.1-8b-instruct': { inputTokensCost: 0.2, outputTokensCost: 0.2 },
+    'llama-3.1-70b-instruct': { inputTokensCost: 1, outputTokensCost: 1 },
   },
 
   modelAliases: {
-    'small': 'llama-3-sonar-small-32k-chat',
-    'large': 'llama-3-sonar-large-32k-chat',
-    'online': 'llama-3-sonar-large-32k-online',
-    'llama-3': 'llama-3-70b-instruct',
-    'mixtral': 'mixtral-8x7b-instruct',
+    small: 'llama-3.1-sonar-small-128k-online',
+    large: 'llama-3.1-sonar-large-128k-online',
+    huge: 'llama-3.1-sonar-huge-128k-online',
   },
 
   getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
