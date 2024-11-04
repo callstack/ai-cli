@@ -3,3 +3,4 @@ build/
 dist/
 website/
 rsbuild.config.ts
+bin.js
