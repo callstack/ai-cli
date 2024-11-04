@@ -82,7 +82,7 @@ function useAiResponse() {
       const messages = useChatState.getState().contextMessages;
 
       const { response } = await app.processMessages(messages, {
-        onPartialResponse: stream ? (update) => setLoadedResponse(update) : undefined,
+        onPartialResponse: stream ? (update: string) => setLoadedResponse(update) : undefined,
       });
 
       if (response.role == 'assistant') {
