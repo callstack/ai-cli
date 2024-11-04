@@ -1,8 +1,8 @@
 {
-  "paths": {
-    "ai-cli": ["./src/index.js"]
-  },
   "compilerOptions": {
+    "paths": {
+      "ai-cli": ["./src/index.js"]
+    },
     "target": "esnext",
     "module": "node16",
     "moduleResolution": "node16",
