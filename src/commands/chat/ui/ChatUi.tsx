@@ -80,20 +80,15 @@ function useAiResponse() {
       setLoadedResponse(undefined);
 
       const messages = useChatState.getState().contextMessages;
-      if (stream) {
-        const { response } = await app.processMessages(messages, {
-          onPartialResponse: (update) => setLoadedResponse(update),
-        });
 
-        if (response.role == 'assistant') {
-          addAssistantResponse(response);
-        } else {
-          addProgramMessage(response.content);
-        }
+      const { response } = await app.processMessages(messages, {
+        onPartialResponse: stream ? (update) => setLoadedResponse(update) : undefined,
+      });
+
+      if (response.role == 'assistant') {
+        addAssistantResponse(response);
       } else {
-        throw new Error('Non-Stream mode is not supported yet');
-        // const response = await provider.getChatCompletion(providerConfig, messages);
-        // addAiResponse(response);
+        addProgramMessage(response.content);
       }
     } catch (error) {
       // We cannot leave unanswered user message in context, as there is no AI response for it.
