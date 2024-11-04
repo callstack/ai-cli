@@ -1,32 +1,32 @@
 import React from 'react';
 import { Text } from 'ink';
+import type { AssistantResponse } from '@callstack/byorg-core';
 import { formatSpeed, formatTime } from '../../../../format.js';
 import { colors } from '../../../../theme/colors.js';
-import { useChatState, type AiChatMessage } from '../../state/state.js';
+import { useChatState } from '../../state/state.js';
 import { texts } from '../../texts.js';
 
-interface AiChatMessageItemProps {
-  message: AiChatMessage;
+interface AssistantResponseItemProps {
+  message: AssistantResponse;
 }
 
-export function AiChatMessageItem({ message }: AiChatMessageItemProps) {
+export function AssistantResponseItem({ message }: AssistantResponseItemProps) {
   const verbose = useChatState((state) => state.verbose);
 
   return (
     <>
       <Text color={colors.assistant}>
         <Text>{texts.assistantLabel}</Text>
-        <Text>{message.text}</Text>
+        <Text>{message.content}</Text>
 
-        {verbose && message.responseTime != null ? (
+        {verbose && message.usage.responseTime != null ? (
           <Text color={colors.info}>
             {' '}
-            ({formatTime(message.responseTime)},{' '}
-            {formatSpeed(message.usage?.outputTokens, message.responseTime)})
+            ({formatTime(message.usage.responseTime)},{' '}
+            {formatSpeed(message.usage?.outputTokens, message.usage.responseTime)})
           </Text>
         ) : null}
       </Text>
-      {verbose ? <Text color={colors.debug}>{JSON.stringify(message.data, null, 2)}</Text> : null}
       <Text> {/* Add a newline */}</Text>
     </>
   );

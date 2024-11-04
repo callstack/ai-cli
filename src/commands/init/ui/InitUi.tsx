@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Newline, Text } from 'ink';
-import { type Provider } from '../../../engine/providers/provider.js';
+import { type ProviderInfo } from '../../../engine/providers/provider-info.js';
 import { writeConfigFile } from '../../../config-file.js';
 import { colors } from '../../../theme/colors.js';
 import { ExitApp } from '../../../components/ExitApp.js';
@@ -17,10 +17,10 @@ export function InitUi({ hasConfig }: InitUiProps) {
   const [step, setStep] = useState(0);
 
   const [overwriteConfig, setOverwriteConfig] = useState(true);
-  const [provider, setProvider] = useState<Provider>();
+  const [provider, setProvider] = useState<ProviderInfo>();
   const [hasKey, setHasKey] = useState<boolean>();
 
-  const writeConfig = (provider?: Provider, apiKey?: string) => {
+  const writeConfig = (provider?: ProviderInfo, apiKey?: string) => {
     if (!provider || !apiKey) {
       return;
     }

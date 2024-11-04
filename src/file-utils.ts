@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { format } from 'date-fns';
-import type { Message } from './engine/inference.js';
+import type { Message } from '@callstack/byorg-core';
 
 export const CHATS_SAVE_DIRECTORY = '~/ai-chats';
 

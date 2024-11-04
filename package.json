@@ -41,7 +41,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^0.0.54",
+    "@ai-sdk/mistral": "^0.0.46",
+    "@ai-sdk/openai": "^0.0.71",
     "@anthropic-ai/sdk": "^0.26.1",
+    "@callstack/byorg-core": "0.1.2",
     "@inkjs/ui": "^1.0.0",
     "@mistralai/mistralai": "^1.0.2",
     "chalk": "^5.3.0",

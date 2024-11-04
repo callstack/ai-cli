@@ -1,10 +1,10 @@
 import { create } from 'zustand';
+import type { Application, AssistantResponse, Message, UserMessage } from '@callstack/byorg-core';
 import type { ProviderConfig } from '../../../engine/providers/config.js';
-import type { Provider } from '../../../engine/providers/provider.js';
-import type { Message, ModelUsage } from '../../../engine/inference.js';
+import type { ProviderInfo } from '../../../engine/providers/provider-info.js';
 
 export interface ChatState {
-  provider: Provider;
+  provider: ProviderInfo;
   providerConfig: ProviderConfig;
   contextMessages: Message[];
   chatMessages: ChatMessage[];
@@ -12,31 +12,18 @@ export interface ChatState {
   verbose: boolean;
   shouldExit: boolean;
   stream: boolean;
+  app: Application;
 }
 
-export type ChatMessage = UserChatMessage | AiChatMessage | ProgramChatMessage;
+export type ChatMessage = UserMessage | AssistantResponse | ProgramOutput;
 
-export interface UserChatMessage {
-  type: 'user';
-  text: string;
-}
-
-export interface AiChatMessage {
-  type: 'ai';
-  text: string;
-  responseTime: number;
-  usage: ModelUsage;
-  cost?: number;
-  data?: unknown;
+export interface ProgramOutput {
+  role: 'program';
+  content: string;
+  level: MessageLevel;
 }
 
 export type MessageLevel = 'debug' | 'info' | 'warning' | 'error';
-
-export interface ProgramChatMessage {
-  type: 'program';
-  level: MessageLevel;
-  text: string;
-}
 
 type ActiveView = 'info' | 'help' | null;
 

@@ -1,16 +1,9 @@
-import AnthropicAPI from '@anthropic-ai/sdk';
-import {
-  type AiMessage,
-  type Message,
-  type ModelResponseUpdate,
-  type UserMessage,
-} from '../inference.js';
-import { responseStyles, type ProviderConfig } from './config.js';
-import type { Provider } from './provider.js';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { VercelChatModelAdapter } from '@callstack/byorg-core';
+import { type ProviderConfig } from './config.js';
+import type { ProviderInfo } from './provider-info.js';
 
-type ModelMessage = UserMessage | AiMessage;
-
-const Anthropic: Provider = {
+const Anthropic: ProviderInfo = {
   label: 'Anthropic',
   name: 'anthropic',
   apiKeyUrl: 'https://console.anthropic.com/settings/keys',
@@ -39,93 +32,11 @@ const Anthropic: Provider = {
     opus: 'claude-3-opus-20240229',
   },
 
-  getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
-    const api = new AnthropicAPI({
-      apiKey: config.apiKey,
+  getChatModel: (config: ProviderConfig) => {
+    const client = createAnthropic({ apiKey: config.apiKey });
+    return new VercelChatModelAdapter({
+      languageModel: client.languageModel(config.model),
     });
-
-    const nonSystemMessages = messages.filter((m) => m.role !== 'system') as ModelMessage[];
-
-    const systemMessagesContent = messages.filter((m) => m.role === 'system').map((m) => m.content);
-    const systemPrompt = [config.systemPrompt, ...systemMessagesContent].join('\n\n');
-
-    const startTime = performance.now();
-    const response = await api.messages.create({
-      messages: nonSystemMessages,
-      model: config.model,
-      max_tokens: 1024,
-      system: systemPrompt,
-      ...responseStyles[config.responseStyle],
-    });
-    const responseTime = performance.now() - startTime;
-
-    const firstContent = response.content[0];
-    if (firstContent?.type !== 'text') {
-      throw new Error(`Received unexpected content type from Anthropic API: ${firstContent?.type}`);
-    }
-
-    return {
-      message: {
-        role: 'assistant',
-        content: firstContent.text,
-      },
-      usage: {
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        requests: 1,
-      },
-      responseTime,
-      responseModel: response.model,
-      data: response,
-    };
-  },
-
-  getChatCompletionStream: async function (
-    config: ProviderConfig,
-    messages: Message[],
-    onResponseUpdate: (update: ModelResponseUpdate) => void,
-  ) {
-    const api = new AnthropicAPI({
-      apiKey: config.apiKey,
-    });
-
-    const nonSystemMessages = messages.filter((m) => m.role !== 'system') as ModelMessage[];
-
-    const systemMessagesContent = messages.filter((m) => m.role === 'system').map((m) => m.content);
-    const systemPrompt = [config.systemPrompt, ...systemMessagesContent].join('\n\n');
-
-    const startTime = performance.now();
-    let content = '';
-    const stream = api.messages
-      .stream({
-        messages: nonSystemMessages,
-        model: config.model,
-        max_tokens: 1024,
-        system: systemPrompt,
-        ...responseStyles[config.responseStyle],
-      })
-      .on('text', (text) => {
-        content += text;
-        onResponseUpdate({ content });
-      });
-
-    const response = await stream.finalMessage();
-    const responseTime = performance.now() - startTime;
-
-    return {
-      message: {
-        role: 'assistant',
-        content,
-      },
-      usage: {
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        requests: 1,
-      },
-      responseTime,
-      responseModel: response.model,
-      data: response,
-    };
   },
 };
 

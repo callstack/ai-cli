@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from 'ink';
 import { ExitApp } from '../../../components/ExitApp.js';
-import type { ModelResponseUpdate } from '../../../engine/inference.js';
 import { extractErrorMessage } from '../../../output.js';
 import { processChatCommand } from '../chat-commands.js';
 import {
-  addAiResponse,
+  addAssistantResponse,
   addProgramMessage,
   addUserMessage,
   hideActiveView,
@@ -18,7 +17,7 @@ import { HelpOutput } from './HelpOutput.js';
 import { StatusBar } from './StatusBar.js';
 import { InfoOutput } from './InfoOutput.js';
 import { ChatMessageList } from './list/ChatMessageList.js';
-import { AiResponseLoader } from './AiResponseLoader.js';
+import { AssistantResponseLoader } from './AssistantResponseLoader.js';
 
 export function ChatUi() {
   const contextMessages = useChatState((state) => state.contextMessages);
@@ -59,7 +58,7 @@ export function ChatUi() {
       {activeView === 'help' && <HelpOutput />}
       {activeView === 'info' && <InfoOutput />}
 
-      {isLoading ? <AiResponseLoader text={loadedResponse} /> : null}
+      {isLoading ? <AssistantResponseLoader text={loadedResponse} /> : null}
       {showInput && <UserMessageInput onSubmit={handleSubmit} />}
 
       <StatusBar />
@@ -69,8 +68,7 @@ export function ChatUi() {
 }
 
 function useAiResponse() {
-  const provider = useChatState((state) => state.provider);
-  const providerConfig = useChatState((state) => state.providerConfig);
+  const app = useChatState((state) => state.app);
   const stream = useChatState((state) => state.stream);
 
   const [isLoading, setLoading] = useState(false);
@@ -82,16 +80,20 @@ function useAiResponse() {
       setLoadedResponse(undefined);
 
       const messages = useChatState.getState().contextMessages;
-      if (stream && provider.getChatCompletionStream != null) {
-        const response = await provider.getChatCompletionStream(
-          providerConfig,
-          messages,
-          (update: ModelResponseUpdate) => setLoadedResponse(update.content),
-        );
-        addAiResponse(response);
+      if (stream) {
+        const { response } = await app.processMessages(messages, {
+          onPartialResponse: (update) => setLoadedResponse(update),
+        });
+
+        if (response.role == 'assistant') {
+          addAssistantResponse(response);
+        } else {
+          addProgramMessage(response.content);
+        }
       } else {
-        const response = await provider.getChatCompletion(providerConfig, messages);
-        addAiResponse(response);
+        throw new Error('Non-Stream mode is not supported yet');
+        // const response = await provider.getChatCompletion(providerConfig, messages);
+        // addAiResponse(response);
       }
     } catch (error) {
       // We cannot leave unanswered user message in context, as there is no AI response for it.

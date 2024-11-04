@@ -1,10 +1,8 @@
-import OpenAI from 'openai';
-import { type Message, type ModelResponseUpdate } from '../inference.js';
-import { type ProviderConfig } from './config.js';
-import type { Provider } from './provider.js';
-import { getChatCompletion, getChatCompletionStream } from './utils/open-ai-api.js';
+import { createOpenAI } from '@ai-sdk/openai';
+import { VercelChatModelAdapter } from '@callstack/byorg-core';
+import type { ProviderInfo } from './provider-info.js';
 
-const Perplexity: Provider = {
+const Perplexity: ProviderInfo = {
   label: 'Perplexity',
   name: 'perplexity',
   apiKeyUrl: 'https://perplexity.ai/settings/api',
@@ -43,26 +41,14 @@ const Perplexity: Provider = {
     huge: 'llama-3.1-sonar-huge-128k-online',
   },
 
-  getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
-    const api = new OpenAI({
+  getChatModel(config) {
+    const client = createOpenAI({
       apiKey: config.apiKey,
-      baseURL: 'https://api.perplexity.ai',
+      baseURL: 'https://api.perplexity.ai/',
     });
-
-    return await getChatCompletion(api, config, messages);
-  },
-
-  getChatCompletionStream: async function (
-    config: ProviderConfig,
-    messages: Message[],
-    onResponseUpdate: (update: ModelResponseUpdate) => void,
-  ) {
-    const api = new OpenAI({
-      apiKey: config.apiKey,
-      baseURL: 'https://api.perplexity.ai',
+    return new VercelChatModelAdapter({
+      languageModel: client.languageModel(config.model),
     });
-
-    return await getChatCompletionStream(api, config, messages, onResponseUpdate);
   },
 };
 

@@ -1,4 +1,4 @@
-import type { Message, ModelResponse, ModelResponseUpdate } from '../inference.js';
+import type { ChatModel } from '@callstack/byorg-core';
 import type { ProviderConfig } from './config.js';
 import openAi from './open-ai.js';
 import perplexity from './perplexity.js';
@@ -8,7 +8,7 @@ import mistral from './mistral.js';
 export const providerNames = ['openAi', 'anthropic', 'perplexity', 'mistral'] as const;
 export type ProviderName = (typeof providerNames)[number];
 
-export interface Provider {
+export interface ProviderInfo {
   name: ProviderName;
   label: string;
   apiKeyUrl: string;
@@ -17,12 +17,7 @@ export interface Provider {
   modelPricing: Record<string, ModelPricing>;
   modelAliases: Record<string, string>;
 
-  getChatCompletion: (config: ProviderConfig, messages: Message[]) => Promise<ModelResponse>;
-  getChatCompletionStream?: (
-    config: ProviderConfig,
-    messages: Message[],
-    onStreamUpdate: (update: ModelResponseUpdate) => void,
-  ) => Promise<ModelResponse>;
+  getChatModel: (config: ProviderConfig) => ChatModel;
 }
 
 export interface ModelPricing {
@@ -36,7 +31,7 @@ export interface ModelPricing {
   requestsCost?: number;
 }
 
-const providersMap: Record<ProviderName, Provider> = {
+const providersMap: Record<ProviderName, ProviderInfo> = {
   openAi,
   anthropic,
   perplexity,
@@ -45,7 +40,7 @@ const providersMap: Record<ProviderName, Provider> = {
 
 export const providers = Object.values(providersMap);
 
-export function getProvider(providerName: ProviderName): Provider {
+export function getProvider(providerName: ProviderName): ProviderInfo {
   const provider = providersMap[providerName];
   if (!provider) {
     throw new Error(`Provider not found: ${providerName}.`);

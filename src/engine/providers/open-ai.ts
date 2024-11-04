@@ -1,10 +1,9 @@
-import OpenAI from 'openai';
-import { type Message, type ModelResponseUpdate } from '../inference.js';
+import { createOpenAI } from '@ai-sdk/openai';
+import { VercelChatModelAdapter } from '@callstack/byorg-core';
 import { type ProviderConfig } from './config.js';
-import type { Provider } from './provider.js';
-import { getChatCompletion, getChatCompletionStream } from './utils/open-ai-api.js';
+import type { ProviderInfo } from './provider-info.js';
 
-const OpenAi: Provider = {
+const OpenAi: ProviderInfo = {
   label: 'OpenAI',
   name: 'openAi',
   apiKeyUrl: 'https://platform.openai.com/api-keys',
@@ -31,24 +30,11 @@ const OpenAi: Provider = {
 
   modelAliases: {},
 
-  getChatCompletion: async (config: ProviderConfig, messages: Message[]) => {
-    const api = new OpenAI({
-      apiKey: config.apiKey,
+  getChatModel: (config: ProviderConfig) => {
+    const client = createOpenAI({ apiKey: config.apiKey, compatibility: 'strict' });
+    return new VercelChatModelAdapter({
+      languageModel: client.languageModel(config.model),
     });
-
-    return await getChatCompletion(api, config, messages);
-  },
-
-  getChatCompletionStream: async function (
-    config: ProviderConfig,
-    messages: Message[],
-    onResponseUpdate: (update: ModelResponseUpdate) => void,
-  ) {
-    const api = new OpenAI({
-      apiKey: config.apiKey,
-    });
-
-    return await getChatCompletionStream(api, config, messages, onResponseUpdate);
   },
 };
 
