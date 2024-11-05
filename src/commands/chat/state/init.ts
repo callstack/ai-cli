@@ -3,7 +3,7 @@ import { type ConfigFile } from '../../../config-file.js';
 import { DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
 import type { ResponseStyle } from '../../../engine/providers/config.js';
 import type { PromptOptions } from '../prompt-options.js';
-import { getDefaultProviderInfo, resolveProviderInfoFromOption } from '../providers.js';
+import { getDefaultProvider, resolveProviderFromOption } from '../providers.js';
 import { filterOutApiKey, handleInputFile } from '../utils.js';
 import { useChatState, type ChatMessage, type ChatState } from './state.js';
 
@@ -13,8 +13,8 @@ export function initChatState(
   initialPrompt: string,
 ) {
   const provider = options.provider
-    ? resolveProviderInfoFromOption(options.provider)
-    : getDefaultProviderInfo(configFile);
+    ? resolveProviderFromOption(options.provider)
+    : getDefaultProvider(configFile);
 
   const providerFileConfig = configFile.providers[provider.name];
   if (!providerFileConfig) {

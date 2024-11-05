@@ -16,7 +16,7 @@ export const providerOptionMapping: Record<string, Provider> = {
 
 export const providerOptions = Object.keys(providerOptionMapping);
 
-export function resolveProviderInfoFromOption(providerOption: string): Provider {
+export function resolveProviderFromOption(providerOption: string): Provider {
   const provider = providerOptionMapping[providerOption];
   if (!provider) {
     throw new Error(`Provider not found: ${providerOption}.`);
@@ -25,7 +25,7 @@ export function resolveProviderInfoFromOption(providerOption: string): Provider 
   return provider;
 }
 
-export function getDefaultProviderInfo(config: ConfigFile): Provider {
+export function getDefaultProvider(config: ConfigFile): Provider {
   const providerNames = Object.keys(config.providers) as ProviderName[];
   const providerName = providerNames ? providerNames[0] : undefined;
 
