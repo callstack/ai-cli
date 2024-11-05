@@ -18,6 +18,13 @@ export default defineConfig({
   },
   tools: {
     rspack: {
+      module: {
+        parser: {
+          javascript: {
+            dynamicImportMode: 'eager',
+          },
+        },
+      },
       resolve: {
         extensionAlias: {
           '.js': ['.js', '.ts', '.tsx'],
