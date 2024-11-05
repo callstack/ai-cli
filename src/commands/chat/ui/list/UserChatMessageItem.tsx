@@ -1,18 +1,18 @@
 import React from 'react';
 import { Text } from 'ink';
+import type { UserMessage } from '@callstack/byorg-core';
 import { colors } from '../../../../theme/colors.js';
-import { type UserChatMessage } from '../../state/state.js';
 import { texts } from '../../texts.js';
 
 interface UserChatMessageItemProps {
-  message: UserChatMessage;
+  message: UserMessage;
 }
 
-export function UserChatMessageItem({ message }: UserChatMessageItemProps) {
+export function UserMessageItem({ message }: UserChatMessageItemProps) {
   return (
     <Text color={colors.user}>
       <Text>{texts.userLabel}</Text>
-      <Text>{message.text}</Text>
+      <Text>{message.content}</Text>
     </Text>
   );
 }

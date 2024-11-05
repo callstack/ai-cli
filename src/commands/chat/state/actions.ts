@@ -1,39 +1,36 @@
-import type { ModelResponse } from '../../../engine/inference.js';
+import { type AssistantMessage, type AssistantResponse } from '@callstack/byorg-core';
 import { useChatState, type MessageLevel } from './state.js';
 
-export function addUserMessage(text: string) {
+export function addUserMessage(content: string) {
   useChatState.setState((state) => {
     return {
       activeView: null,
-      contextMessages: [...state.contextMessages, { role: 'user', content: text }],
-      chatMessages: [...state.chatMessages, { type: 'user', text }],
+      contextMessages: [...state.contextMessages, { role: 'user', content }],
+      chatMessages: [...state.chatMessages, { role: 'user', content }],
     };
   });
 }
 
-export function addAiResponse(response: ModelResponse) {
+export function addAssistantResponse(response: AssistantResponse) {
   useChatState.setState((state) => {
-    const outputMessages = {
-      type: 'ai',
-      text: response.message.content,
-      responseTime: response.responseTime,
-      usage: response.usage,
-      data: response.data,
-    } as const;
+    const message: AssistantMessage = {
+      role: 'assistant',
+      content: response.content,
+    };
 
     return {
       activeView: null,
-      contextMessages: [...state.contextMessages, response.message],
-      chatMessages: [...state.chatMessages, outputMessages],
+      contextMessages: [...state.contextMessages, message],
+      chatMessages: [...state.chatMessages, response],
     };
   });
 }
 
-export function addProgramMessage(text: string, level: MessageLevel = 'info') {
+export function addProgramMessage(content: string, level: MessageLevel = 'info') {
   useChatState.setState((state) => {
     return {
       activeView: null,
-      chatMessages: [...state.chatMessages, { type: 'program', level, text }],
+      chatMessages: [...state.chatMessages, { role: 'program', level, content }],
     };
   });
 }
@@ -57,7 +54,7 @@ export function forgetContextMessages() {
       contextMessages: [],
       chatMessages: [
         ...state.chatMessages,
-        { type: 'program', level: 'info', text: 'AI will forget previous messages.' },
+        { role: 'program', level: 'info', content: 'AI will forget previous messages.' },
       ],
     };
   });
@@ -92,7 +89,7 @@ export function triggerExit() {
     return {
       activeView: null,
       shouldExit: true,
-      chatMessages: [...state.chatMessages, { type: 'program', level: 'info', text: 'Bye! 👋' }],
+      chatMessages: [...state.chatMessages, { role: 'program', level: 'info', content: 'Bye! 👋' }],
     };
   });
 }
@@ -103,7 +100,7 @@ export function setVerbose(verbose: boolean) {
       verbose,
       chatMessages: [
         ...state.chatMessages,
-        { type: 'program', level: 'info', text: `Verbose mode: ${verbose ? 'on' : 'off'}` },
+        { role: 'program', level: 'info', content: `Verbose mode: ${verbose ? 'on' : 'off'}` },
       ],
     };
   });

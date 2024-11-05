@@ -2,3 +2,6 @@ node_modules/
 build/
 dist/
 website/
+rsbuild.config.ts
+vitest.config.ts
+bin.js

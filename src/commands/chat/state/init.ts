@@ -1,7 +1,7 @@
+import { createApp, type Message } from '@callstack/byorg-core';
 import { type ConfigFile } from '../../../config-file.js';
 import { DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
 import type { ResponseStyle } from '../../../engine/providers/config.js';
-import type { Message } from '../../../engine/inference.js';
 import type { PromptOptions } from '../prompt-options.js';
 import { getDefaultProvider, resolveProviderFromOption } from '../providers.js';
 import { filterOutApiKey, handleInputFile } from '../utils.js';
@@ -40,47 +40,54 @@ export function initChatState(
 
   if (modelOrAlias != null && modelOrAlias !== model) {
     outputMessages.push({
-      type: 'program',
+      role: 'program',
       level: 'debug',
-      text: `Resolved model alias "${modelOrAlias}" to "${model}".`,
+      content: `Resolved model alias "${modelOrAlias}" to "${model}".`,
     });
   }
 
   outputMessages.push({
-    type: 'program',
+    role: 'program',
     level: 'debug',
-    text: `Loaded config: ${JSON.stringify(providerConfig, filterOutApiKey, 2)}`,
+    content: `Loaded config: ${JSON.stringify(providerConfig, filterOutApiKey, 2)}`,
   });
 
   if (options.file) {
-    const { systemMessage, costWarning, costInfo } = handleInputFile(
-      options.file,
-      providerConfig,
-      provider,
-    );
+    const {
+      systemPrompt: fileSystemPrompt,
+      costWarning,
+      costInfo,
+    } = handleInputFile(options.file, providerConfig, provider);
 
-    contextMessages.push(systemMessage);
+    providerConfig.systemPrompt += `\n\n${fileSystemPrompt}`;
+
     if (costWarning) {
-      outputMessages.push({ type: 'program', level: 'warning', text: costWarning });
+      outputMessages.push({ role: 'program', level: 'warning', content: costWarning });
     } else if (costInfo) {
-      outputMessages.push({ type: 'program', level: 'info', text: costInfo });
+      outputMessages.push({ role: 'program', level: 'info', content: costInfo });
     }
   }
 
   if (initialPrompt) {
     contextMessages.push({ role: 'user', content: initialPrompt });
-    outputMessages.push({ type: 'user', text: initialPrompt });
+    outputMessages.push({ role: 'user', content: initialPrompt });
   }
+
+  const app = createApp({
+    chatModel: provider.getChatModel(providerConfig),
+    systemPrompt: () => providerConfig.systemPrompt,
+  });
 
   const state: ChatState = {
     activeView: null,
-    provider,
+    provider: provider,
     providerConfig,
     contextMessages,
     chatMessages: outputMessages,
     verbose: options.verbose ?? false,
     shouldExit: false,
     stream: options.stream ?? true,
+    app,
   };
 
   useChatState.setState(state);

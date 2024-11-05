@@ -1,6 +1,6 @@
 import { createRequire } from 'module';
 import { Tiktoken } from 'tiktoken/lite';
-import type { Message } from './inference.js';
+import type { Message } from '@callstack/byorg-core';
 
 // Workaround for JSON loading in ESM
 // See: https://www.stefanjudis.com/snippets/how-to-import-json-files-in-es-modules-node-js/#option-2%3A-leverage-the-commonjs-%60require%60-function-to-load-json-files

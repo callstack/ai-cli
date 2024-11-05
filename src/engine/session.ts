@@ -1,4 +1,4 @@
-import type { ModelUsage } from './inference.js';
+import type { ModelUsage } from '@callstack/byorg-core';
 import type { ModelPricing } from './providers/provider.js';
 
 export interface SessionUsage {

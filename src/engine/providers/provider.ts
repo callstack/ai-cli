@@ -1,4 +1,4 @@
-import type { Message, ModelResponse, ModelResponseUpdate } from '../inference.js';
+import type { ChatModel } from '@callstack/byorg-core';
 import type { ProviderConfig } from './config.js';
 import openAi from './open-ai.js';
 import perplexity from './perplexity.js';
@@ -17,12 +17,7 @@ export interface Provider {
   modelPricing: Record<string, ModelPricing>;
   modelAliases: Record<string, string>;
 
-  getChatCompletion: (config: ProviderConfig, messages: Message[]) => Promise<ModelResponse>;
-  getChatCompletionStream?: (
-    config: ProviderConfig,
-    messages: Message[],
-    onStreamUpdate: (update: ModelResponseUpdate) => void,
-  ) => Promise<ModelResponse>;
+  getChatModel: (config: ProviderConfig) => ChatModel;
 }
 
 export interface ModelPricing {

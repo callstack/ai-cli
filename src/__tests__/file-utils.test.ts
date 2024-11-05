@@ -1,81 +1,61 @@
-/* eslint-disable jest/no-commented-out-tests */
-it.todo('Move tests to AVA');
+import { Message } from '@callstack/byorg-core';
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { fs, vol } from 'memfs';
+import { getDefaultFilename, getUniqueFilename } from '../file-utils.js';
 
-// import type { SessionContext } from '../commands/prompt/types.js';
-// import { DEFAULT_SYSTEM_PROMPT } from '../default-config.js';
-// import { getDefaultFilename, getUniqueFilename } from '../file-utils.js';
-// import openAi from '../engine/providers/openAi.js';
+vi.mock('node:fs', () => fs);
 
-// const mockFs = require('mock-fs');
+beforeAll(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(2020, 3, 1, 12, 0));
+  return () => {
+    vi.useRealTimers();
+  };
+});
 
-// const mockContext: SessionContext = {
-//   config: {
-//     model: 'gpt-4',
-//     systemPrompt: DEFAULT_SYSTEM_PROMPT,
-//     apiKey: '***',
-//   },
-//   provider: openAi,
-//   messages: [],
-//   totalUsage: { inputTokens: 0, outputTokens: 0, requests: 0 },
-// };
+beforeEach(() => {
+  vol.fromJSON(
+    {
+      'file.txt': 'Content',
+      'incr.txt': 'Content',
+      'incr-1.txt': 'Content',
+    },
+    '/path/to/',
+  );
 
-// // Allows for mocking the time on CLI
-// Object.defineProperty(global, 'performance', {
-//   writable: true,
-// });
+  return () => {
+    // // Restores the filesystem functions
+    vol.reset();
+  };
+});
 
-// beforeAll(() => {
-//   jest.useFakeTimers();
-//   jest.setSystemTime(new Date(2020, 3, 1, 12, 0));
-// });
+describe('getDefaultFilename', () => {
+  test('should return the default file name', () => {
+    // Test case 1
+    const messages: Message[] = [{ role: 'user', content: 'Hi How Are You Doing Today?' }];
 
-// beforeEach(() => {
-//   mockFs({
-//     '/path/to/': {
-//       'file.txt': 'Content',
-//       'incr.txt': 'Content',
-//       'incr-1.txt': 'Content',
-//     },
-//   });
-// });
+    const defaultFilename = getDefaultFilename(messages);
 
-// // Restores the filesystem functions
-// afterEach(() => {
-//   mockFs.restore();
-// });
+    expect(defaultFilename).toBe('2020-04-01 12-00 Hi How Are You Doing');
+  });
+});
 
-// afterAll(() => {
-//   jest.useRealTimers();
-// });
+describe('getUniqueFilename', () => {
+  test('should return a unique file name', () => {
+    const filePath = '/path/to/file.txt';
+    const uniqueFilename = getUniqueFilename(filePath);
+    expect(uniqueFilename).toMatch(`/path/to/file-1.txt`);
+  });
 
-// describe('getDefaultFilename', () => {
-//   it('should return the default file name', () => {
-//     // Test case 1
-//     const context = mockContext;
-//     context.messages.push({ role: 'user', content: 'Hi How Are You Doing Today?' });
+  test('should properly increment the name', () => {
+    const filePath = '/path/to/incr.txt';
+    const uniqueFilename = getUniqueFilename(filePath);
+    expect(uniqueFilename).toMatch(`/path/to/incr-2.txt`);
+  });
 
-//     const defaultFilename = getDefaultFilename(context);
-
-//     expect(defaultFilename).toBe('2020-04-01 12-00 Hi How Are You Doing');
-//   });
-// });
-
-// describe('getUniqueFilename', () => {
-//   it('should return a unique file name', () => {
-//     const filePath = '/path/to/file.txt';
-//     const uniqueFilename = getUniqueFilename(filePath);
-//     expect(uniqueFilename).toMatch(`/path/to/file-1.txt`);
-//   });
-
-//   it('should properly increment the name', () => {
-//     const filePath = '/path/to/incr.txt';
-//     const uniqueFilename = getUniqueFilename(filePath);
-//     expect(uniqueFilename).toMatch(`/path/to/incr-2.txt`);
-//   });
-
-//   it('should not modify already unique name', () => {
-//     const filePath = '/path/to/another/file.txt';
-//     const uniqueFilename = getUniqueFilename(filePath);
-//     expect(uniqueFilename).toMatch(`/path/to/another/file.txt`);
-//   });
-// });
+  test('should not modify already unique name', () => {
+    const filePath = '/path/to/another/file.txt';
+    const uniqueFilename = getUniqueFilename(filePath);
+    expect(uniqueFilename).toMatch(`/path/to/another/file.txt`);
+  });
+});

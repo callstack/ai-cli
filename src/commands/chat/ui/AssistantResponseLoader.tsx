@@ -4,11 +4,11 @@ import { TextSpinner } from '../../../components/TextSpinner.js';
 import { colors } from '../../../theme/colors.js';
 import { texts } from '../texts.js';
 
-interface AiResponseLoaderProps {
+interface AssistantResponseLoaderProps {
   text?: string;
 }
 
-export function AiResponseLoader({ text }: AiResponseLoaderProps) {
+export function AssistantResponseLoader({ text }: AssistantResponseLoaderProps) {
   return (
     <Text color={colors.assistant}>
       <Text color={colors.assistant}>{texts.assistantLabel}</Text>

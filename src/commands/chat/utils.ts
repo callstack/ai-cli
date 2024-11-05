@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
+import type { Message } from '@callstack/byorg-core';
 import {
   DEFAULT_FILE_PROMPT,
   FILE_COST_WARNING,
@@ -8,7 +9,6 @@ import {
 } from '../../default-config.js';
 import { calculateUsageCost } from '../../engine/session.js';
 import { getTokensCount } from '../../engine/tokenizer.js';
-import type { Message, SystemMessage } from '../../engine/inference.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
 import { formatCost, formatTokenCount } from '../../format.js';
@@ -17,9 +17,10 @@ import {
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils.js';
+import { texts } from './texts.js';
 
 interface HandleInputFileResult {
-  systemMessage: SystemMessage;
+  systemPrompt: string;
   costWarning: string | null;
   costInfo: string | null;
 }
@@ -59,7 +60,7 @@ export function handleInputFile(
   );
 
   return {
-    systemMessage: { role: 'system', content },
+    systemPrompt: content,
     costWarning,
     costInfo,
   };
@@ -92,11 +93,9 @@ export function saveConversation(messages: Message[]) {
 function roleToLabel(role: Message['role']): string {
   switch (role) {
     case 'user':
-      return 'me';
+      return texts.userLabel;
     case 'assistant':
-      return 'ai';
-    case 'system':
-      return 'system';
+      return texts.assistantLabel;
     default:
       return role;
   }
