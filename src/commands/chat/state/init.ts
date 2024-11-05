@@ -1,4 +1,4 @@
-import { createApp, loggingPlugin, type Message } from '@callstack/byorg-core';
+import { createApp, type Message } from '@callstack/byorg-core';
 import { type ConfigFile } from '../../../config-file.js';
 import { DEFAULT_SYSTEM_PROMPT } from '../../../default-config.js';
 import type { ResponseStyle } from '../../../engine/providers/config.js';
@@ -76,7 +76,6 @@ export function initChatState(
   const app = createApp({
     chatModel: providerInfo.getChatModel(providerConfig),
     systemPrompt: () => providerConfig.systemPrompt,
-    plugins: [loggingPlugin],
   });
 
   const state: ChatState = {

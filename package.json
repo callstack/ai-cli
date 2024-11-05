@@ -28,7 +28,7 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli build",
     "release": "release-it",
-    "ai": "./bin.js"
+    "ai": "yarn build && ./bin.js"
   },
   "repository": {
     "type": "git",
