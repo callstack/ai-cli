@@ -1,8 +1,8 @@
 import { createMistral } from '@ai-sdk/mistral';
 import { VercelChatModelAdapter } from '@callstack/byorg-core';
-import type { ProviderInfo } from './provider-info.js';
+import type { Provider } from './provider.js';
 
-const Mistral: ProviderInfo = {
+const Mistral: Provider = {
   label: 'Mistral',
   name: 'mistral',
   apiKeyUrl: 'https://console.mistral.ai/api-keys/',

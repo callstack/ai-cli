@@ -1,9 +1,9 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { VercelChatModelAdapter } from '@callstack/byorg-core';
 import { type ProviderConfig } from './config.js';
-import type { ProviderInfo } from './provider-info.js';
+import type { Provider } from './provider.js';
 
-const Anthropic: ProviderInfo = {
+const Anthropic: Provider = {
   label: 'Anthropic',
   name: 'anthropic',
   apiKeyUrl: 'https://console.anthropic.com/settings/keys',

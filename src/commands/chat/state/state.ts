@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import type { Application, AssistantResponse, Message, UserMessage } from '@callstack/byorg-core';
 import type { ProviderConfig } from '../../../engine/providers/config.js';
-import type { ProviderInfo } from '../../../engine/providers/provider-info.js';
+import type { Provider } from '../../../engine/providers/provider.js';
 
 export interface ChatState {
-  provider: ProviderInfo;
+  provider: Provider;
   providerConfig: ProviderConfig;
   contextMessages: Message[];
   chatMessages: ChatMessage[];

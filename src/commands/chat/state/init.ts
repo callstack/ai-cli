@@ -12,19 +12,19 @@ export function initChatState(
   configFile: ConfigFile,
   initialPrompt: string,
 ) {
-  const providerInfo = options.provider
+  const provider = options.provider
     ? resolveProviderInfoFromOption(options.provider)
     : getDefaultProviderInfo(configFile);
 
-  const providerFileConfig = configFile.providers[providerInfo.name];
+  const providerFileConfig = configFile.providers[provider.name];
   if (!providerFileConfig) {
-    throw new Error(`Provider config not found: ${providerInfo.name}.`);
+    throw new Error(`Provider config not found: ${provider.name}.`);
   }
 
   const modelOrAlias = options.model ?? providerFileConfig.model;
   const model = modelOrAlias
-    ? (providerInfo.modelAliases[modelOrAlias] ?? modelOrAlias)
-    : providerInfo.defaultModel;
+    ? (provider.modelAliases[modelOrAlias] ?? modelOrAlias)
+    : provider.defaultModel;
 
   const systemPrompt = providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT;
 
@@ -57,7 +57,7 @@ export function initChatState(
       systemPrompt: fileSystemPrompt,
       costWarning,
       costInfo,
-    } = handleInputFile(options.file, providerConfig, providerInfo);
+    } = handleInputFile(options.file, providerConfig, provider);
 
     providerConfig.systemPrompt += `\n\n${fileSystemPrompt}`;
 
@@ -74,13 +74,13 @@ export function initChatState(
   }
 
   const app = createApp({
-    chatModel: providerInfo.getChatModel(providerConfig),
+    chatModel: provider.getChatModel(providerConfig),
     systemPrompt: () => providerConfig.systemPrompt,
   });
 
   const state: ChatState = {
     activeView: null,
-    provider: providerInfo,
+    provider: provider,
     providerConfig,
     contextMessages,
     chatMessages: outputMessages,

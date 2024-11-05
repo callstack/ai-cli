@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { z } from 'zod';
-import { providerNames } from './engine/providers/provider-info.js';
+import { providerNames } from './engine/providers/provider.js';
 
 const LEGACY_CONFIG_FILENAME = '.airc';
 const CONFIG_FILENAME = '.airc.json';

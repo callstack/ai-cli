@@ -8,7 +8,7 @@ import mistral from './mistral.js';
 export const providerNames = ['openAi', 'anthropic', 'perplexity', 'mistral'] as const;
 export type ProviderName = (typeof providerNames)[number];
 
-export interface ProviderInfo {
+export interface Provider {
   name: ProviderName;
   label: string;
   apiKeyUrl: string;
@@ -31,7 +31,7 @@ export interface ModelPricing {
   requestsCost?: number;
 }
 
-const providersMap: Record<ProviderName, ProviderInfo> = {
+const providersMap: Record<ProviderName, Provider> = {
   openAi,
   anthropic,
   perplexity,
@@ -40,7 +40,7 @@ const providersMap: Record<ProviderName, ProviderInfo> = {
 
 export const providers = Object.values(providersMap);
 
-export function getProvider(providerName: ProviderName): ProviderInfo {
+export function getProvider(providerName: ProviderName): Provider {
   const provider = providersMap[providerName];
   if (!provider) {
     throw new Error(`Provider not found: ${providerName}.`);

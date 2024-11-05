@@ -4,20 +4,20 @@ import { Select } from '@inkjs/ui';
 import {
   getProvider,
   providers,
-  type ProviderInfo,
+  type Provider,
   type ProviderName,
-} from '../../../engine/providers/provider-info.js';
+} from '../../../engine/providers/provider.js';
 import { colors } from '../../../theme/colors.js';
 
 interface SelectProviderStepProps {
   label: string;
-  onSelect: (provider: ProviderInfo) => void;
+  onSelect: (provider: Provider) => void;
 }
 
 const providerItems = providers.map((p) => ({ label: p.label, value: p.name }));
 
 export function SelectProviderStep({ label, onSelect }: SelectProviderStepProps) {
-  const [value, setValue] = useState<ProviderInfo>();
+  const [value, setValue] = useState<Provider>();
 
   const handleSelect = (name: ProviderName) => {
     const provider = getProvider(name);

@@ -1,8 +1,8 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { VercelChatModelAdapter } from '@callstack/byorg-core';
-import type { ProviderInfo } from './provider-info.js';
+import type { Provider } from './provider.js';
 
-const Perplexity: ProviderInfo = {
+const Perplexity: Provider = {
   label: 'Perplexity',
   name: 'perplexity',
   apiKeyUrl: 'https://perplexity.ai/settings/api',

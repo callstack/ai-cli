@@ -1,9 +1,9 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { VercelChatModelAdapter } from '@callstack/byorg-core';
 import { type ProviderConfig } from './config.js';
-import type { ProviderInfo } from './provider-info.js';
+import type { Provider } from './provider.js';
 
-const OpenAi: ProviderInfo = {
+const OpenAi: Provider = {
   label: 'OpenAI',
   name: 'openAi',
   apiKeyUrl: 'https://platform.openai.com/api-keys',

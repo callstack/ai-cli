@@ -10,7 +10,7 @@ import {
 import { calculateUsageCost } from '../../engine/session.js';
 import { getTokensCount } from '../../engine/tokenizer.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
-import type { ProviderInfo } from '../../engine/providers/provider-info.js';
+import type { Provider } from '../../engine/providers/provider.js';
 import { formatCost, formatTokenCount } from '../../format.js';
 import {
   getConversationStoragePath,
@@ -28,7 +28,7 @@ interface HandleInputFileResult {
 export function handleInputFile(
   inputFile: string,
   config: ProviderConfig,
-  provider: ProviderInfo,
+  provider: Provider,
 ): HandleInputFileResult {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
 
