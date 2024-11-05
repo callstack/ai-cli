@@ -28,6 +28,7 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli build",
     "release": "release-it",
+    "release:next": "release-it --preRelease=next",
     "ai": "yarn build && ./bin.js"
   },
   "repository": {
@@ -96,22 +97,5 @@
     "singleQuote": true,
     "tabWidth": 2,
     "useTabs": false
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
   }
 }
