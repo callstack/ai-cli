@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-import './dist/bin.cjs';
+import './dist/bin.js';

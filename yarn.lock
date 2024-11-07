@@ -678,11 +678,11 @@ __metadata:
     "@ai-sdk/anthropic": "npm:^0.0.56"
     "@ai-sdk/mistral": "npm:^0.0.46"
     "@ai-sdk/openai": "npm:^0.0.72"
-    "@callstack/byorg-core": "npm:0.2.0"
-    "@callstack/eslint-config": "npm:^14.1.1"
+    "@callstack/byorg-core": "npm:0.3.1"
+    "@callstack/eslint-config": "npm:^14.2.0"
     "@inkjs/ui": "npm:^1.0.0"
     "@release-it/conventional-changelog": "npm:^5.1.1"
-    "@rsbuild/core": "npm:^1.0.19"
+    "@rslib/core": "npm:^0.0.16"
     "@types/jest": "npm:^29.5.14"
     "@types/mock-fs": "npm:^4.13.4"
     "@types/prompts": "npm:^2.4.9"
@@ -715,36 +715,36 @@ __metadata:
     vitest: "npm:^2.1.4"
     yargs: "npm:^17.7.2"
     zod: "npm:^3.23.8"
-    zustand: "npm:^4.5.2"
+    zustand: "npm:^4.5.5"
   bin:
     ai: ./bin.js
   languageName: unknown
   linkType: soft
 
-"@callstack/byorg-core@npm:0.2.0":
-  version: 0.2.0
-  resolution: "@callstack/byorg-core@npm:0.2.0"
+"@callstack/byorg-core@npm:0.3.1":
+  version: 0.3.1
+  resolution: "@callstack/byorg-core@npm:0.3.1"
   dependencies:
     "@anthropic-ai/sdk": "npm:^0.26.1"
-    "@callstack/byorg-utils": "npm:0.2.0"
+    "@callstack/byorg-utils": "npm:0.3.1"
     ai: "npm:^3.4.33"
     openai: "npm:^4.71.0"
     tiktoken: "npm:^1.0.17"
     ts-regex-builder: "npm:^1.8.2"
   peerDependencies:
     zod: ^3.23.8
-  checksum: 10/f53e0f8495d6a2f56de10a189f7eb0f3345f9b0c45e2520a95f96cb9d59d9ac6a3abe49621e93b72dc47e0c9468179e3bed9e86117b476a015fc2037896c7281
+  checksum: 10/cc1be3a3aad1699bd7b0bf44868bc2b5340ea0d2f692e301083e81fc82d6784955cd386fa0ed648f3d95bf586fcccec2a1edaa5f5e604bc3baf510de2378ccc9
   languageName: node
   linkType: hard
 
-"@callstack/byorg-utils@npm:0.2.0":
-  version: 0.2.0
-  resolution: "@callstack/byorg-utils@npm:0.2.0"
-  checksum: 10/d4a614c6ced3164837fff494bb838825b44a542e84f1b5ce2f4e86f4d1ceb5659a3d205563ab119550922cde4be60e987c7bf9bc4a6df4943577ea6ba0d4232e
+"@callstack/byorg-utils@npm:0.3.1":
+  version: 0.3.1
+  resolution: "@callstack/byorg-utils@npm:0.3.1"
+  checksum: 10/e43392b85d8f14e7ca45dcdf64e4697682847e59be91fb58634d703bd24ba385b4e167c912866ddd5d432ee45921d15b7d4d579c420f573fc0def810b5211308
   languageName: node
   linkType: hard
 
-"@callstack/eslint-config@npm:^14.1.1":
+"@callstack/eslint-config@npm:^14.2.0":
   version: 14.2.0
   resolution: "@callstack/eslint-config@npm:14.2.0"
   dependencies:
@@ -1808,7 +1808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rsbuild/core@npm:^1.0.19":
+"@rsbuild/core@npm:~1.0.19":
   version: 1.0.19
   resolution: "@rsbuild/core@npm:1.0.19"
   dependencies:
@@ -1823,6 +1823,27 @@ __metadata:
   bin:
     rsbuild: bin/rsbuild.js
   checksum: 10/bf6b584ad5121d5f5d5db54e1f0bdcd10f3a0c2e9175d8bbf9b913813da0542240908cc8bfe9d1eb3db0732fdc2c4b2af7134a3cabc041e19ac22b2a0d750fc0
+  languageName: node
+  linkType: hard
+
+"@rslib/core@npm:^0.0.16":
+  version: 0.0.16
+  resolution: "@rslib/core@npm:0.0.16"
+  dependencies:
+    "@rsbuild/core": "npm:~1.0.19"
+    rsbuild-plugin-dts: "npm:0.0.16"
+    tinyglobby: "npm:^0.2.10"
+  peerDependencies:
+    "@microsoft/api-extractor": ^7
+    typescript: ^5
+  peerDependenciesMeta:
+    "@microsoft/api-extractor":
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    rslib: bin/rslib.js
+  checksum: 10/ea6367d6dcf61eebca3fcf7d8b06541766a7d765fd091bc833d2cb2d8ca6ada9f3ae14f3948a244b3e96285f930a703c43b08472a65be9f26ba9bcee6afb7227
   languageName: node
   linkType: hard
 
@@ -5348,6 +5369,18 @@ __metadata:
   dependencies:
     bser: "npm:2.1.1"
   checksum: 10/4f95d336fb805786759e383fd7fff342ceb7680f53efcc0ef82f502eb479ce35b98e8b207b6dfdfeea0eba845862107dc73813775fc6b56b3098c6e90a2dad77
+  languageName: node
+  linkType: hard
+
+"fdir@npm:^6.4.2":
+  version: 6.4.2
+  resolution: "fdir@npm:6.4.2"
+  peerDependencies:
+    picomatch: ^3 || ^4
+  peerDependenciesMeta:
+    picomatch:
+      optional: true
+  checksum: 10/5ff80d1d2034e75cc68be175401c9f64c4938a6b2c1e9a0c27f2d211ffbe491fd86d29e4576825d9da8aff9bd465f0283427c2dddc11653457906c46d3bbc448
   languageName: node
   linkType: hard
 
@@ -8923,6 +8956,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picocolors@npm:1.1.1, picocolors@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "picocolors@npm:1.1.1"
+  checksum: 10/e1cf46bf84886c79055fdfa9dcb3e4711ad259949e3565154b004b260cd356c5d54b31a1437ce9782624bf766272fe6b0154f5f0c744fb7af5d454d2b60db045
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0, picocolors@npm:^1.0.1":
   version: 1.0.1
   resolution: "picocolors@npm:1.0.1"
@@ -8930,17 +8970,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picocolors@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "picocolors@npm:1.1.1"
-  checksum: 10/e1cf46bf84886c79055fdfa9dcb3e4711ad259949e3565154b004b260cd356c5d54b31a1437ce9782624bf766272fe6b0154f5f0c744fb7af5d454d2b60db045
-  languageName: node
-  linkType: hard
-
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.3, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 10/60c2595003b05e4535394d1da94850f5372c9427ca4413b71210f437f7b2ca091dbd611c45e8b37d10036fa8eade25c1b8951654f9d3973bfa66a2ff4d3b08bc
+  languageName: node
+  linkType: hard
+
+"picomatch@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "picomatch@npm:4.0.2"
+  checksum: 10/ce617b8da36797d09c0baacb96ca8a44460452c89362d7cb8f70ca46b4158ba8bc3606912de7c818eb4a939f7f9015cef3c766ec8a0c6bfc725fdc078e39c717
   languageName: node
   linkType: hard
 
@@ -9672,6 +9712,26 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 10/a8ffde17d7cd5d9eaaf91bb025de83329b034771254d34b977df3f294e0992f6d89a444a0c8e9d73c8721d60cedf5be32fa8bd6f157874700bb8043c61ca660a
+  languageName: node
+  linkType: hard
+
+"rsbuild-plugin-dts@npm:0.0.16":
+  version: 0.0.16
+  resolution: "rsbuild-plugin-dts@npm:0.0.16"
+  dependencies:
+    magic-string: "npm:^0.30.12"
+    picocolors: "npm:1.1.1"
+    tinyglobby: "npm:^0.2.10"
+  peerDependencies:
+    "@microsoft/api-extractor": ^7
+    "@rsbuild/core": 1.x
+    typescript: ^5
+  peerDependenciesMeta:
+    "@microsoft/api-extractor":
+      optional: true
+    typescript:
+      optional: true
+  checksum: 10/64d6d3c523d97601ea065d78faf50993d59628f577e578a47c7cc659a60da08dad059198cfe0d358b0b55a25255c4d13a4fb12be8673fa3ccb5d45892c2bc4fc
   languageName: node
   linkType: hard
 
@@ -10561,6 +10621,16 @@ __metadata:
   version: 0.3.1
   resolution: "tinyexec@npm:0.3.1"
   checksum: 10/0537c70590d52d354f40c0255ff0f654a3d18ddb3812b440ddf9d436edf516c8057838ad5a38744c0c59670ec03e3cf23fbe04ae3d49f031d948274e99002569
+  languageName: node
+  linkType: hard
+
+"tinyglobby@npm:^0.2.10":
+  version: 0.2.10
+  resolution: "tinyglobby@npm:0.2.10"
+  dependencies:
+    fdir: "npm:^6.4.2"
+    picomatch: "npm:^4.0.2"
+  checksum: 10/10c976866d849702edc47fc3fef27d63f074c40f75ef17171ecc1452967900699fa1e62373681dd58e673ddff2e3f6094bcd0a2101e3e4b30f4c2b9da41397f2
   languageName: node
   linkType: hard
 
@@ -11599,7 +11669,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^4.5.2":
+"zustand@npm:^4.5.5":
   version: 4.5.5
   resolution: "zustand@npm:4.5.5"
   dependencies:
