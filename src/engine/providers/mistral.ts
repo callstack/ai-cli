@@ -7,33 +7,36 @@ const Mistral: Provider = {
   name: 'mistral',
   apiKeyUrl: 'https://console.mistral.ai/api-keys/',
 
-  // Mistral models: https://docs.mistral.ai/getting-started/models/
+  // Mistral models: https://docs.mistral.ai/platform/endpoints/
   defaultModel: 'mistral-large-latest',
 
   // Price per 1M tokens [input, output].
   // Source: https://docs.mistral.ai/platform/pricing/
   modelPricing: {
-    // Current models
-    'open-mistral-nemo': { inputTokensCost: 0.3, outputTokensCost: 0.3 },
-    'open-mistral-nemo-2407': { inputTokensCost: 0.3, outputTokensCost: 0.3 },
-    'mistral-large-latest': { inputTokensCost: 3, outputTokensCost: 9 },
-    'mistral-large-2407': { inputTokensCost: 3, outputTokensCost: 9 },
-    'codestral-latest': { inputTokensCost: 1, outputTokensCost: 3 },
-    'codestral-2405': { inputTokensCost: 1, outputTokensCost: 3 },
+    // Premiere models
+    'mistral-large-latest': { inputTokensCost: 2, outputTokensCost: 6 },
+    'mistral-large-2411': { inputTokensCost: 2, outputTokensCost: 6 },
+    'pixtral-large-latest': { inputTokensCost: 2, outputTokensCost: 6 },
+    'pixtral-large-2411': { inputTokensCost: 2, outputTokensCost: 6 },
+    'mistral-small-latest': { inputTokensCost: 0.2, outputTokensCost: 0.6 },
+    'mistral-small-2409': { inputTokensCost: 0.2, outputTokensCost: 0.6 },
+    'codestral-latest': { inputTokensCost: 0.25, outputTokensCost: 0.25 },
+    'codestral-2405': { inputTokensCost: 0.2, outputTokensCost: 0.6 },
+    'ministral-8b-latest': { inputTokensCost: 0.1, outputTokensCost: 0.1 },
+    'ministral-8b-2410': { inputTokensCost: 0.1, outputTokensCost: 0.1 },
+    'ministral-3b-latest': { inputTokensCost: 0.04, outputTokensCost: 0.04 },
+    'ministral-3b-2410': { inputTokensCost: 0.04, outputTokensCost: 0.04 },
 
-    // Legacy models
-    'open-mistral-7b': { inputTokensCost: 0.25, outputTokensCost: 0.25 },
-    'open-mixtral-8x7b': { inputTokensCost: 0.7, outputTokensCost: 0.7 },
-    'open-mixtral-8x22b': { inputTokensCost: 2, outputTokensCost: 6 },
-    'mistral-small-latest': { inputTokensCost: 1, outputTokensCost: 3 },
-    'mistral-small-2402': { inputTokensCost: 1, outputTokensCost: 3 },
+    // Free models
+    'open-mistral-nemo': { inputTokensCost: 0.15, outputTokensCost: 0.15 },
+    'open-mistral-nemo-2407': { inputTokensCost: 0.15, outputTokensCost: 0.15 },
     'mistral-medium-latest': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
     'mistral-medium-2312': { inputTokensCost: 2.7, outputTokensCost: 8.1 },
   },
 
   modelAliases: {
-    nemo: 'open-mistral-nemo-2407',
     large: 'mistral-large-latest',
+    small: 'mistral-small-latest',
     codestral: 'codestral-latest',
   },
 
