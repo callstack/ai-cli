@@ -1,6 +1,6 @@
 {
   "name": "@callstack/ai-cli",
-  "version": "0.10.0-next.1",
+  "version": "0.10.0",
   "description": "AI assistent in your terminal.",
   "author": "Maciej Jastrzebski <mdjastrzebski@gmail.com> (https://github.com/mdjastrzebski)",
   "homepage": "https://github.com/callstack/ai-cli#readme",
