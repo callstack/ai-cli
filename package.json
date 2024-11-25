@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@callstack/eslint-config": "^14.2.0",
-    "@release-it/conventional-changelog": "^5.1.1",
+    "@release-it/conventional-changelog": "^9.0.3",
     "@rslib/core": "^0.1.0",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
@@ -83,7 +83,7 @@
     "memfs": "^4.14.0",
     "mock-fs": "^5.4.1",
     "prettier": "^3.3.3",
-    "release-it": "^15.11.0",
+    "release-it": "^17.10.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.5"
   },
