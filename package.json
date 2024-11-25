@@ -42,11 +42,12 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^0.0.56",
-    "@ai-sdk/mistral": "^0.0.46",
-    "@ai-sdk/openai": "^0.0.72",
-    "@callstack/byorg-core": "0.3.1",
+    "@ai-sdk/anthropic": "^1.0.2",
+    "@ai-sdk/mistral": "^1.0.3",
+    "@ai-sdk/openai": "^1.0.4",
+    "@callstack/byorg-core": "0.4.0",
     "@inkjs/ui": "^1.0.0",
+    "ai": "^4.0.4",
     "chalk": "^5.3.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
@@ -65,15 +66,15 @@
   "devDependencies": {
     "@callstack/eslint-config": "^14.2.0",
     "@release-it/conventional-changelog": "^5.1.1",
-    "@rslib/core": "^0.0.16",
+    "@rslib/core": "^0.1.0",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
     "@types/prompts": "^2.4.9",
     "@types/react": "^18.3.12",
     "@types/update-notifier": "^6.0.8",
-    "@vitest/coverage-v8": "^2.1.4",
+    "@vitest/coverage-v8": "^2.1.5",
     "del-cli": "^5.1.0",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-import": "^2.31.0",
@@ -84,7 +85,7 @@
     "prettier": "^3.3.3",
     "release-it": "^15.11.0",
     "typescript": "^5.6.3",
-    "vitest": "^2.1.4"
+    "vitest": "^2.1.5"
   },
   "packageManager": "yarn@4.4.0",
   "engines": {
