@@ -1,7 +1,7 @@
 import { AssistantResponse } from '@callstack/byorg-core';
 import { formatSpeed, formatTime } from '../../format.js';
-import { colorAssistant, colorVerbose } from '../../output/colors.js';
-import { getVerbose } from '../../output/index.js';
+import { colorAssistant, colorVerbose } from './colors.js';
+import { getVerbose } from './output.js';
 
 export function formatResponse(response: AssistantResponse) {
   let result = colorAssistant(response.content);

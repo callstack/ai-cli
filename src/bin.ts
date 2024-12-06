@@ -3,7 +3,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { command as chat } from './commands/chat/index.js';
-import { command as init } from './commands/init/index.js';
+import { command as init } from './commands/init.js';
 import { checkForUpdates } from './update-notifier.js';
 
 checkForUpdates();

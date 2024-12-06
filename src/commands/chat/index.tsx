@@ -1,15 +1,9 @@
 import { Application, createApp, Message } from '@callstack/byorg-core';
 import type { CommandModule } from 'yargs';
 import { parseConfigFile } from '../../config-file.js';
-import { colorAssistant } from '../../output/colors.js';
-import {
-  clearCurrentLine,
-  output,
-  outputError,
-  readUserInput,
-  setInterruptHandler,
-  setVerbose,
-} from '../../output/index.js';
+import { colorAssistant } from './colors.js';
+import { initInput, readUserInput, setInterruptHandler } from './input.js';
+import { output, outputError, setVerbose } from './output.js';
 import { processChatCommand } from './commands.js';
 import { cliOptions, type CliOptions } from './cli-options.js';
 import { formatResponse } from './format.js';
@@ -17,6 +11,7 @@ import { getProvider, getProviderConfig, initProvider } from './providers.js';
 import { spinnerStart, spinnerStop, spinnerUpdate } from './spinner.js';
 import { messages } from './state.js';
 import { texts } from './texts.js';
+import { exit } from './utils.js';
 
 export const command: CommandModule<{}, CliOptions> = {
   command: ['chat', '$0'],
@@ -25,10 +20,9 @@ export const command: CommandModule<{}, CliOptions> = {
   handler: (args) => run(args._.join(' '), args),
 };
 
-let shouldExit = false;
-
 async function run(initialPrompt: string, options: CliOptions) {
   setVerbose(options.verbose ?? false);
+  initInput();
 
   try {
     const configFile = parseConfigFile();
@@ -44,9 +38,7 @@ async function run(initialPrompt: string, options: CliOptions) {
 
     setInterruptHandler(() => {
       spinnerStop();
-      clearCurrentLine();
-      console.log('\nBye...');
-      shouldExit = true;
+      exit();
     });
 
     if (messages.length > 0) {
@@ -54,7 +46,8 @@ async function run(initialPrompt: string, options: CliOptions) {
       await processMessages(app, messages);
     }
 
-    while (!shouldExit) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
       const userMessage = await readUserInput();
       if (processChatCommand(userMessage)) {
         continue;

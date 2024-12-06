@@ -18,6 +18,14 @@ import {
   getUniqueFilename,
 } from '../../file-utils.js';
 import { texts } from './texts.js';
+import { closeInput } from './input.js';
+import { output } from './output.js';
+
+export function exit() {
+  closeInput();
+  output('\nBye...');
+  process.exit(0);
+}
 
 interface HandleInputFileResult {
   systemPrompt: string;

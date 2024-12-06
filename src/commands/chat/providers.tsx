@@ -6,7 +6,7 @@ import {
   type Provider,
   type ProviderName,
 } from '../../engine/providers/provider.js';
-import { output, outputVerbose, outputWarning } from '../../output/index.js';
+import { output, outputVerbose, outputWarning } from './output.js';
 import openAi from '../../engine/providers/open-ai.js';
 import anthropic from '../../engine/providers/anthropic.js';
 import perplexity from '../../engine/providers/perplexity.js';

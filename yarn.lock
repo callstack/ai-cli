@@ -680,6 +680,7 @@ __metadata:
     "@ai-sdk/openai": "npm:^0.0.72"
     "@callstack/byorg-core": "npm:0.3.1"
     "@callstack/eslint-config": "npm:^14.2.0"
+    "@clack/prompts": "npm:^0.8.2"
     "@inkjs/ui": "npm:^1.0.0"
     "@release-it/conventional-changelog": "npm:^5.1.1"
     "@rslib/core": "npm:^0.0.16"
@@ -765,6 +766,27 @@ __metadata:
   peerDependencies:
     eslint: ">=8.1.0"
   checksum: 10/70869f6cc5709b969cbf7951c1be579eab79c014a2b7acfd27d809ffb4012aba4e57f3a5219385ace133573e3be817f7980aafb8036a45c696e5c223c0b9d83e
+  languageName: node
+  linkType: hard
+
+"@clack/core@npm:0.3.5":
+  version: 0.3.5
+  resolution: "@clack/core@npm:0.3.5"
+  dependencies:
+    picocolors: "npm:^1.0.0"
+    sisteransi: "npm:^1.0.5"
+  checksum: 10/329840301b91df2957d6d3a5832946d6a3c8683aeccf98b77f559c518a9e7b75f5e59392228a51fc97ae950cf21438f1b77fb5529affd93df0106f52d9cc0881
+  languageName: node
+  linkType: hard
+
+"@clack/prompts@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "@clack/prompts@npm:0.8.2"
+  dependencies:
+    "@clack/core": "npm:0.3.5"
+    picocolors: "npm:^1.0.0"
+    sisteransi: "npm:^1.0.5"
+  checksum: 10/06859acc2cc8919255592150f898d08c93e6d6041d22b92fafa55f48265a681ab3506bde76fad5a03be3ea6f46e8408e1f1b1d88d259a0169e30b6f8b28acbfe
   languageName: node
   linkType: hard
 
