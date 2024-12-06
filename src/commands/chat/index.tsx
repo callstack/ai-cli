@@ -1,9 +1,10 @@
 import { Application, createApp, Message } from '@callstack/byorg-core';
 import type { CommandModule } from 'yargs';
-import { parseConfigFile } from '../../config-file.js';
-import { colorAssistant } from './colors.js';
+import { checkIfConfigExists, parseConfigFile } from '../../config-file.js';
+import { output, outputError, setVerbose } from '../../output.js';
+import { run as runInit } from '../init.js';
+import { colorAssistant } from '../../colors.js';
 import { initInput, readUserInput, setInterruptHandler } from './input.js';
-import { output, outputError, setVerbose } from './output.js';
 import { processChatCommand } from './commands.js';
 import { cliOptions, type CliOptions } from './cli-options.js';
 import { formatResponse } from './format.js';
@@ -21,6 +22,12 @@ export const command: CommandModule<{}, CliOptions> = {
 };
 
 async function run(initialPrompt: string, options: CliOptions) {
+  const hasConfig = checkIfConfigExists();
+  if (!hasConfig) {
+    await runInit();
+    return;
+  }
+
   setVerbose(options.verbose ?? false);
   initInput();
 

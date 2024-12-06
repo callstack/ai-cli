@@ -10,7 +10,7 @@ import openAi from '../../engine/providers/open-ai.js';
 import anthropic from '../../engine/providers/anthropic.js';
 import perplexity from '../../engine/providers/perplexity.js';
 import mistral from '../../engine/providers/mistral.js';
-import { output, outputVerbose, outputWarning } from './output.js';
+import { output, outputVerbose, outputWarning } from '../../output.js';
 import { CliOptions } from './cli-options.js';
 import { filterOutApiKey, handleInputFile } from './utils.js';
 

@@ -1,8 +1,32 @@
-import chalk from 'chalk';
+import { colorError, colorVerbose, colorWarning } from './colors.js';
+
+let showVerbose = false;
+
+export function getVerbose() {
+  return showVerbose;
+}
+
+export function setVerbose(verbose: boolean) {
+  showVerbose = verbose;
+}
+
+export function output(text: string, ...args: unknown[]) {
+  console.log(text, ...args);
+}
+
+export function outputVerbose(message: string, ...args: unknown[]) {
+  if (showVerbose) {
+    console.log(colorVerbose(message, ...args));
+  }
+}
+
+export function outputWarning(text: string) {
+  console.warn(colorWarning(text));
+}
 
 export function outputError(error: unknown, ...args: unknown[]) {
   const message = extractErrorMessage(error);
-  console.error(chalk.red(`ERROR: ${message}`, ...args));
+  console.error(colorError(`ERROR: ${message}`, ...args));
 }
 
 export function extractErrorMessage(error: unknown) {

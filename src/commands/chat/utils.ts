@@ -17,9 +17,9 @@ import {
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils.js';
+import { output } from '../../output.js';
 import { texts } from './texts.js';
 import { closeInput } from './input.js';
-import { output } from './output.js';
 
 export function exit() {
   closeInput();

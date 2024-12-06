@@ -1,5 +1,5 @@
 import { CHATS_SAVE_DIRECTORY } from '../../file-utils.js';
-import { getVerbose, output, outputVerbose, outputWarning, setVerbose } from './output.js';
+import { getVerbose, output, outputVerbose, outputWarning, setVerbose } from '../../output.js';
 import { getProvider, getProviderConfig } from './providers.js';
 import { messages } from './state.js';
 import { exit, saveConversation } from './utils.js';

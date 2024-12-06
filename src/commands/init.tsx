@@ -2,7 +2,7 @@ import { intro, confirm, log, outro, select, isCancel, text, note } from '@clack
 import type { CommandModule } from 'yargs';
 import { checkIfConfigExists, writeConfigFile } from '../config-file.js';
 import { ProviderName, providers, providersMap } from '../engine/providers/provider.js';
-import * as output from '../output.js';
+import { outputError } from '../output.js';
 
 export const command: CommandModule<{}> = {
   command: ['init'],
@@ -54,7 +54,7 @@ export async function run() {
 
     outro('Done!');
   } catch (error) {
-    output.outputError(error);
+    outputError(error);
     process.exit(1);
   }
 }
