@@ -17,7 +17,15 @@ import {
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils.js';
+import { output } from '../../output.js';
 import { texts } from './texts.js';
+import { closeInput } from './input.js';
+
+export function exit() {
+  closeInput();
+  output('\nBye...');
+  process.exit(0);
+}
 
 interface HandleInputFileResult {
   systemPrompt: string;

@@ -31,7 +31,7 @@ export interface ModelPricing {
   requestsCost?: number;
 }
 
-const providersMap: Record<ProviderName, Provider> = {
+export const providersMap: Record<ProviderName, Provider> = {
   openAi,
   anthropic,
   perplexity,
