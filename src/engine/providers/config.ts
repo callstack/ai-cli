@@ -1,7 +1,8 @@
 export interface ProviderConfig {
   apiKey: string;
   model: string;
-  systemPrompt?: string;
+  stream: boolean;
+  systemPrompt: string;
   responseStyle: ResponseStyle;
 }
 
