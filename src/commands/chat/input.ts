@@ -25,7 +25,11 @@ export function closeInput() {
 }
 
 export async function readUserInput(): Promise<string> {
-  const answer = await rl.question(`${texts.userLabel} `);
+  let answer = '';
+  while (!answer.trim()) {
+    answer = await rl.question(`${texts.userLabel} `);
+  }
+
   return answer;
 }
 
