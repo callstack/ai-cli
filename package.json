@@ -51,17 +51,12 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "ink": "^4.4.1",
-    "ink-link": "^3.0.0",
-    "ink-text-input": "^5.0.1",
     "ora": "^8.1.1",
-    "prompts": "^2.4.2",
     "react": "^18.3.1",
-    "redent": "^4.0.0",
     "tiktoken": "^1.0.17",
     "update-notifier": "^7.3.1",
     "yargs": "^17.7.2",
-    "zod": "^3.23.8",
-    "zustand": "^4.5.5"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@callstack/eslint-config": "^14.2.0",
@@ -69,7 +64,6 @@
     "@rslib/core": "^0.0.16",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
-    "@types/prompts": "^2.4.9",
     "@types/react": "^18.3.12",
     "@types/update-notifier": "^6.0.8",
     "@vitest/coverage-v8": "^2.1.4",

@@ -19,6 +19,6 @@ export function spinnerUpdate(text: string) {
 export function spinnerStop(text?: string) {
   spinner.stopAndPersist({
     symbol: '',
-    prefixText: text ? `${text}\n` : '',
+    prefixText: text ? `${text}` : '',
   });
 }

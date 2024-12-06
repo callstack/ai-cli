@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text } from 'ink';
 import { Select } from '@inkjs/ui';
 import {
-  getProvider,
+  getProviderByName,
   providers,
   type Provider,
   type ProviderName,
@@ -20,7 +20,7 @@ export function SelectProviderStep({ label, onSelect }: SelectProviderStepProps)
   const [value, setValue] = useState<Provider>();
 
   const handleSelect = (name: ProviderName) => {
-    const provider = getProvider(name);
+    const provider = getProviderByName(name);
     setValue(provider);
     onSelect(provider);
   };

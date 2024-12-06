@@ -2,14 +2,7 @@ import chalk from 'chalk';
 
 export const colors = {
   assistant: '#8CBFFA',
-  //   initPrompt: '#8CBFFA',
-  //   focusIndicator: '#9BE491',
-  //   assistant: '#8CBFFA',
-  //   user: 'white',
-  //   error: 'red',
   warning: 'yellowBright',
-  //   info: 'gray',
-  //   verbose: 'gray',
 };
 
 export function colorAssistant(...text: unknown[]) {
