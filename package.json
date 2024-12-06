@@ -28,7 +28,7 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli build",
     "release": "release-it",
-    "release:next": "release-it --preRelease=next",
+    "release:next": "release-it minor --preRelease=next",
     "ai": "yarn build && ./bin.js"
   },
   "repository": {
