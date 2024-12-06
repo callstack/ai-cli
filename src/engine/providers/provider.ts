@@ -40,7 +40,7 @@ const providersMap: Record<ProviderName, Provider> = {
 
 export const providers = Object.values(providersMap);
 
-export function getProvider(providerName: ProviderName): Provider {
+export function getProviderByName(providerName: ProviderName): Provider {
   const provider = providersMap[providerName];
   if (!provider) {
     throw new Error(`Provider not found: ${providerName}.`);

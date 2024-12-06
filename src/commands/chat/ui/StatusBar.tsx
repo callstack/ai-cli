@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Box, Text } from 'ink';
 import { formatCost, formatSpeed, formatTokenCount } from '../../../format.js';
 import { calculateUsageCost } from '../../../engine/session.js';
-import { useChatState, type ChatMessage } from '../state/state.js';
+import { useChatState, type ChatMessage } from '../_state/state.js';
 
 type TotalUsage = {
   inputTokens: number;

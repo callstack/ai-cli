@@ -1,7 +1,7 @@
 import type { Options } from 'yargs';
 import { providerOptions } from './providers.js';
 
-export interface PromptOptions {
+export interface CliOptions {
   /** AI inference provider to be used */
   provider?: string;
   /** AI model to be used */
@@ -18,7 +18,7 @@ export interface PromptOptions {
   stream?: boolean;
 }
 
-export const promptOptions: Record<keyof PromptOptions, Options> = {
+export const cliOptions: Record<keyof CliOptions, Options> = {
   'provider': {
     alias: 'p',
     type: 'string',
