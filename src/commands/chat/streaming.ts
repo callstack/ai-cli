@@ -12,21 +12,21 @@ let frameIndex = 0;
 
 export function streamingStart(text: string) {
   const lines = text.trimEnd().split('\n');
-  const readyLines = lines.slice(0, -1);
-  outputtedLines = readyLines;
-  if (readyLines.length > 0) {
-    process.stdout.write(`${CLEAR_LINE}${readyLines.join('\n')}\n`);
+  const linesToPrint = lines.slice(0, -1);
+  if (linesToPrint.length > 0) {
+    process.stdout.write(`${CLEAR_LINE}${linesToPrint.join('\n')}\n`);
   }
 
+  outputtedLines = linesToPrint;
   currentLine = lines[lines.length - 1];
   startSpinner();
 }
 
 export function streamingUpdate(text: string) {
   const lines = text.trimEnd().split('\n');
-  const readyLines = lines.slice(outputtedLines.length, -1);
-  if (readyLines.length > 0) {
-    process.stdout.write(`${CLEAR_LINE}${readyLines.join('\n')}\n`);
+  const linesToPrint = lines.slice(outputtedLines.length, -1);
+  if (linesToPrint.length > 0) {
+    process.stdout.write(`${CLEAR_LINE}${linesToPrint.join('\n')}\n`);
   }
 
   outputtedLines = lines.slice(0, -1);
@@ -37,8 +37,8 @@ export function streamingUpdate(text: string) {
 export function streamingFinish(text: string) {
   clearInterval(intervalRef);
   const lines = text.trimEnd().split('\n');
-  const readyLines = lines.slice(outputtedLines.length);
-  process.stdout.write(`${CLEAR_LINE}${readyLines.join('\n')}\n`);
+  const linesToPrint = lines.slice(outputtedLines.length);
+  process.stdout.write(`${CLEAR_LINE}${linesToPrint.join('\n')}\n`);
 }
 
 export function streamingClear() {
