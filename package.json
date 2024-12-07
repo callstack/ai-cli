@@ -45,7 +45,7 @@
     "@ai-sdk/anthropic": "^1.0.4",
     "@ai-sdk/mistral": "^1.0.4",
     "@ai-sdk/openai": "^1.0.7",
-    "@callstack/byorg-core": "0.4.2",
+    "@callstack/byorg-core": "0.5.0",
     "@clack/prompts": "^0.8.2",
     "ai": "^4.0.13",
     "chalk": "^5.3.0",

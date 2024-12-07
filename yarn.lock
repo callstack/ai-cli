@@ -547,7 +547,7 @@ __metadata:
     "@ai-sdk/anthropic": "npm:^1.0.4"
     "@ai-sdk/mistral": "npm:^1.0.4"
     "@ai-sdk/openai": "npm:^1.0.7"
-    "@callstack/byorg-core": "npm:0.4.2"
+    "@callstack/byorg-core": "npm:0.5.0"
     "@callstack/eslint-config": "npm:^14.2.0"
     "@clack/prompts": "npm:^0.8.2"
     "@release-it/conventional-changelog": "npm:^9.0.3"
@@ -583,23 +583,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@callstack/byorg-core@npm:0.4.2":
-  version: 0.4.2
-  resolution: "@callstack/byorg-core@npm:0.4.2"
+"@callstack/byorg-core@npm:0.5.0":
+  version: 0.5.0
+  resolution: "@callstack/byorg-core@npm:0.5.0"
   dependencies:
-    "@callstack/byorg-utils": "npm:0.4.2"
+    "@callstack/byorg-utils": "npm:0.5.0"
     ts-regex-builder: "npm:^1.8.2"
     zod: "npm:^3.23.8"
   peerDependencies:
     ai: ^4.0.3
-  checksum: 10/8dd71baadb9be067ef5a7e276b85506f6ba5d0669f4766c622c16d42b0b40e12f7221d3d3e3bc2e2fb32f16718916938613a4d74c5dc692817e4d193114c627d
+  checksum: 10/7092f63449fc484488da67a6e900c20494547e27c30d9e1f5caee58ddb362ea88f56302006a47ec9acc7046e9218915f3d3f4fa3dd427abb7206bdeb4296cb3a
   languageName: node
   linkType: hard
 
-"@callstack/byorg-utils@npm:0.4.2":
-  version: 0.4.2
-  resolution: "@callstack/byorg-utils@npm:0.4.2"
-  checksum: 10/91381333287a73a0c12244d6cd2bd10df8952287cbc370aa4a59296ba0a825bc43fcf980fe9af458b9059a6cb4006410d7733482841730e64b4c1a26ffc33526
+"@callstack/byorg-utils@npm:0.5.0":
+  version: 0.5.0
+  resolution: "@callstack/byorg-utils@npm:0.5.0"
+  checksum: 10/c1871c65960d9ca37ca8c381d7f0b9d128404bd40d9e308717d47456e1c64b67cf1c13ff8edb39035ee956ef109620ccf12796c811aac586f5cc438ed60805ec
   languageName: node
   linkType: hard
 
