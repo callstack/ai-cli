@@ -87,6 +87,9 @@ async function processMessages(app: Application, messages: Message[]) {
   } else {
     spinnerStop(response.content);
   }
+
+  // Insert empty line after each response
+  output('');
 }
 
 function outputMessage(message: Message) {
