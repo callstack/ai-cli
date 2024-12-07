@@ -1,15 +1,15 @@
-import { Application, createApp, Message } from '@callstack/byorg-core';
+import { Application, AssistantResponse, createApp, Message } from '@callstack/byorg-core';
 import type { CommandModule } from 'yargs';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file.js';
-import { output, outputError, setVerbose } from '../../output.js';
+import { getVerbose, output, outputError, setVerbose } from '../../output.js';
 import { run as runInit } from '../init.js';
-import { colorAssistant } from '../../colors.js';
+import { colorAssistant, colorVerbose } from '../../colors.js';
+import { formatSpeed, formatTime } from '../../format.js';
 import { initInput, readUserInput, setInterruptHandler } from './input.js';
 import { processChatCommand } from './commands.js';
 import { cliOptions, type CliOptions } from './cli-options.js';
-import { formatResponse } from './format.js';
 import { getProvider, getProviderConfig, initProvider } from './providers.js';
-import { spinnerStart, spinnerStop, spinnerUpdate } from './spinner.js';
+import { streamingClear, streamingFinish, streamingStart, streamingUpdate } from './streaming.js';
 import { messages } from './state.js';
 import { texts } from './texts.js';
 import { exit } from './utils.js';
@@ -34,6 +34,7 @@ async function run(initialPrompt: string, options: CliOptions) {
   try {
     const configFile = parseConfigFile();
     initProvider(options, configFile);
+
     const app = createApp({
       chatModel: getProvider().getChatModel(getProviderConfig()),
       systemPrompt: () => getProviderConfig().systemPrompt,
@@ -44,7 +45,7 @@ async function run(initialPrompt: string, options: CliOptions) {
     }
 
     setInterruptHandler(() => {
-      spinnerStop();
+      streamingClear();
       exit();
     });
 
@@ -73,19 +74,19 @@ async function processMessages(app: Application, messages: Message[]) {
   const stream = getProviderConfig().stream;
 
   const onPartialUpdate = (content: string) => {
-    spinnerUpdate(colorAssistant(`${texts.assistantLabel} ${content}`));
+    streamingUpdate(colorAssistant(`${texts.assistantLabel} ${content}`));
   };
 
-  spinnerStart(colorAssistant(texts.assistantLabel));
+  streamingStart(colorAssistant(texts.assistantLabel));
   const { response } = await app.processMessages(messages, {
     onPartialResponse: stream ? onPartialUpdate : undefined,
   });
 
   if (response.role === 'assistant') {
     messages.push({ role: 'assistant', content: response.content });
-    spinnerStop(`${formatResponse(response)}\n`);
+    streamingFinish(`${formatResponse(response)}\n`);
   } else {
-    spinnerStop(response.content);
+    streamingFinish(response.content);
   }
 
   // Insert empty line after each response
@@ -98,4 +99,18 @@ function outputMessage(message: Message) {
   } else {
     output(colorAssistant(`${texts.assistantLabel} ${message.content}`));
   }
+}
+
+export function formatResponse(response: AssistantResponse) {
+  let result = colorAssistant(`${texts.assistantLabel} ${response.content}`);
+
+  if (getVerbose()) {
+    const stats = `${formatTime(response.usage.responseTime)} ${formatSpeed(
+      response.usage?.outputTokens,
+      response.usage.responseTime,
+    )}`;
+    result += ` ${colorVerbose(stats)}`;
+  }
+
+  return result;
 }
