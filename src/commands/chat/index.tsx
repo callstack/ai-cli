@@ -103,16 +103,14 @@ function outputMessage(message: Message) {
 
 export function formatResponse(response: AssistantResponse) {
   let result = colorAssistant(`${texts.assistantLabel} ${response.content}`);
+
   if (getVerbose()) {
-    result += ` ${colorVerbose(formatResponseStats(response))}`;
+    const stats = `${formatTime(response.usage.responseTime)} ${formatSpeed(
+      response.usage?.outputTokens,
+      response.usage.responseTime,
+    )}`;
+    result += ` ${colorVerbose(stats)}`;
   }
 
   return result;
-}
-
-function formatResponseStats(message: AssistantResponse) {
-  return `${formatTime(message.usage.responseTime)} ${formatSpeed(
-    message.usage?.outputTokens,
-    message.usage.responseTime,
-  )}`;
 }
