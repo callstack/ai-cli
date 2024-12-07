@@ -75,7 +75,7 @@
     "memfs": "^4.14.1",
     "mock-fs": "^5.4.1",
     "prettier": "^3.4.2",
-    "release-it": "^15.11.0",
+    "release-it": "^17.10.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   },
