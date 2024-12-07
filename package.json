@@ -49,6 +49,7 @@
     "@clack/prompts": "^0.8.2",
     "ai": "^4.0.13",
     "chalk": "^5.3.0",
+    "cli-spinners": "^3.2.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "ora": "^8.1.1",

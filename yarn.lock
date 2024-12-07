@@ -558,6 +558,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:^2.1.8"
     ai: "npm:^4.0.13"
     chalk: "npm:^5.3.0"
+    cli-spinners: "npm:^3.2.0"
     date-fns: "npm:^4.1.0"
     del-cli: "npm:^6.0.0"
     dotenv: "npm:^16.4.7"
@@ -3267,6 +3268,13 @@ __metadata:
   version: 2.9.2
   resolution: "cli-spinners@npm:2.9.2"
   checksum: 10/a0a863f442df35ed7294424f5491fa1756bd8d2e4ff0c8736531d886cec0ece4d85e8663b77a5afaf1d296e3cbbebff92e2e99f52bbea89b667cbe789b994794
+  languageName: node
+  linkType: hard
+
+"cli-spinners@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "cli-spinners@npm:3.2.0"
+  checksum: 10/6612d3880c87ad1749556ff463c41499ebeab4024ee4afc41a8731d0bcd1679b18bb67a98df7e647cfa49adcff1ce86c049e141a4da028bb12831d7f13111d89
   languageName: node
   linkType: hard
 
