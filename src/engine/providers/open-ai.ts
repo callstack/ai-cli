@@ -11,6 +11,11 @@ const OpenAi: Provider = {
   // OpenAI models: https://platform.openai.com/docs/models
   defaultModel: 'gpt-4o-2024-11-20',
 
+  modelOptions: {
+    'o1-preview': { stream: false, ignoreSystemPrompt: true },
+    'o1-preview-2024-09-12': { stream: false, ignoreSystemPrompt: true },
+  },
+
   // Price per 1M tokens [input, output].
   // Source: https://openai.com/api/pricing/
   modelPricing: {

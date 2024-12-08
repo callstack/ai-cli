@@ -10,6 +10,8 @@ const Perplexity: Provider = {
   // Perplexity models: https://docs.perplexity.ai/guides/model-cards
   defaultModel: 'llama-3.1-sonar-huge-128k-online',
 
+  modelOptions: {},
+
   // Price per 1M tokens [input, output], per 1k requests.
   // Source: https://docs.perplexity.ai/guides/pricing
   modelPricing: {

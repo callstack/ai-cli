@@ -10,6 +10,8 @@ const Mistral: Provider = {
   // Mistral models: https://docs.mistral.ai/platform/endpoints/
   defaultModel: 'mistral-large-latest',
 
+  modelOptions: {},
+
   // Price per 1M tokens [input, output].
   // Source: https://docs.mistral.ai/platform/pricing/
   modelPricing: {

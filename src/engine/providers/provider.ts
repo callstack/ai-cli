@@ -14,10 +14,16 @@ export interface Provider {
   apiKeyUrl: string;
 
   defaultModel: string;
+  modelOptions: Record<string, ModelOptions>;
   modelPricing: Record<string, ModelPricing>;
   modelAliases: Record<string, string>;
 
   getChatModel: (config: ProviderConfig) => ChatModel;
+}
+
+export interface ModelOptions {
+  stream?: boolean;
+  ignoreSystemPrompt?: boolean;
 }
 
 export interface ModelPricing {

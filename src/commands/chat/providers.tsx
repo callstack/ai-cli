@@ -79,13 +79,17 @@ export function initProvider(options: CliOptions, configFile: ConfigFile) {
     ? (provider.modelAliases[modelOrAlias] ?? modelOrAlias)
     : provider.defaultModel;
 
-  const systemPrompt = providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT;
+  const modelOptions = provider.modelOptions[model];
+
+  const systemPrompt = modelOptions.ignoreSystemPrompt
+    ? null
+    : (providerFileConfig.systemPrompt ?? DEFAULT_SYSTEM_PROMPT);
 
   providerConfig = {
     apiKey: providerFileConfig.apiKey,
     model,
     systemPrompt,
-    stream: options.stream ?? true,
+    stream: options.stream ?? modelOptions?.stream ?? true,
     responseStyle: getResponseStyle(options),
   };
 

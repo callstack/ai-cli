@@ -37,7 +37,7 @@ async function run(initialPrompt: string, options: CliOptions) {
 
     const app = createApp({
       chatModel: getProvider().getChatModel(getProviderConfig()),
-      systemPrompt: () => getProviderConfig().systemPrompt,
+      systemPrompt: () => getProviderConfig().systemPrompt ?? '',
     });
 
     if (initialPrompt) {
@@ -73,7 +73,9 @@ async function run(initialPrompt: string, options: CliOptions) {
 }
 
 async function processMessages(app: Application, messages: Message[]) {
-  const stream = getProviderConfig().stream;
+  const providerConfig = getProviderConfig();
+  const modelOptions = getProvider().modelOptions[providerConfig.model];
+  const stream = modelOptions?.stream ?? providerConfig.stream;
 
   const onPartialUpdate = (content: string) => {
     streamingUpdate(colorAssistant(`${texts.assistantLabel} ${content}`));
