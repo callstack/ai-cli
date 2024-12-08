@@ -1,7 +1,7 @@
 import { Application, AssistantResponse, createApp, Message } from '@callstack/byorg-core';
 import type { CommandModule } from 'yargs';
 import { checkIfConfigExists, parseConfigFile } from '../../config-file.js';
-import { getVerbose, output, outputError, setVerbose } from '../../output.js';
+import { getVerbose, output, outputError, outputSystem, setVerbose } from '../../output.js';
 import { run as runInit } from '../init.js';
 import { colorAssistant, colorVerbose } from '../../colors.js';
 import { formatSpeed, formatTime } from '../../format.js';
@@ -10,7 +10,7 @@ import { processChatCommand } from './commands.js';
 import { cliOptions, type CliOptions } from './cli-options.js';
 import { getProvider, getProviderConfig, initProvider } from './providers.js';
 import { streamingClear, streamingFinish, streamingStart, streamingUpdate } from './streaming.js';
-import { messages } from './state.js';
+import { messages, updateUsage } from './state.js';
 import { texts } from './texts.js';
 import { exit } from './utils.js';
 
@@ -54,6 +54,8 @@ async function run(initialPrompt: string, options: CliOptions) {
       await processMessages(app, messages);
     }
 
+    outputSystem(texts.initialHelp);
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const userMessage = await readUserInput();
@@ -83,8 +85,9 @@ async function processMessages(app: Application, messages: Message[]) {
   });
 
   if (response.role === 'assistant') {
-    messages.push({ role: 'assistant', content: response.content });
     streamingFinish(`${formatResponse(response)}\n`);
+    messages.push({ role: 'assistant', content: response.content });
+    updateUsage(response.usage);
   } else {
     streamingFinish(response.content);
   }

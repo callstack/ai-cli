@@ -7,7 +7,6 @@ import {
   FILE_COST_WARNING,
   FILE_TOKEN_COUNT_WARNING,
 } from '../../default-config.js';
-import { calculateUsageCost } from '../../engine/session.js';
 import { getTokensCount } from '../../engine/tokenizer.js';
 import type { ProviderConfig } from '../../engine/providers/config.js';
 import type { Provider } from '../../engine/providers/provider.js';
@@ -17,13 +16,12 @@ import {
   getDefaultFilename,
   getUniqueFilename,
 } from '../../file-utils.js';
-import { output } from '../../output.js';
 import { texts } from './texts.js';
 import { closeInput } from './input.js';
+import { calculateUsageCost } from './usage.js';
 
 export function exit() {
   closeInput();
-  output('\nBye...');
   process.exit(0);
 }
 
@@ -35,7 +33,7 @@ interface HandleInputFileResult {
 
 export function handleInputFile(
   inputFile: string,
-  config: ProviderConfig,
+  providerConfig: ProviderConfig,
   provider: Provider,
 ): HandleInputFileResult {
   const filePath = path.resolve(inputFile.replace('~', os.homedir()));
@@ -46,9 +44,7 @@ export function handleInputFile(
 
   const fileContent = fs.readFileSync(filePath).toString();
   const fileTokens = getTokensCount(fileContent);
-
-  const pricing = provider.modelPricing[config.model];
-  const fileCost = calculateUsageCost({ inputTokens: fileTokens }, pricing);
+  const fileCost = calculateUsageCost({ inputTokens: fileTokens }, { provider, providerConfig });
 
   let costWarning = null;
   let costInfo = null;
