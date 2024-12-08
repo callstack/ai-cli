@@ -1,16 +1,10 @@
 import { CHATS_SAVE_DIRECTORY } from '../../file-utils.js';
 import { formatCost, formatSpeed, formatTokenCount } from '../../format.js';
-import {
-  getVerbose,
-  outputSystem,
-  outputVerbose,
-  outputWarning,
-  setVerbose,
-} from '../../output.js';
+import { getVerbose, outputSystem, outputWarning, setVerbose } from '../../output.js';
 import { getProvider, getProviderConfig } from './providers.js';
 import { messages, totalUsage } from './state.js';
 import { calculateUsageCost } from './usage.js';
-import { exit, saveConversation } from './utils.js';
+import { exit, filterOutApiKey, saveConversation } from './utils.js';
 
 export function processChatCommand(input: string) {
   if (!input.startsWith('/')) {
@@ -29,6 +23,11 @@ export function processChatCommand(input: string) {
 
   if (command === '/info') {
     outputInfo();
+    return true;
+  }
+
+  if (command === '/debug') {
+    outputDebugInfo();
     return true;
   }
 
@@ -77,17 +76,21 @@ export function outputInfo() {
     `- Provider: ${provider.label}`,
     `- Model: ${providerConfig.model}`,
     `- Cost: ${formatCost(calculateUsageCost(totalUsage, { provider, providerConfig }))}`,
-    `- Usage: ${formatTokenCount(totalUsage.inputTokens)} input token(s), ${formatTokenCount(totalUsage.outputTokens)} output token(s), ${totalUsage.requests} request(s)`,
+    `- Usage: ${formatTokenCount(totalUsage.inputTokens)} input token(s), ${formatTokenCount(totalUsage.outputTokens)} output token(s), ${totalUsage.requests} request(s)usag`,
     `- Avg Speed: ${formatSpeed(totalUsage.outputTokens, totalUsage.responseTime)}`,
     `- System prompt: ${providerConfig.systemPrompt}`,
     '',
   ];
   outputSystem(lines.join('\n'));
+}
 
-  const rawMessages = JSON.stringify(
-    messages.map((m) => `${m.role}: ${m.content}`),
-    null,
-    2,
-  );
-  outputVerbose(`Messages: ${rawMessages}\n`);
+export function outputDebugInfo() {
+  outputSystem(`Provider: ${toJson(getProvider().label)}\n`);
+  outputSystem(`Provider Config: ${toJson(getProviderConfig())}\n`);
+  outputSystem(`Messages: ${toJson(messages)}\n`);
+  outputSystem(`Usage: ${toJson(totalUsage)}\n`);
+}
+
+function toJson(value: any) {
+  return JSON.stringify(value, filterOutApiKey, 2);
 }
