@@ -1,12 +1,12 @@
-import cliSpinners from 'cli-spinners';
 import { colorAssistant } from '../../colors.js';
 
-const spinner = cliSpinners.dots;
-const frames = spinner.frames.map((f) => colorAssistant(f));
+// Spinner params
+const SPINNER_INTERVAL = 80; //ms
+const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'].map((f) => colorAssistant(f));
 
+// State
 let currentLine = '';
 let outputtedLines: string[] = [];
-
 let intervalRef: NodeJS.Timeout | undefined;
 let frameIndex = 0;
 
@@ -54,7 +54,7 @@ export function startSpinner() {
     clearInterval(intervalRef);
   }
 
-  intervalRef = setInterval(renderFrame, spinner.interval).unref();
+  intervalRef = setInterval(renderFrame, SPINNER_INTERVAL).unref();
 }
 
 function renderFrame() {
