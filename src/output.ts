@@ -1,4 +1,4 @@
-import { colorError, colorVerbose, colorWarning } from './colors.js';
+import { colorError, colorSystem, colorVerbose, colorWarning } from './colors.js';
 
 let showVerbose = false;
 
@@ -12,6 +12,10 @@ export function setVerbose(verbose: boolean) {
 
 export function output(text: string, ...args: unknown[]) {
   console.log(text, ...args);
+}
+
+export function outputSystem(text: string, ...args: unknown[]) {
+  console.log(colorSystem(text, ...args));
 }
 
 export function outputVerbose(message: string, ...args: unknown[]) {

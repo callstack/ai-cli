@@ -17,6 +17,10 @@ export function colorWarning(...text: unknown[]) {
   return chalk.hex(colors.warning)(...text);
 }
 
+export function colorSystem(...text: unknown[]) {
+  return chalk.grey(...text);
+}
+
 export function colorVerbose(...text: unknown[]) {
   return chalk.dim(...text);
 }
