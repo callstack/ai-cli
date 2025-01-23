@@ -24,13 +24,32 @@ export function closeInput() {
   rl.close();
 }
 
-export async function readUserInput(): Promise<string> {
-  let answer = '';
-  while (!answer.trim()) {
-    answer = await rl.question(`${texts.userLabel} `);
-  }
+export function readUserInput(): Promise<string> {
+  return new Promise((resolve) => {
+    let input = '';
+    let timeout: NodeJS.Timeout | null = null;
 
-  return answer;
+    process.stdout.write(`${texts.userLabel} `);
+
+    const onLine = (line: string) => {
+      // Clear any existing timeout
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      input += line + '\n';
+
+      // Set new timeout to resolve after 250ms of no input
+      timeout = setTimeout(() => {
+        if (input.trim()) {
+          rl.off('line', onLine);
+          resolve(input.trim());
+        }
+      }, 250);
+    };
+
+    rl.on('line', onLine);
+  });
 }
 
 let interruptHandler: (() => void) | undefined;
